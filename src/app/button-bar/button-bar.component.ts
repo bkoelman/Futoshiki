@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-digitbar',
-  host: {'(window:keydown)': 'onKeyDown($event)'},
-  templateUrl: './digitbar.component.html'
+  selector: 'app-button-bar',
+  host: { '(window:keydown)': 'onKeyDown($event)' },
+  templateUrl: './button-bar.component.html'
 })
-export class DigitbarComponent implements OnInit {
+export class ButtonBarComponent implements OnInit {
   @Input() isEnabled: boolean;
   @Output() digitClicked = new EventEmitter<number | undefined>();
 

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DigitbarComponent } from './digitbar.component';
+import { ButtonBarComponent } from './button-bar.component';
 
-describe('DigitbarComponent', () => {
-  let component: DigitbarComponent;
-  let fixture: ComponentFixture<DigitbarComponent>;
+describe('ButtonBarComponent', () => {
+  let component: ButtonBarComponent;
+  let fixture: ComponentFixture<ButtonBarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DigitbarComponent ]
+      declarations: [ButtonBarComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DigitbarComponent);
+    fixture = TestBed.createComponent(ButtonBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

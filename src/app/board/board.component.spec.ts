@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BoardComponent } from './board.component';
-import { CellComponent } from '../cell/cell.component';
+import { DigitCellComponent } from '../digit-cell/digit-cell.component';
+import { OperatorCellComponent } from '../operator-cell/operator-cell.component';
+import { SpacerCellComponent } from '../spacer-cell/spacer-cell.component';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
@@ -9,12 +11,14 @@ describe('BoardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         BoardComponent,
-        CellComponent
+        DigitCellComponent,
+        OperatorCellComponent,
+        SpacerCellComponent
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

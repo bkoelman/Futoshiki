@@ -1,28 +1,55 @@
-<table class="table-bordered">
-  <tbody>
-    <tr>
-      <app-cell (cellClicked)="onCellClicked($event)" [fixedValue]="1"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-    </tr>
-    <tr>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)" [fixedValue]="4"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-    </tr>
-    <tr>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-    </tr>
-    <tr>
-      <app-cell (cellClicked)="onCellClicked($event)" [fixedValue]="2"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)" [fixedValue]="1"></app-cell>
-      <app-cell (cellClicked)="onCellClicked($event)"></app-cell>
-    </tr>
-  </tbody>
-</table>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)" [fixedValue]="2"></app-digit-cell>
+
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true" [isGreaterThan]="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4" [isGreaterThan]="false"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4" [isGreaterThan]="false"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true" [isGreaterThan]="true"></app-operator-cell>
+<app-spacer-cell [boardSize]="4"></app-spacer-cell>
+<app-operator-cell [boardSize]="4" isRotated="true"></app-operator-cell>
+
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+<app-operator-cell [boardSize]="4"></app-operator-cell>
+<app-digit-cell [boardSize]="4" (cellClicked)="onCellClicked($event)"></app-digit-cell>

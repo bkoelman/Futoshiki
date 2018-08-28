@@ -1,9 +1,0 @@
-td.board-cell {
-    width: 100px; 
-    height: 100px;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    font-size: 3rem;
-}

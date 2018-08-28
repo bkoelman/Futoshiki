@@ -6,7 +6,7 @@ import { BoardComponent } from '../board/board.component';
   templateUrl: './game.component.html'
 })
 export class GameComponent implements OnInit {
-  @ViewChild(BoardComponent) boardComponent : BoardComponent;
+  @ViewChild(BoardComponent) boardComponent: BoardComponent;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
 
@@ -37,37 +37,43 @@ export class GameComponent implements OnInit {
   BoardContainsSolution(): boolean {
 
     /* Puzzle:
-    
-    1_._._.
-    ._4_._.
+
+    ._._._2
+    ____v__
+    .(.(._.
+    _______
     ._._._.
-    2_._1_.
-    
-    1_2_4_3
-    3_4_2_1
-    4_1_3_2
-    2_3_1_4
+    ____v__
+    ._._._.
+
+    3_1_4_2
+    ____v__
+    1(2(3_4
+    _______
+    4_3_2_1
+    ____v__
+    2_4_1_3
     
     */
-    if (this.boardComponent.getCellValueAt(0) == 1 &&
-      this.boardComponent.getCellValueAt(1) == 2 &&
+    if (this.boardComponent.getCellValueAt(0) == 3 &&
+      this.boardComponent.getCellValueAt(1) == 1 &&
       this.boardComponent.getCellValueAt(2) == 4 &&
-      this.boardComponent.getCellValueAt(3) == 3 &&
+      this.boardComponent.getCellValueAt(3) == 2 &&
 
-      this.boardComponent.getCellValueAt(4) == 3 &&
-      this.boardComponent.getCellValueAt(5) == 4 &&
-      this.boardComponent.getCellValueAt(6) == 2 &&
-      this.boardComponent.getCellValueAt(7) == 1 &&
+      this.boardComponent.getCellValueAt(4) == 1 &&
+      this.boardComponent.getCellValueAt(5) == 2 &&
+      this.boardComponent.getCellValueAt(6) == 3 &&
+      this.boardComponent.getCellValueAt(7) == 4 &&
 
       this.boardComponent.getCellValueAt(8) == 4 &&
-      this.boardComponent.getCellValueAt(9) == 1 &&
-      this.boardComponent.getCellValueAt(10) == 3 &&
-      this.boardComponent.getCellValueAt(11) == 2 &&
+      this.boardComponent.getCellValueAt(9) == 3 &&
+      this.boardComponent.getCellValueAt(10) == 2 &&
+      this.boardComponent.getCellValueAt(11) == 1 &&
 
       this.boardComponent.getCellValueAt(12) == 2 &&
-      this.boardComponent.getCellValueAt(13) == 3 &&
+      this.boardComponent.getCellValueAt(13) == 4 &&
       this.boardComponent.getCellValueAt(14) == 1 &&
-      this.boardComponent.getCellValueAt(15) == 4) {
+      this.boardComponent.getCellValueAt(15) == 3) {
       return true;
     }
     else {

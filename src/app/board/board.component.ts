@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
-import { CellComponent } from '../cell/cell.component';
+import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit {
-  @ViewChildren(CellComponent) private _cells: QueryList<CellComponent>
+  @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>
 
   private _canSelect: boolean = true;
 
@@ -33,12 +33,12 @@ export class BoardComponent implements OnInit {
     this._cells.forEach(cell => cell.isSelected = false);
   }
 
-  getSelectedCell(): CellComponent | undefined {
+  getSelectedCell(): DigitCellComponent | undefined {
     return this._cells.find(cell => cell.isSelected);
   }
 
   hasEmptyCells() {
-    var emptyCell = this._cells.find(cell => cell.isEmpty());
+    var emptyCell = this._cells.find(cell => cell.isEmpty);
     return emptyCell !== undefined;
   }
 
@@ -47,10 +47,10 @@ export class BoardComponent implements OnInit {
     return cell === undefined ? undefined : cell.value;
   }
 
-  onCellClicked(sender: CellComponent) {
+  onCellClicked(sender: DigitCellComponent) {
     this.clearSelection();
 
-    if (this.canSelect && !sender.isFixed()) {
+    if (this.canSelect && !sender.isFixed) {
       sender.isSelected = true;
     }
   }
