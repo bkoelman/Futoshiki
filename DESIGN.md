@@ -1,9 +1,9 @@
 # Futoshiki basic
-- [ ] fixed board size 4x4
-- [ ] hardcoded puzzle without operators
-- [ ] enable cell digit entry and clear via buttonbar
-- [ ] display message when puzzle completed correctly
-- [ ] restart current puzzle
+- [x] fixed board size 4x4
+- [x] hardcoded puzzle without operators
+- [x] enable cell digit entry and clear via buttonbar
+- [x] display message when puzzle completed correctly
+- [x] restart current puzzle
 
 # Enhancements
 - [ ] warning when navigating away from page

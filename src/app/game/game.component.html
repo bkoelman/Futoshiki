@@ -1,0 +1,13 @@
+<app-board></app-board>
+<p></p>
+<app-digitbar [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"></app-digitbar>
+
+<p></p>
+<div class="alert alert-success" role="alert" *ngIf="isGameSolved">
+  Solved!
+</div>
+<div class="alert alert-danger" role="alert" *ngIf="isBoardCompleted && !isGameSolved">
+  Wrong!
+</div>
+
+<button type="button" class="btn btn-secondary" (click)="restart()">Restart</button>

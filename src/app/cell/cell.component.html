@@ -1,0 +1,6 @@
+<td class="board-cell" [class.table-active]="isSelected" (click)="onTableCellClicked()">
+  <span *ngIf="value === undefined">&nbsp;</span>
+  <span *ngIf="fixedValue !== undefined" style="font-weight:bold;">{{value}}</span>
+  <span *ngIf="fixedValue === undefined && value !== undefined" style="color:blue;">{{value}}</span>
+</td>
+<!-- styles: table-danger, table-success -->
