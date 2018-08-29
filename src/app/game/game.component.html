@@ -3,7 +3,7 @@
 <br style="clear: both;" />
 <p></p>
 
-<app-button-bar [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"></app-button-bar>
+<app-button-bar [boardSize]="boardSize" [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"></app-button-bar>
 
 <p></p>
 <div class="alert alert-success" role="alert" *ngIf="isGameSolved">
