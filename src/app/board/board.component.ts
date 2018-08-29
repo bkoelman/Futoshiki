@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, Input } from '@angular/core';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 
 @Component({
@@ -6,7 +6,9 @@ import { DigitCellComponent } from '../digit-cell/digit-cell.component';
   templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit {
-  @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>
+  @Input() puzzleLines: string[];
+  @Input() boardSize: number;
+  @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;
 
   private _canSelect: boolean = true;
 
@@ -21,6 +23,40 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  lineStartsWithDotOrDigit(line: string): boolean {
+    if (line.length > 0) {
+      return this.isDotToken(line[0]) || this.isDigitToken(line[0]);
+    }
+    return false;
+  }
+
+  lineStartsWithUnderscoreOrOperator(line: string): boolean {
+    if (line.length > 0) {
+      return this.isUnderscoreToken(line[0]) || this.isOperatorToken(line[0]);
+    }
+    return false;
+  }
+
+  isDotToken(token: string): boolean {
+    return token === '.';
+  }
+
+  isDigitToken(token: string): boolean {
+    return /^\d$/.test(token);
+  }
+
+  isUnderscoreToken(token: string): boolean {
+    return token === '_';
+  }
+
+  isOperatorToken(token: string): boolean {
+    return token === 'v' || token === '^' || token === '(' || token === ')';
+  }
+
+  isEvenNumber(index: number): boolean {
+    return index % 2 === 0;
   }
 
   reset() {

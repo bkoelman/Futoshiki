@@ -10,6 +10,27 @@ export class GameComponent implements OnInit {
   isBoardCompleted: boolean;
   isGameSolved: boolean;
 
+  // Hardcoded puzzle
+  puzzleLines: string[] = [
+    '._._._2',
+    '____v__',
+    '.(.(._.',
+    '_______',
+    '._._._.',
+    '____v__',
+    '._._._.'
+  ];
+  answerLines: string[] = [
+    '3_1_4_2',
+    '____v__',
+    '1(2(3_4',
+    '_______',
+    '4_3_2_1',
+    '____v__',
+    '2_4_1_3'
+  ];
+  boardSize: number = 4;
+
   ngOnInit() {
   }
 
@@ -35,49 +56,18 @@ export class GameComponent implements OnInit {
   }
 
   BoardContainsSolution(): boolean {
+    let answerText = this.answerLines.reduce((left, right) => left.concat(right));
+    let answerDigits = answerText.match(/\d+/g);
 
-    /* Puzzle:
+    let isCorrect: boolean = true;
+    answerDigits.forEach((digit, index) => {
+      let answerValue = parseInt(digit);
+      let userValue = this.boardComponent.getCellValueAt(index);
+      if (userValue !== answerValue) {
+        isCorrect = false;
+      }
+    });
 
-    ._._._2
-    ____v__
-    .(.(._.
-    _______
-    ._._._.
-    ____v__
-    ._._._.
-
-    3_1_4_2
-    ____v__
-    1(2(3_4
-    _______
-    4_3_2_1
-    ____v__
-    2_4_1_3
-    
-    */
-    if (this.boardComponent.getCellValueAt(0) == 3 &&
-      this.boardComponent.getCellValueAt(1) == 1 &&
-      this.boardComponent.getCellValueAt(2) == 4 &&
-      this.boardComponent.getCellValueAt(3) == 2 &&
-
-      this.boardComponent.getCellValueAt(4) == 1 &&
-      this.boardComponent.getCellValueAt(5) == 2 &&
-      this.boardComponent.getCellValueAt(6) == 3 &&
-      this.boardComponent.getCellValueAt(7) == 4 &&
-
-      this.boardComponent.getCellValueAt(8) == 4 &&
-      this.boardComponent.getCellValueAt(9) == 3 &&
-      this.boardComponent.getCellValueAt(10) == 2 &&
-      this.boardComponent.getCellValueAt(11) == 1 &&
-
-      this.boardComponent.getCellValueAt(12) == 2 &&
-      this.boardComponent.getCellValueAt(13) == 4 &&
-      this.boardComponent.getCellValueAt(14) == 1 &&
-      this.boardComponent.getCellValueAt(15) == 3) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    return isCorrect;
   }
 }
