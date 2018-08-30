@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, AfterViewInit, ElementRef } from '@angular/core';
-import * as ft from '../../jquery.fittext.js'
+import * as ft from '../../jquery.fittext.js';
 
 declare var $: any;
 
@@ -8,9 +8,9 @@ declare var $: any;
   templateUrl: './operator-cell.component.html'
 })
 export class OperatorCellComponent implements OnInit, AfterViewInit {
-  @Input() boardSize: number = 4;
+  @Input() boardSize = 4;
   @Input() isGreaterThan: boolean | undefined;
-  @Input() isRotated: boolean = false;
+  @Input() isRotated = false;
 
   constructor(private _elementRef: ElementRef) {
   }
@@ -19,11 +19,10 @@ export class OperatorCellComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    let resizeTarget = $(this._elementRef.nativeElement).find('.container-content-table-cell');
+    const resizeTarget = $(this._elementRef.nativeElement).find('.container-content-table-cell');
     if (this.isRotated) {
       resizeTarget.fitText(0.5);
-    }
-    else {
+    } else {
       resizeTarget.fitText(0.125);
     }
   }

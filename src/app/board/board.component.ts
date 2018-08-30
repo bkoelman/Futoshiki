@@ -10,7 +10,7 @@ export class BoardComponent implements OnInit {
   @Input() boardSize: number;
   @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;
 
-  private _canSelect: boolean = true;
+  private _canSelect = true;
 
   get canSelect(): boolean {
     return this._canSelect;
@@ -74,12 +74,12 @@ export class BoardComponent implements OnInit {
   }
 
   hasEmptyCells() {
-    var emptyCell = this._cells.find(cell => cell.isEmpty);
+    const emptyCell = this._cells.find(cell => cell.isEmpty);
     return emptyCell !== undefined;
   }
 
   getCellValueAt(offset: number): number | undefined {
-    let cell = this._cells.find((item, index) => index === offset);
+    const cell = this._cells.find((item, index) => index === offset);
     return cell === undefined ? undefined : cell.value;
   }
 

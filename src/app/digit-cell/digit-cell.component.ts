@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
-import * as ft from '../../jquery.fittext.js'
+import * as ft from '../../jquery.fittext.js';
 
 declare var $: any;
 
@@ -8,7 +8,7 @@ declare var $: any;
   templateUrl: './digit-cell.component.html'
 })
 export class DigitCellComponent implements OnInit, AfterViewInit {
-  @Input() boardSize: number = 4;
+  @Input() boardSize = 4;
   @Input() fixedValue: number | undefined;
   @Input() isSelected: boolean;
   userValue: number | undefined;
@@ -33,7 +33,7 @@ export class DigitCellComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    let resizeTarget = $(this._elementRef.nativeElement).find('.container-content-table-cell');
+    const resizeTarget = $(this._elementRef.nativeElement).find('.container-content-table-cell');
     resizeTarget.fitText(0.15);
   }
 

@@ -5,7 +5,7 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './spacer-cell.component.html'
 })
 export class SpacerCellComponent implements OnInit {
-  @Input() boardSize: number = 4;
+  @Input() boardSize = 4;
 
   ngOnInit() {
   }

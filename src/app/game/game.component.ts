@@ -29,7 +29,7 @@ export class GameComponent implements OnInit {
     '____v__',
     '2_4_1_3'
   ];
-  boardSize4: number = 4;
+  boardSize4 = 4;
 
   // Hardcoded puzzle 8x8
   puzzleLines8: string[] = [
@@ -66,14 +66,14 @@ export class GameComponent implements OnInit {
     '_______________',
     '2(3_7_1_5)4_8)6'
   ];
-  boardSize8: number = 8;
+  boardSize8 = 8;
 
   puzzleLines: string[] = this.puzzleLines8;
   answerLines: string[] = this.answerLines8;
   boardSize: number = this.boardSize8;
 
   ngOnInit() {
-    if (document.location.search == '?4') {
+    if (document.location.search === '?4') {
       this.puzzleLines = this.puzzleLines4;
       this.answerLines = this.answerLines4;
       this.boardSize = this.boardSize4;
@@ -87,7 +87,7 @@ export class GameComponent implements OnInit {
   }
 
   onDigitClicked(value: number | undefined) {
-    let cell = this.boardComponent.getSelectedCell();
+    const cell = this.boardComponent.getSelectedCell();
     if (cell !== undefined) {
       cell.userValue = value;
     }
@@ -102,13 +102,13 @@ export class GameComponent implements OnInit {
   }
 
   BoardContainsSolution(): boolean {
-    let answerText = this.answerLines.reduce((left, right) => left.concat(right));
-    let answerDigits = answerText.match(/\d+/g);
+    const answerText = this.answerLines.reduce((left, right) => left.concat(right));
+    const answerDigits = answerText.match(/\d+/g);
 
-    let isCorrect: boolean = true;
+    let isCorrect = true;
     answerDigits.forEach((digit, index) => {
-      let answerValue = parseInt(digit, 10);
-      let userValue = this.boardComponent.getCellValueAt(index);
+      const answerValue = parseInt(digit, 10);
+      const userValue = this.boardComponent.getCellValueAt(index);
       if (userValue !== answerValue) {
         isCorrect = false;
       }
