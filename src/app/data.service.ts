@@ -25,7 +25,7 @@ export class DataService {
   }
 
   private formatPuzzleUrl(boardSize: number, difficulty: PuzzleDifficulty, id: number): string {
-    const baseUrl = window.location.origin + window.location.pathname;
+    const baseUrl = 'https://raw.githubusercontent.com/bkoelman/Futoshiki/master/';
     const fileName = 'Puzzle' + this.prefixNumber(id, '0000') + '.txt';
     return `${baseUrl}puzzles/${PuzzleDifficulty[difficulty]}/0${boardSize}x0${boardSize}/${fileName}`;
   }
