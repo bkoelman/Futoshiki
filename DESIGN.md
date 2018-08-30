@@ -1,14 +1,20 @@
-# Futoshiki basic
+# Futoshiki initial
 - [x] fixed board size 4x4
 - [x] hardcoded puzzle without operators
 - [x] enable cell digit entry and clear via buttonbar
+- [x] enable digit entry via keyboard
 - [x] display message when puzzle completed correctly
 - [x] restart current puzzle
 
+# Futoshiki basics
+- [x] puzzle including operators
+- [x] dynamic board size (4x4 .. 9x9)
+- [ ] add puzzle picker and dynamically load puzzle from server
+- [ ] nicer styling when puzzle solved
+- [ ] nicer styling of button bar
+
 # Enhancements
 - [ ] warning when navigating away from page
-- [ ] enable digit entry via keyboard
-- [ ] add puzzle picker and dynamically load puzzle from server
 - [ ] option to track elapsed time
 - [ ] undo last move(s)
 - [ ] extra button bar for temporary digits -or- toggle existing bar (caption: notes, draft)
