@@ -1,59 +1,3 @@
-.square-4 {
-    width: 20%;
-    padding-bottom: 20%;
-}
-
-.square-selected {
-    background-color: rgba(0,0,0,.075);
-}
-
-.vertical-bar-4 {
-    width: 5%;
-    padding-bottom: 20%;
-}
-
-.horizontal-bar-4 {
-    width: 20%;
-    padding-bottom: 5%;
-}
-
-.divider-4 {
-    width: 5%;
-    padding-bottom: 5%;
-}
-
-.digit-4 {
-    font-size: 10vw;
-}
-
-.square-8 {
-    width: 10%;
-    padding-bottom: 10%;
-}
-
-.vertical-bar-8 {
-    width: 2.5%;
-    padding-bottom: 10%;
-}
-
-.horizontal-bar-8 {
-    width: 10%;
-    padding-bottom: 2.5%;
-}
-
-.divider-8 {
-    width: 2.5%;
-    padding-bottom: 2.5%;
-}
-
-.digit-8 {
-    font-size: 5vw;
-}
-
-.operator-8 {
-    font-size: 1.5vw;
-}
-
 .digit-container {
     float: left;
     position: relative;
@@ -99,4 +43,8 @@
 
 .rotated-right {
     transform: rotate(90deg);
+}
+
+.square-selected {
+    background-color: rgba(0, 0, 0, .075);
 }

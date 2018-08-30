@@ -1,8 +1,7 @@
-<div class="digit-container" [class.square-selected]="isSelected" (click)="onTableCellClicked()" [class.square-4]="boardSize === 4"
-  [class.square-8]="boardSize === 8">
+<div class="digit-container" [class.square-selected]="isSelected" (click)="onTableCellClicked()" [ngClass]="'square-' + boardSize">
   <div class="container-content">
     <div class="container-content-table">
-      <div class="container-content-table-cell cell-content-digit" [class.digit-4]="boardSize === 4" [class.digit-8]="boardSize === 8">
+      <div class="container-content-table-cell cell-content-digit">
         <span *ngIf="isFixed">{{value}}</span>
         <span *ngIf="!isFixed && !isEmpty" class="cell-content-user-digit">{{value}}</span>
       </div>

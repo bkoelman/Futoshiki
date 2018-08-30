@@ -1,8 +1,7 @@
-<div class="operator-container" [class.vertical-bar-4]="boardSize === 4 && !isRotated" [class.vertical-bar-8]="boardSize === 8 && !isRotated"
-  [class.horizontal-bar-4]="boardSize === 4 && isRotated" [class.horizontal-bar-8]="boardSize === 8 && isRotated">
+<div class="operator-container" [ngClass]="(isRotated ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
   <div class="container-content">
     <div class="container-content-table">
-      <div class="container-content-table-cell" [class.operator-8]="boardSize === 8" [class.rotated-right]="isRotated">
+      <div class="container-content-table-cell" [class.rotated-right]="isRotated">
         <span *ngIf="isGreaterThan === true">&gt;</span>
         <span *ngIf="isGreaterThan === false">&lt;</span>
       </div>
