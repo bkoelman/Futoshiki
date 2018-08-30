@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { GameComponent } from './game/game.component'
+import { GameComponent } from './game/game.component';
 import { BoardComponent } from './board/board.component';
 import { DigitCellComponent } from './digit-cell/digit-cell.component';
 import { OperatorCellComponent } from './operator-cell/operator-cell.component';
