@@ -13,13 +13,17 @@ export class ButtonBarComponent implements OnInit {
   }
 
   createNumberSequence(count: number): number[] {
-    return Array.apply(undefined, Array(count)).map((x, y) => y + 1);
+    return Array.apply(undefined, Array(count)).map((item, index) => index + 1);
   }
 
   onButtonClicked(event: MouseEvent) {
     const button = <HTMLElement>event.target;
-    const value = button.innerText === 'X' ? undefined : parseInt(button.innerText, 10);
-    this.digitClicked.emit(value);
+    const digit = parseInt(button.innerText, 10);
+    if (isNaN(digit)) {
+      this.digitClicked.emit(undefined);
+    } else {
+      this.digitClicked.emit(digit);
+    }
   }
 
   @HostListener('window:keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
