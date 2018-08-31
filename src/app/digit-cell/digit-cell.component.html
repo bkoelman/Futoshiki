@@ -1,7 +1,7 @@
 <div class="digit-container" [class.square-selected]="isSelected" (click)="onTableCellClicked()" [ngClass]="'square-' + boardSize">
   <div class="container-content">
     <div class="container-content-table">
-      <div class="container-content-table-cell cell-content-digit">
+      <div #autoSizeText class="container-content-table-cell cell-content-digit">
         <span *ngIf="isFixed">{{value}}</span>
         <span *ngIf="!isFixed && !isEmpty" class="cell-content-user-digit">{{value}}</span>
       </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as ft from '../../jquery.fittext.js';
 
 declare var $: any;
@@ -11,19 +11,17 @@ export class OperatorCellComponent implements OnInit, AfterViewInit {
   @Input() boardSize = 4;
   @Input() isGreaterThan: boolean | undefined;
   @Input() isRotated = false;
-
-  constructor(private _elementRef: ElementRef) {
-  }
+  @ViewChild('autoSizeText') autoSizeTextRef: ElementRef;
 
   ngOnInit() {
   }
 
   ngAfterViewInit(): void {
-    const resizeTarget = $(this._elementRef.nativeElement).find('.container-content-table-cell');
+    const autoSizeTextTarget = $(this.autoSizeTextRef.nativeElement);
     if (this.isRotated) {
-      resizeTarget.fitText(0.5);
+      autoSizeTextTarget.fitText(0.5);
     } else {
-      resizeTarget.fitText(0.125);
+      autoSizeTextTarget.fitText(0.125);
     }
   }
 }

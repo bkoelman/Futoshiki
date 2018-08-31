@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as ft from '../../jquery.fittext.js';
 
 declare var $: any;
@@ -13,6 +13,7 @@ export class DigitCellComponent implements OnInit, AfterViewInit {
   @Input() isSelected: boolean;
   userValue: number | undefined;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
+  @ViewChild('autoSizeText') autoSizeTextRef: ElementRef;
 
   get value(): number | undefined {
     return this.fixedValue !== undefined ? this.fixedValue : this.userValue;
@@ -26,15 +27,12 @@ export class DigitCellComponent implements OnInit, AfterViewInit {
     return this.value === undefined;
   }
 
-  constructor(private _elementRef: ElementRef) {
-  }
-
   ngOnInit() {
   }
 
   ngAfterViewInit(): void {
-    const resizeTarget = $(this._elementRef.nativeElement).find('.container-content-table-cell');
-    resizeTarget.fitText(0.15);
+    const autoSizeTextTarget = $(this.autoSizeTextRef.nativeElement);
+    autoSizeTextTarget.fitText(0.15);
   }
 
   clear() {
