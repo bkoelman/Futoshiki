@@ -2,7 +2,7 @@
     <div *ngIf="lineStartsWithDotOrDigit(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split(''); let idx = index">
             <span *ngIf="isDigitToken(token)">
-                <app-digit-cell [boardSize]="boardSize" (cellClicked)="onCellClicked($event)" [fixedValue]="token - 0"></app-digit-cell>
+                <app-digit-cell [boardSize]="boardSize" (cellClicked)="onCellClicked($event)" [fixedValue]="+token"></app-digit-cell>
             </span>
             <span *ngIf="isDotToken(token)">
                 <app-digit-cell [boardSize]="boardSize" (cellClicked)="onCellClicked($event)"></app-digit-cell>
