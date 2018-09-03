@@ -1,5 +1,5 @@
 @mixin board-sizing-list {
-    @for $boardSize from 4 to 9 {
+    @for $boardSize from 4 to 10 {
 
         $cell-width-n: percentage(4 / (5 * $boardSize - 1));
         $spacer-width-n: percentage(1 / (5 * $boardSize - 1));
