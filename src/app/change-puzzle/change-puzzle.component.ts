@@ -36,7 +36,7 @@ export class ChangePuzzleComponent implements OnInit {
 
   private correctRangeForPuzzleId() {
     if (this.puzzleInfo.id % 1 !== 0) {
-      this.puzzleInfo.id = Math.round(this.puzzleInfo.id);
+      this.puzzleInfo.id = Math.floor(this.puzzleInfo.id);
     }
     if (this.puzzleInfo.id < 1) {
       this.puzzleInfo.id = 1;

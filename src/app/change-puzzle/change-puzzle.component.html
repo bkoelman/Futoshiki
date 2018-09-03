@@ -40,7 +40,7 @@
             <label for="puzzleId" class="col-sm-2 col-form-label">Puzzle (1-999)</label>
             <div class="col-sm-7">
               <input type="number" required [(ngModel)]="puzzleInfo.id" #puzzleId="ngModel" name="puzzleId" class="form-control" min="0"
-                max="9999" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])?">
+                max="9999" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])$">
               <div *ngIf="puzzleId.errors && (puzzleId.dirty || puzzleId.touched)">
                 <div class="validation-error-message" [hidden]="puzzleId.valid || puzzleId.pristine">
                   Puzzle number is required
