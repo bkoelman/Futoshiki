@@ -130,10 +130,5 @@
       }
     }
   },
-  "defaultProject": "Futoshiki",
-  "schematics": {
-    "@schematics/angular:component": {
-      "styleext": "scss"
-    }
-  }
+  "defaultProject": "Futoshiki"
 }
