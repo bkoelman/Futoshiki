@@ -1,11 +1,12 @@
 <div *ngIf="puzzle !== undefined">
-  <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="puzzle.boardSize"></app-board>
+  <app-change-puzzle [puzzleInfo]="puzzle.info" (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
+  <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="boardSize"></app-board>
 
   <br style="clear: both;" />
   <p></p>
-  
-  <app-button-bar [boardSize]="puzzle.boardSize" [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"></app-button-bar>
-  
+
+  <app-button-bar [boardSize]="boardSize" [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"></app-button-bar>
+
   <p></p>
   <div class="alert alert-success" role="alert" *ngIf="isGameSolved">
     Solved!
@@ -13,7 +14,7 @@
   <div class="alert alert-danger" role="alert" *ngIf="isBoardCompleted && !isGameSolved">
     Wrong!
   </div>
-  
+
   <button type="button" class="btn btn-secondary" (click)="restart()">Restart</button>
-  
+  <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#changePuzzleModal">Change puzzle</button>
 </div>

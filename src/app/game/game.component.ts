@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BoardComponent } from '../board/board.component';
 import { DataService } from '../data.service';
-import { PuzzleData } from '../puzzle-data';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
+import { PuzzleInfo } from '../puzzle-info';
+import { PuzzleData } from '../puzzle-data';
 
 @Component({
   selector: 'app-game',
@@ -11,6 +12,7 @@ import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   puzzle: PuzzleData | undefined;
+  boardSize: number;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
 
@@ -18,15 +20,19 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
-    let size = 8;
-    let id = 1;
-    if (document.location.search === '?4') {
-      size = 4;
-      id = 140;
-    }
+    const request: PuzzleInfo = {
+      difficulty: PuzzleDifficulty.Easy,
+      boardSize: 4,
+      id: 1
+    };
 
-    this._dataService.getPuzzle(size, PuzzleDifficulty.Easy, id).subscribe(data => {
+    this.initPuzzle(request);
+  }
+
+  initPuzzle(request: PuzzleInfo) {
+    this._dataService.getPuzzle(request).subscribe(data => {
       this.puzzle = data;
+      this.boardSize = data.info.boardSize;
     }, (err: any) => console.log(err));
   }
 
@@ -65,5 +71,9 @@ export class GameComponent implements OnInit {
     });
 
     return isCorrect;
+  }
+
+  onPuzzleChanged(value: PuzzleInfo) {
+    this.initPuzzle(value);
   }
 }

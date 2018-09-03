@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
@@ -9,6 +10,8 @@ import { DigitCellComponent } from './digit-cell/digit-cell.component';
 import { OperatorCellComponent } from './operator-cell/operator-cell.component';
 import { SpacerCellComponent } from './spacer-cell/spacer-cell.component';
 import { ButtonBarComponent } from './button-bar/button-bar.component';
+import { ChangePuzzleComponent } from './change-puzzle/change-puzzle.component';
+import { EnumNamesToArrayPipe } from './enum-names-to-array.pipe';
 
 @NgModule({
   declarations: [
@@ -18,13 +21,17 @@ import { ButtonBarComponent } from './button-bar/button-bar.component';
     DigitCellComponent,
     OperatorCellComponent,
     SpacerCellComponent,
-    ButtonBarComponent
+    ButtonBarComponent,
+    ChangePuzzleComponent,
+    EnumNamesToArrayPipe
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

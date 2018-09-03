@@ -48,3 +48,15 @@
 .square-selected {
     background-color: rgba(0, 0, 0, .075);
 }
+
+input.ng-invalid {
+    border: 1px red solid;
+}
+
+.validation-error-message {
+    /* copied from .invalid-feedback in Bootstrap */
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}

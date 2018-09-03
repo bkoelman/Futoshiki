@@ -1,4 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
@@ -7,10 +9,16 @@ import { DigitCellComponent } from './digit-cell/digit-cell.component';
 import { OperatorCellComponent } from './operator-cell/operator-cell.component';
 import { SpacerCellComponent } from './spacer-cell/spacer-cell.component';
 import { ButtonBarComponent } from './button-bar/button-bar.component';
+import { ChangePuzzleComponent } from './change-puzzle/change-puzzle.component';
+import { EnumNamesToArrayPipe } from './enum-names-to-array.pipe';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientModule,
+        FormsModule
+      ],
       declarations: [
         AppComponent,
         GameComponent,
@@ -18,7 +26,9 @@ describe('AppComponent', () => {
         DigitCellComponent,
         OperatorCellComponent,
         SpacerCellComponent,
-        ButtonBarComponent
+        ButtonBarComponent,
+        ChangePuzzleComponent,
+        EnumNamesToArrayPipe
       ],
     }).compileComponents();
   }));

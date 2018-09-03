@@ -1,5 +1,7 @@
+import { PuzzleInfo } from './puzzle-info';
+
 export interface PuzzleData {
-    boardSize: number;
+    info: PuzzleInfo;
     puzzleLines: string[];
     answerLines: string[];
 }
