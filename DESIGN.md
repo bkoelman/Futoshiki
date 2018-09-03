@@ -10,6 +10,10 @@
 - [x] puzzle including operators
 - [x] dynamic board size (4x4 .. 9x9)
 - [ ] add puzzle picker and dynamically load puzzle from server
+  - [ ] cache puzzles
+  - [ ] cancel existing pending request when different one comes in
+  - [ ] ignore when incoming request is same as pending request
+  - [ ] show download indicator when loading exceeds time threshold
 - [ ] nicer styling when puzzle solved
 - [ ] nicer styling of button bar
 
