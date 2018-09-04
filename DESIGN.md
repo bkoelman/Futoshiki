@@ -14,14 +14,12 @@
   - [x] cancel existing pending request when different one comes in
   - [x] ignore when incoming request is same as pending request
   - [x] show download indicator when loading exceeds time threshold
-- [ ] nicer styling when puzzle solved
-- [ ] nicer styling of button bar
+- [ ] extra button bar for temporary digits -or- toggle existing bar (caption: notes, draft)
+- [ ] undo last move(s)
 
 # Enhancements
 - [ ] warning when navigating away from page
 - [ ] option to track elapsed time
-- [ ] undo last move(s)
-- [ ] extra button bar for temporary digits -or- toggle existing bar (caption: notes, draft)
 - [ ] auto-cleanup temporary digits on regular digit entry
 - [ ] help modes:
   - highlight wrong digit on entry (based on solution -or- rules + highlight conflicts)
@@ -32,6 +30,9 @@
 - [ ] automated solver
 - [ ] print puzzle
 - [ ] helptext: game rules and strategies
+- [ ] nicer styling when puzzle solved
+- [ ] nicer styling of button bar
+- [ ] cleanup README.md
 
 # Links for inspiration
 https://sudoku.game/
