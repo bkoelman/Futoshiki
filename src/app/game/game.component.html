@@ -1,8 +1,8 @@
 <div *ngIf="puzzle === undefined">
-  <div *ngIf="!hasError">
+  <div *ngIf="!hasError" class="alert alert-primary">
     Loading puzzle...
   </div>
-  <div *ngIf="hasError">
+  <div *ngIf="hasError" class="alert alert-danger">
     Failed to load puzzle.
   </div>
 </div>
