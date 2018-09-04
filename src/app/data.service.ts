@@ -6,9 +6,7 @@ import { PuzzleDifficulty } from './puzzle-difficulty.enum';
 import { PuzzleInfo } from './puzzle-info';
 import { PuzzleData } from './puzzle-data';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DataService {
   constructor(private _httpClient: HttpClient) {
   }
