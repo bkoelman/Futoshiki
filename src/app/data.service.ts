@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { PuzzleDifficulty } from './puzzle-difficulty.enum';
 import { PuzzleInfo } from './puzzle-info';
 import { PuzzleData } from './puzzle-data';
+import { PuzzleTextParser } from './puzzle-text-parser';
 
 @Injectable()
 export class DataService {
@@ -18,7 +19,7 @@ export class DataService {
     return this._httpClient.get(requestUrl, { responseType: 'text' })
       .pipe(
         map(responseText => {
-          return this.parsePuzzleText(responseText, request);
+          return PuzzleTextParser.parseText(responseText, request);
         })
       );
   }
@@ -31,29 +32,5 @@ export class DataService {
 
   private prefixNumber(value: number, padding: string) {
     return (padding + value).slice(-padding.length);
-  }
-
-  private parsePuzzleText(puzzleText: string, request: PuzzleInfo): PuzzleData {
-    const response: PuzzleData = {
-      info: request,
-      puzzleLines: [],
-      answerLines: []
-    };
-
-    const lineLength = request.boardSize * 2 - 1;
-    const lineCount = 2 * lineLength;
-
-    for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
-      const textIndex = lineLength * lineIndex;
-      const line = puzzleText.slice(textIndex, textIndex + lineLength);
-
-      if (lineIndex < lineCount / 2) {
-        response.puzzleLines.push(line);
-      } else {
-        response.answerLines.push(line);
-      }
-    }
-
-    return response;
   }
 }
