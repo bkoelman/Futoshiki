@@ -11,6 +11,8 @@ import { SpacerCellComponent } from './spacer-cell/spacer-cell.component';
 import { ButtonBarComponent } from './button-bar/button-bar.component';
 import { ChangePuzzleComponent } from './change-puzzle/change-puzzle.component';
 import { EnumNamesToArrayPipe } from './enum-names-to-array.pipe';
+import { HttpRequestController } from './http-request-controller';
+import { PuzzleDataService } from './puzzle-data.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -30,6 +32,10 @@ describe('AppComponent', () => {
         ChangePuzzleComponent,
         EnumNamesToArrayPipe
       ],
+      providers: [
+        HttpRequestController,
+        PuzzleDataService
+      ]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

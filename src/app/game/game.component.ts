@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, ViewChild, NgZone, ApplicationRef, ChangeDetectorRef } from '@angular/core';
 import { BoardComponent } from '../board/board.component';
-import { DataService } from '../data.service';
+import { PuzzleDataService } from '../puzzle-data.service';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
 import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleData } from '../puzzle-data';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
+import { HttpRequestController } from '../http-request-controller';
 
 @Component({
   selector: 'app-game',
@@ -15,14 +15,12 @@ export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   puzzle: PuzzleData | undefined;
-  pendingDownload: Subscription;
-  pendingRequest: PuzzleInfo;
   hasError: boolean;
   boardSize: number;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
 
-  constructor(private _dataService: DataService) {
+  constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
 
   ngOnInit() {
@@ -35,56 +33,30 @@ export class GameComponent implements OnInit {
     this.initPuzzle(defaultRequest);
   }
 
-  initPuzzle(request: PuzzleInfo) {
-    if (this.isDuplicateRequest(request)) {
-      return;
-    }
-
+  private initPuzzle(request: PuzzleInfo) {
     this.hasError = false;
-    this.abortPendingDownload();
-
-    setTimeout(() => {
-      if (this.pendingDownload && this.pendingRequest) {
-        this.setLoaderVisible(true);
-      }
-    }, 500);
-
-    this.pendingRequest = request;
-    this.pendingDownload = this._dataService.getPuzzle(request).subscribe(
-      (data) => {
-        this.puzzle = data;
-        this.boardSize = data.info.boardSize;
-      },
-      (err: any) => {
-        this.hasError = true;
-        console.log(err);
-      }, () => {
-        this.pendingDownload = undefined;
-        this.pendingRequest = undefined;
-        this.setLoaderVisible(false);
-      });
+    this.puzzleDownloadController.startRequest(request,
+      () => this._dataService.getPuzzle(request),
+      (isVisible) => this.onPuzzleLoaderVisibilityChanged(isVisible),
+      (data) => this.onPuzzleDownloadSucceeded(data),
+      (err) => this.onPuzzleDownloadFailed(err)
+    );
   }
 
-  isDuplicateRequest(request: PuzzleInfo): boolean {
-    if (this.pendingDownload && this.pendingRequest) {
-      return JSON.stringify(this.pendingRequest) === JSON.stringify(request);
-    } else {
-      return false;
-    }
-  }
-
-  abortPendingDownload() {
-    if (this.pendingDownload) {
-      this.pendingDownload.unsubscribe();
-      this.pendingDownload = undefined;
-      this.pendingRequest = undefined;
-    }
-  }
-
-  setLoaderVisible(showLoader: boolean) {
+  private onPuzzleLoaderVisibilityChanged(isVisible: boolean) {
     if (this.changePuzzleComponent) {
-      this.changePuzzleComponent.isLoaderVisible = showLoader;
+      this.changePuzzleComponent.isLoaderVisible = isVisible;
     }
+  }
+
+  private onPuzzleDownloadSucceeded(data: PuzzleData) {
+    this.puzzle = data;
+    this.boardSize = data.info.boardSize;
+  }
+
+  private onPuzzleDownloadFailed(err: any) {
+    this.hasError = true;
+    console.log(err);
   }
 
   restart() {

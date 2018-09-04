@@ -13,8 +13,9 @@ import { ButtonBarComponent } from './button-bar/button-bar.component';
 import { ChangePuzzleComponent } from './change-puzzle/change-puzzle.component';
 import { EnumNamesToArrayPipe } from './enum-names-to-array.pipe';
 import { CacheInterceptor } from './cache-interceptor';
-import { DataService } from './data.service';
+import { HttpRequestController } from './http-request-controller';
 import { HttpCacheService } from './http-cache.service';
+import { PuzzleDataService } from './puzzle-data.service';
 
 @NgModule({
   declarations: [
@@ -34,8 +35,9 @@ import { HttpCacheService } from './http-cache.service';
     FormsModule
   ],
   providers: [
-    DataService,
+    HttpRequestController,
     HttpCacheService,
+    PuzzleDataService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

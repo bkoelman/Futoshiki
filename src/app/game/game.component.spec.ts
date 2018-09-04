@@ -10,6 +10,8 @@ import { SpacerCellComponent } from '../spacer-cell/spacer-cell.component';
 import { ButtonBarComponent } from '../button-bar/button-bar.component';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
 import { EnumNamesToArrayPipe } from '../enum-names-to-array.pipe';
+import { HttpRequestController } from '../http-request-controller';
+import { PuzzleDataService } from '../puzzle-data.service';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -30,6 +32,10 @@ describe('GameComponent', () => {
         ButtonBarComponent,
         ChangePuzzleComponent,
         EnumNamesToArrayPipe
+      ],
+      providers: [
+        HttpRequestController,
+        PuzzleDataService
       ]
     })
       .compileComponents();

@@ -8,7 +8,7 @@ import { PuzzleData } from './puzzle-data';
 import { PuzzleTextParser } from './puzzle-text-parser';
 
 @Injectable()
-export class DataService {
+export class PuzzleDataService {
   constructor(private _httpClient: HttpClient) {
   }
 
