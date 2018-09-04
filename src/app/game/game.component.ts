@@ -12,6 +12,7 @@ import { PuzzleData } from '../puzzle-data';
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   puzzle: PuzzleData | undefined;
+  hasError: boolean;
   boardSize: number;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
@@ -30,10 +31,16 @@ export class GameComponent implements OnInit {
   }
 
   initPuzzle(request: PuzzleInfo) {
-    this._dataService.getPuzzle(request).subscribe(data => {
-      this.puzzle = data;
-      this.boardSize = data.info.boardSize;
-    }, (err: any) => console.log(err));
+    this.hasError = false;
+    this._dataService.getPuzzle(request).subscribe(
+      (data) => {
+        this.puzzle = data;
+        this.boardSize = data.info.boardSize;
+      },
+      (err: any) => {
+        this.hasError = true;
+        console.log(err);
+      });
   }
 
   restart() {

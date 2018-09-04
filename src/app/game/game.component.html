@@ -1,3 +1,11 @@
+<div *ngIf="puzzle === undefined">
+  <div *ngIf="!hasError">
+    Loading puzzle...
+  </div>
+  <div *ngIf="hasError">
+    Failed to load puzzle.
+  </div>
+</div>
 <div *ngIf="puzzle !== undefined">
   <app-change-puzzle [puzzleInfo]="puzzle.info" (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
   <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="boardSize"></app-board>
