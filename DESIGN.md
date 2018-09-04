@@ -9,11 +9,11 @@
 # Futoshiki basics
 - [x] puzzle including operators
 - [x] dynamic board size (4x4 .. 9x9)
-- [ ] add puzzle picker and dynamically load puzzle from server
-  - [ ] cache puzzles
-  - [ ] cancel existing pending request when different one comes in
-  - [ ] ignore when incoming request is same as pending request
-  - [ ] show download indicator when loading exceeds time threshold
+- [x] add puzzle picker and dynamically load puzzle from server
+  - [x] cache puzzles
+  - [x] cancel existing pending request when different one comes in
+  - [x] ignore when incoming request is same as pending request
+  - [x] show download indicator when loading exceeds time threshold
 - [ ] nicer styling when puzzle solved
 - [ ] nicer styling of button bar
 

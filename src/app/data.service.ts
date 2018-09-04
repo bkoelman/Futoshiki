@@ -13,7 +13,7 @@ export class DataService {
 
   getPuzzle(request: PuzzleInfo): Observable<PuzzleData> {
     const requestUrl = this.formatPuzzleUrl(request);
-    console.log('Downloading puzzle from URL: ' + requestUrl);
+    console.log('Loading puzzle from URL: ' + requestUrl);
 
     return this._httpClient.get(requestUrl, { responseType: 'text' })
       .pipe(

@@ -16,6 +16,7 @@ export class GameComponent implements OnInit {
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   puzzle: PuzzleData | undefined;
   pendingDownload: Subscription;
+  pendingRequest: PuzzleInfo;
   hasError: boolean;
   boardSize: number;
   isBoardCompleted: boolean;
@@ -25,16 +26,20 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
-    const request: PuzzleInfo = {
+    const defaultRequest: PuzzleInfo = {
       difficulty: PuzzleDifficulty.Easy,
       boardSize: 4,
       id: 1
     };
 
-    this.initPuzzle(request);
+    this.initPuzzle(defaultRequest);
   }
 
   initPuzzle(request: PuzzleInfo) {
+    if (this.isDuplicateRequest(request)) {
+      return;
+    }
+
     this.hasError = false;
     this.abortPendingDownload();
 
@@ -44,6 +49,7 @@ export class GameComponent implements OnInit {
       }
     }, 500);
 
+    this.pendingRequest = request;
     this.pendingDownload = this._dataService.getPuzzle(request).subscribe(
       (data) => {
         this.puzzle = data;
@@ -54,14 +60,24 @@ export class GameComponent implements OnInit {
         console.log(err);
       }, () => {
         this.pendingDownload = undefined;
+        this.pendingRequest = undefined;
         this.setLoaderVisible(false);
       });
+  }
+
+  isDuplicateRequest(request: PuzzleInfo): boolean {
+    if (this.pendingDownload && this.pendingRequest) {
+      return JSON.stringify(this.pendingRequest) === JSON.stringify(request);
+    } else {
+      return false;
+    }
   }
 
   abortPendingDownload() {
     if (this.pendingDownload) {
       this.pendingDownload.unsubscribe();
       this.pendingDownload = undefined;
+      this.pendingRequest = undefined;
     }
   }
 
