@@ -44,7 +44,7 @@ export class GameComponent implements OnInit {
     this.abortPendingDownload();
 
     setTimeout(() => {
-      if (this.pendingDownload) {
+      if (this.pendingDownload && this.pendingRequest) {
         this.setLoaderVisible(true);
       }
     }, 500);
