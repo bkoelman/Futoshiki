@@ -58,6 +58,7 @@
           </div>
         </div>
         <div class="modal-footer">
+          <div class="loader" [hidden]='!isLoaderVisible'></div>
           <button type="submit" class="btn btn-primary" [disabled]="!puzzleChangeForm.form.valid">Apply</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>

@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { BoardComponent } from '../board/board.component';
 import { DataService } from '../data.service';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
 import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleData } from '../puzzle-data';
+import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
 
 @Component({
   selector: 'app-game',
@@ -11,7 +13,9 @@ import { PuzzleData } from '../puzzle-data';
 })
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
+  @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   puzzle: PuzzleData | undefined;
+  pendingDownload: Subscription;
   hasError: boolean;
   boardSize: number;
   isBoardCompleted: boolean;
@@ -32,7 +36,15 @@ export class GameComponent implements OnInit {
 
   initPuzzle(request: PuzzleInfo) {
     this.hasError = false;
-    this._dataService.getPuzzle(request).subscribe(
+    this.abortPendingDownload();
+
+    setTimeout(() => {
+      if (this.pendingDownload) {
+        this.setLoaderVisible(true);
+      }
+    }, 500);
+
+    this.pendingDownload = this._dataService.getPuzzle(request).subscribe(
       (data) => {
         this.puzzle = data;
         this.boardSize = data.info.boardSize;
@@ -40,7 +52,23 @@ export class GameComponent implements OnInit {
       (err: any) => {
         this.hasError = true;
         console.log(err);
+      }, () => {
+        this.pendingDownload = undefined;
+        this.setLoaderVisible(false);
       });
+  }
+
+  abortPendingDownload() {
+    if (this.pendingDownload) {
+      this.pendingDownload.unsubscribe();
+      this.pendingDownload = undefined;
+    }
+  }
+
+  setLoaderVisible(showLoader: boolean) {
+    if (this.changePuzzleComponent) {
+      this.changePuzzleComponent.isLoaderVisible = showLoader;
+    }
   }
 
   restart() {

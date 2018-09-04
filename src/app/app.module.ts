@@ -35,7 +35,7 @@ import { HttpCacheService } from './http-cache.service';
   ],
   providers: [
     DataService,
-    HttpCacheService
+    HttpCacheService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

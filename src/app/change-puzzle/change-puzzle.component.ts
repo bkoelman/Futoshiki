@@ -13,6 +13,7 @@ export class ChangePuzzleComponent implements OnInit {
     boardSize: 4,
     id: 1
   };
+  @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
   PuzzleDifficultyAlias = PuzzleDifficulty;
