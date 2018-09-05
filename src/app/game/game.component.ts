@@ -52,6 +52,8 @@ export class GameComponent implements OnInit {
   private onPuzzleDownloadSucceeded(data: PuzzleData) {
     this.puzzle = data;
     this.boardSize = data.info.boardSize;
+
+    this.restart();
   }
 
   private onPuzzleDownloadFailed(err: any) {
@@ -62,7 +64,10 @@ export class GameComponent implements OnInit {
   restart() {
     this.isBoardCompleted = false;
     this.isGameSolved = false;
-    this.boardComponent.reset();
+
+    if (this.boardComponent) {
+      this.boardComponent.reset();
+    }
   }
 
   onDigitClicked(value: number | undefined) {

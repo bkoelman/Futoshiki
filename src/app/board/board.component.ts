@@ -74,8 +74,7 @@ export class BoardComponent implements OnInit {
   }
 
   hasEmptyCells() {
-    const emptyCell = this._cells.find(cell => cell.isEmpty);
-    return emptyCell !== undefined;
+    return this._cells.some(cell => cell.isEmpty);
   }
 
   getCellValueAt(offset: number): number | undefined {
