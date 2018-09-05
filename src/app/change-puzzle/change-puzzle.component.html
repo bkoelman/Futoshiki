@@ -1,7 +1,7 @@
 <div class="modal fade" id="changePuzzleModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form #puzzleChangeForm="ngForm" (ngSubmit)="applyChanges(puzzleChangeForm)" autocomplete="off" novalidate>
+      <form #puzzleChangeForm="ngForm" (ngSubmit)="onFormSubmit(puzzleChangeForm)" autocomplete="off" novalidate>
         <div class="modal-header">
           <h5 class="modal-title">Change puzzle</h5>
           <button type="button" class="close" data-dismiss="modal">
@@ -11,8 +11,8 @@
         <div class="modal-body">
           <fieldset class="form-group">
             <div class="row">
-              <legend class="col-form-label col-sm-2 pt-0">Difficulty</legend>
-              <div class="col-sm-10">
+              <legend class="col-form-label col-sm-3 pt-0">Difficulty</legend>
+              <div class="col-sm-9">
                 <div *ngFor="let difficulty of PuzzleDifficultyAlias | enumNamesToArray" class="form-check-inline">
                   <input class="form-check-input" type="radio" name="difficultyGroup" [id]="'difficulty' + difficulty" [value]="PuzzleDifficultyAlias[difficulty]"
                     [(ngModel)]="puzzleInfo.difficulty">
@@ -25,8 +25,8 @@
           </fieldset>
           <fieldset class="form-group">
             <div class="row">
-              <legend class="col-form-label col-sm-2 pt-0">Size</legend>
-              <div class="col-sm-10">
+              <legend class="col-form-label col-sm-3 pt-0">Size</legend>
+              <div class="col-sm-9">
                 <div *ngFor="let size of [4,5,6,7,8,9]" class="form-check-inline">
                   <input class="form-check-input" type="radio" name="sizeGroup" [id]="'size' + size" [value]="size" [(ngModel)]="puzzleInfo.boardSize">
                   <label class="form-check-label" [for]="'size' + size">
@@ -37,30 +37,26 @@
             </div>
           </fieldset>
           <div class="form-group row">
-            <label for="puzzleId" class="col-sm-2 col-form-label">Puzzle (1-999)</label>
-            <div class="col-sm-7">
-              <input type="number" required [(ngModel)]="puzzleInfo.id" #puzzleId="ngModel" name="puzzleId" class="form-control" min="0"
-                max="9999" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])$">
+            <label for="puzzleId" class="col-sm-3 col-form-label">Puzzle<br/>(1-{{maxPuzzleId}})</label>
+            <div class="col-sm-8">
+              <input type="number" required [(ngModel)]="puzzleInfo.id" #puzzleId="ngModel" name="puzzleId" class="form-control" min="1"
+                max="{{maxPuzzleId}}" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])$">
               <div *ngIf="puzzleId.errors && (puzzleId.dirty || puzzleId.touched)">
                 <div class="validation-error-message" [hidden]="puzzleId.valid || puzzleId.pristine">
                   Puzzle number is required
                 </div>
               </div>
             </div>
-            <div class="col-sm-1 px-1">
-              <button type="button" class="btn btn-block" (click)="incrementPuzzleId()">+</button>
-            </div>
-            <div class="col-sm-1 px-1">
-              <button type="button" class="btn btn-block" (click)="decrementPuzzleId()">-</button>
-            </div>
-            <div class="col-sm-1">
-            </div>
           </div>
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onPreviousButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || puzzleInfo.id <= 1">&lt;</button>
+          <button type="button" class="btn btn-secondary mr-auto" (click)="onNextButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || puzzleInfo.id >= maxPuzzleId">&gt;</button>
           <div class="loader" [hidden]='!isLoaderVisible'></div>
-          <button type="submit" class="btn btn-primary" [disabled]="!puzzleChangeForm.form.valid">Apply</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" (click)="onApplyButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid"
+            data-dismiss="modal">Ok</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" (click)="onApplyButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid">Apply</button>
         </div>
       </form>
     </div>

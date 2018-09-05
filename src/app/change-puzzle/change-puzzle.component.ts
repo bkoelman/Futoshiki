@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
@@ -8,6 +8,10 @@ import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
   templateUrl: './change-puzzle.component.html'
 })
 export class ChangePuzzleComponent implements OnInit {
+  readonly maxPuzzleId = 9999;
+  PuzzleDifficultyAlias = PuzzleDifficulty;
+
+  @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
   @Input() puzzleInfo: PuzzleInfo = {
     difficulty: PuzzleDifficulty.Easy,
     boardSize: 4,
@@ -16,37 +20,24 @@ export class ChangePuzzleComponent implements OnInit {
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
-  PuzzleDifficultyAlias = PuzzleDifficulty;
-
   ngOnInit() {
   }
 
-  incrementPuzzleId() {
-    if (this.puzzleInfo.id < 9999) {
-      this.puzzleInfo.id++;
-    }
-    this.correctRangeForPuzzleId();
+  onPreviousButtonClicked(event: Event) {
+    this.puzzleInfo.id--;
+    this.puzzleChangeForm.onSubmit(event);
   }
 
-  decrementPuzzleId() {
-    if (this.puzzleInfo.id > 1) {
-      this.puzzleInfo.id--;
-    }
-    this.correctRangeForPuzzleId();
+  onNextButtonClicked(event: Event) {
+    this.puzzleInfo.id++;
+    this.puzzleChangeForm.onSubmit(event);
   }
 
-  private correctRangeForPuzzleId() {
-    if (this.puzzleInfo.id % 1 !== 0) {
-      this.puzzleInfo.id = Math.floor(this.puzzleInfo.id);
-    }
-    if (this.puzzleInfo.id < 1) {
-      this.puzzleInfo.id = 1;
-    } else if (this.puzzleInfo.id > 9999) {
-      this.puzzleInfo.id = 9999;
-    }
+  onApplyButtonClicked(event: Event): boolean {
+    return this.puzzleChangeForm.onSubmit(event);
   }
 
-  applyChanges(form: NgForm) {
+  onFormSubmit(form: NgForm) {
     if (form.valid) {
       this.puzzleChanged.emit(this.puzzleInfo);
     }
