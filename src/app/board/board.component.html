@@ -8,7 +8,7 @@
                 <app-digit-cell [boardSize]="boardSize" (cellClicked)="onCellClicked($event)"></app-digit-cell>
             </span>
             <span *ngIf="isOperatorToken(token)">
-                <app-operator-cell [boardSize]="boardSize" [isGreaterThan]="token === ')'"></app-operator-cell>
+                <app-operator-cell [boardSize]="boardSize" [isGreaterThan]="isGreaterThanToken(token)"></app-operator-cell>
             </span>
             <span *ngIf="isUnderscoreToken(token)">
                 <app-operator-cell [boardSize]="boardSize"></app-operator-cell>
@@ -18,7 +18,7 @@
     <div *ngIf="lineStartsWithUnderscoreOrOperator(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split(''); let idx = index">
             <span *ngIf="isOperatorToken(token)">
-                <app-operator-cell [boardSize]="boardSize" isRotated="true" [isGreaterThan]="token === 'v'"></app-operator-cell>
+                <app-operator-cell [boardSize]="boardSize" isRotated="true" [isGreaterThan]="isGreaterThanToken(token)"></app-operator-cell>
             </span>
             <span *ngIf="!isOperatorToken(token) && isEvenNumber(idx)">
                 <app-operator-cell [boardSize]="boardSize" isRotated="true"></app-operator-cell>

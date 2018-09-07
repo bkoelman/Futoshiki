@@ -55,6 +55,10 @@ export class BoardComponent implements OnInit {
     return token === 'v' || token === '^' || token === '(' || token === ')';
   }
 
+  isGreaterThanToken(token: string): boolean {
+    return token === ')' || token === 'v';
+  }
+
   isEvenNumber(index: number): boolean {
     return index % 2 === 0;
   }
