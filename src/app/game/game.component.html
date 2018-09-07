@@ -10,7 +10,7 @@
   <app-change-puzzle [puzzleInfo]="puzzle.info" (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
   <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="boardSize"></app-board>
 
-  <br style="clear: both;" />
+  <div class="clearfix"></div>
   <p></p>
 
   <app-button-bar [boardSize]="boardSize" [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"></app-button-bar>

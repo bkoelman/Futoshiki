@@ -37,7 +37,7 @@
             </div>
           </fieldset>
           <div class="form-group row">
-            <label for="puzzleId" class="col-sm-3 col-form-label">Puzzle<br/>(1-{{maxPuzzleId}})</label>
+            <label for="puzzleId" class="col-sm-3 col-form-label" style="white-space: nowrap;">Puzzle <wbr>(1-{{maxPuzzleId}})</label>
             <div class="col-sm-8">
               <input type="number" required [(ngModel)]="puzzleInfo.id" #puzzleId="ngModel" name="puzzleId" class="form-control" min="1"
                 max="{{maxPuzzleId}}" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])$">
