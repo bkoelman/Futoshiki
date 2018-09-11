@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <div (click)="onClearButtonClicked($event)" class="box-container rounded-button" [class.clickable]="isEnabled"
+  <div (click)="onClearButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
     [class.gray]="!isEnabled" [class.blue]="isEnabled && isInDraftMode" [class.green]="isEnabled && !isInDraftMode"
     [ngClass]="'button-' + boardSize">
     <div class="container-content">

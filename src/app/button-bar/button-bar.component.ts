@@ -19,11 +19,11 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
   @ViewChild('draftToggle') draftToggle: NgxToggle;
 
-  private get isInDraftMode(): boolean {
+  get isInDraftMode(): boolean {
     return this.draftToggle.value === false;
   }
 
-  constructor(private _numberSequenceService: NumberSequenceService) {
+  constructor(public _numberSequenceService: NumberSequenceService) {
   }
 
   ngOnInit() {
