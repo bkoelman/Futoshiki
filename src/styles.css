@@ -1,14 +1,20 @@
-.digit-container {
+.box-container {
     float: left;
     position: relative;
     overflow: hidden;
+}
+
+.box-border {
     border: 2px #dee2e6 solid;
 }
 
-.operator-container {
-    float: left;
-    position: relative;
-    overflow: hidden;
+.box-pointer {
+    cursor: pointer;
+}
+
+.draft-cell-block {
+    width: 33%;
+    padding-bottom: 33%;
 }
 
 .container-content {
@@ -33,12 +39,14 @@
     line-height: 0px;
 }
 
-.cell-content-digit {
-    cursor: pointer;
+.cell-content-user-digit {
+    /* Bootstrap: success */
+    color: #28a745;
 }
 
-.cell-content-user-digit {
-    color: blue;
+.cell-content-draft-digit {
+    /* Bootstrap: primary */
+    color: #007bff;
 }
 
 .rotated-right {

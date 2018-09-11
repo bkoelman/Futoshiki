@@ -14,10 +14,12 @@
   - [x] cancel existing pending request when different one comes in
   - [x] ignore when incoming request is same as pending request
   - [x] show download indicator when loading exceeds time threshold
-- [ ] extra button bar for temporary digits -or- toggle existing bar (caption: notes, draft)
+- [x] extra button bar for temporary digits -or- toggle existing bar (caption: draft)
 - [ ] undo last move(s)
 
 # Enhancements
+- [ ] puzzle selection: leave number empty for random puzzle
+- [ ] save game progress in cookie
 - [ ] warning when navigating away from page
 - [ ] option to track elapsed time
 - [ ] auto-cleanup temporary digits on regular digit entry
@@ -30,7 +32,7 @@
 - [ ] automated solver
 - [ ] print puzzle
 - [ ] helptext: game rules and strategies
-- [ ] nicer styling when puzzle solved
+- [ ] nicer styling when puzzle solved (show button "new random game")
 - [ ] nicer styling of button bar
 - [ ] cleanup README.md
 

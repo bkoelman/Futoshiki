@@ -77,8 +77,8 @@ export class BoardComponent implements OnInit {
     return this._cells.find(cell => cell.isSelected);
   }
 
-  hasEmptyCells() {
-    return this._cells.some(cell => cell.isEmpty);
+  hasIncompleteCells() {
+    return this._cells.some(cell => cell.value === undefined);
   }
 
   getCellValueAt(offset: number): number | undefined {

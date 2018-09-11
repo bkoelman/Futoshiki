@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, NgZone, ApplicationRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../puzzle-data.service';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
@@ -70,13 +70,24 @@ export class GameComponent implements OnInit {
     }
   }
 
-  onDigitClicked(value: number | undefined) {
+  onClearClicked() {
     const cell = this.boardComponent.getSelectedCell();
     if (cell !== undefined) {
-      cell.userValue = value;
+      cell.clear();
+    }
+  }
+
+  onDigitClicked(data: { value: number, isDraft: boolean }) {
+    const cell = this.boardComponent.getSelectedCell();
+    if (cell !== undefined) {
+      if (data.isDraft) {
+        cell.toggleDraftValue(data.value);
+      } else {
+        cell.setUserValue(data.value);
+      }
     }
 
-    this.isBoardCompleted = !this.boardComponent.hasEmptyCells();
+    this.isBoardCompleted = !this.boardComponent.hasIncompleteCells();
     if (this.isBoardCompleted) {
       if (this.BoardContainsSolution()) {
         this.isGameSolved = true;

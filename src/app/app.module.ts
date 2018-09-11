@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import {NgxToggleModule} from 'ngx-toggle';
 
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
@@ -16,6 +17,7 @@ import { CacheInterceptor } from './cache-interceptor';
 import { HttpRequestController } from './http-request-controller';
 import { HttpCacheService } from './http-cache.service';
 import { PuzzleDataService } from './puzzle-data.service';
+import { NumberSequenceService } from './number-sequence.service';
 
 @NgModule({
   declarations: [
@@ -32,12 +34,14 @@ import { PuzzleDataService } from './puzzle-data.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    NgxToggleModule
   ],
   providers: [
     HttpRequestController,
     HttpCacheService,
     PuzzleDataService,
+    NumberSequenceService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

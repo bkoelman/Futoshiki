@@ -1,12 +1,23 @@
-<div class="digit-container" [class.square-selected]="isSelected" (click)="onTableCellClicked()" [ngClass]="'square-' + boardSize">
+<div class="box-container box-border" [class.square-selected]="isSelected" (click)="onTableCellClicked()" [ngClass]="'square-' + boardSize">
   <div class="container-content">
     <div class="container-content-table">
-      <div #autoSizeText class="container-content-table-cell cell-content-digit">
+      <div *ngIf="!isDraft" #autoSizeText class="container-content-table-cell box-pointer">
         <span *ngIf="isFixed">{{value}}</span>
-        <span *ngIf="!isFixed && !isEmpty" class="cell-content-user-digit">{{value}}</span>
+        <span *ngIf="!isFixed && value !== undefined" class="cell-content-user-digit">{{value}}</span>
+      </div>
+      <div *ngIf="isDraft">
+        <div *ngFor="let number of _numberSequenceService.createNumberSequence(9)" class="box-container draft-cell-block box-pointer">
+          <div class="container-content">
+            <div class="container-content-table">
+              <div #autoSizeText class="container-content-table-cell">
+                <div class="cell-content-draft-digit">
+                  <div *ngIf="draftValues.indexOf(number) >= 0">{{number}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- background color styles: table-danger, table-success -->
