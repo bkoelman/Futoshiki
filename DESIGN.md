@@ -34,6 +34,7 @@
 - [ ] helptext: game rules and strategies
 - [ ] nicer styling when puzzle solved (show button "new random game")
 - [ ] nicer styling of button bar
+- [ ] replace favicon
 - [ ] cleanup README.md
 
 # Links for inspiration

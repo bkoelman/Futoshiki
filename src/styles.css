@@ -1,3 +1,8 @@
+.game-container {
+    width: calc(100vw - 40px) !important;
+    max-width: calc((100vh - 120px) * .9) !important;
+}
+
 .box-container {
     float: left;
     position: relative;
@@ -37,16 +42,6 @@
     vertical-align: middle;
     user-select: none;
     line-height: 0px;
-}
-
-.cell-content-user-digit {
-    /* Bootstrap: success */
-    color: #28a745;
-}
-
-.cell-content-draft-digit {
-    /* Bootstrap: primary */
-    color: #007bff;
 }
 
 .rotated-right {
