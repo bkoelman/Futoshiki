@@ -1,6 +1,6 @@
 .game-container {
     width: calc(100vw - 40px) !important;
-    max-width: calc((100vh - 120px) * .9) !important;
+    max-width: calc((100vh - 200px) * .9) !important;
 }
 
 .box-container {
@@ -11,10 +11,6 @@
 
 .box-border {
     border: 2px #dee2e6 solid;
-}
-
-.box-pointer {
-    cursor: pointer;
 }
 
 .draft-cell-block {
@@ -50,6 +46,53 @@
 
 .square-selected {
     background-color: rgba(0, 0, 0, .075);
+}
+
+.clickable:hover {
+    opacity: .85;
+    transition: opacity 100ms ease-in-out;
+    -moz-transition: opacity 100ms ease-in-out;
+    -webkit-transition: opacity 100ms ease-in-out;
+    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, .2);
+    -webkit-shadow: 0px 0px 3px 3px rgba(0, 0, 0, .2);
+    cursor: pointer;
+}
+
+.rounded-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.rounded-button {
+    border-radius: 50%;
+    margin: 0px;
+    color: #fff;
+    font-size: 130%;
+    text-align: center;
+    box-shadow: inset 0px 1px 0px rgba(255, 255, 255, .3);
+    -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, .5);
+    -moz-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, .5);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.rounded-button.blue {
+    background: #007bff;
+    background-image: linear-gradient(to bottom, rgb(48, 125, 207) 0%, rgb(96, 173, 255) 100%);
+    border: 1px solid #007bff;
+}
+
+.rounded-button.green {
+    background: #28A745;
+    background-image: linear-gradient(to bottom, rgb(25, 104, 43) 0%, rgb(121, 200, 139) 100%);
+    border: 1px solid #28A745;
+}
+
+.rounded-button.gray {
+    background: #DADCDF;
+    background-image: linear-gradient(to bottom, rgb(181, 186, 190) 0%, rgb(237, 238, 239) 100%);
+    border: 1px solid #DADCDF;
 }
 
 input.ng-invalid {

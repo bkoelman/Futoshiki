@@ -3,6 +3,7 @@
 
         $cell-width-n: percentage(4 / (5 * $boardSize - 1));
         $spacer-width-n: percentage(1 / (5 * $boardSize - 1));
+        $button-width-n: percentage(2 / (2 * $boardSize + 5));
 
         .square-#{$boardSize} { 
             width: $cell-width-n;
@@ -22,6 +23,11 @@
         .divider-#{$boardSize} {
             width: $spacer-width-n;
             padding-bottom: $spacer-width-n;
+        }
+
+        .button-#{$boardSize} {
+            width: $button-width-n;
+            padding-bottom: $button-width-n;
         }
     }
 }

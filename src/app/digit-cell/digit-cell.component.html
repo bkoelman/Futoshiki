@@ -1,12 +1,13 @@
-<div class="box-container box-border" [class.square-selected]="isSelected" (click)="onTableCellClicked()" [ngClass]="'square-' + boardSize">
+<div class="box-container box-border" [class.clickable]="!isFixed" [class.square-selected]="isSelected" [ngClass]="'square-' + boardSize"
+  (click)="onBoxClicked()">
   <div class="container-content">
     <div class="container-content-table">
-      <div *ngIf="!isDraft" #autoSizeText class="container-content-table-cell box-pointer">
+      <div *ngIf="!isDraft" #autoSizeText class="container-content-table-cell">
         <span *ngIf="isFixed">{{value}}</span>
         <span *ngIf="!isFixed && value !== undefined" class="text-success">{{value}}</span>
       </div>
       <div *ngIf="isDraft">
-        <div *ngFor="let number of _numberSequenceService.createNumberSequence(9)" class="box-container draft-cell-block box-pointer">
+        <div *ngFor="let number of _numberSequenceService.createNumberSequence(9)" class="box-container draft-cell-block">
           <div class="container-content">
             <div class="container-content-table">
               <div #autoSizeText class="container-content-table-cell">

@@ -67,7 +67,7 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  onTableCellClicked() {
+  onBoxClicked() {
     this.cellClicked.emit(this);
   }
 }
