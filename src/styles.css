@@ -1,6 +1,6 @@
 .game-container {
     width: calc(100vw - 40px) !important;
-    max-width: calc((100vh - 200px) * .9) !important;
+    max-width: calc((100vh - 60px) * .7) !important;
 }
 
 .box-container {
@@ -90,6 +90,12 @@
 }
 
 .rounded-button.gray {
+    background: #6c757d;
+    background-image: linear-gradient(to bottom, rgb(68, 73, 78) 0%, rgb(163, 169, 174) 100%);
+    border: 1px solid #6c757d;
+}
+
+.rounded-button.inactive {
     background: #DADCDF;
     background-image: linear-gradient(to bottom, rgb(181, 186, 190) 0%, rgb(237, 238, 239) 100%);
     border: 1px solid #DADCDF;

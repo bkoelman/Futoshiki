@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import {NgxToggleModule} from 'ngx-toggle';
 
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
@@ -34,8 +33,7 @@ import { NumberSequenceService } from './number-sequence.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule,
-    NgxToggleModule
+    FormsModule
   ],
   providers: [
     HttpRequestController,

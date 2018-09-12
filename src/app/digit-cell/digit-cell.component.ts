@@ -12,7 +12,9 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   @Input() boardSize = 4;
   @Input() fixedValue: number | undefined;
   @Input() isSelected: boolean;
+  @Input() canSelect;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
+
   @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
 
   private userValue: number | undefined;

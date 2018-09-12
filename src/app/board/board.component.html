@@ -2,10 +2,10 @@
     <div *ngIf="lineStartsWithDotOrDigit(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split('')">
             <span *ngIf="isDigitToken(token)">
-                <app-digit-cell [boardSize]="boardSize" (cellClicked)="onCellClicked($event)" [fixedValue]="+token"></app-digit-cell>
+                <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)" [fixedValue]="+token"></app-digit-cell>
             </span>
             <span *ngIf="isDotToken(token)">
-                <app-digit-cell [boardSize]="boardSize" (cellClicked)="onCellClicked($event)"></app-digit-cell>
+                <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"></app-digit-cell>
             </span>
             <span *ngIf="isOperatorToken(token)">
                 <app-operator-cell [boardSize]="boardSize" [isGreaterThan]="isGreaterThanToken(token)"></app-operator-cell>
