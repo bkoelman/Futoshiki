@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChildren, ElementRef, AfterViewChecked } from '@angular/core';
 import { NumberSequenceService } from '../number-sequence.service.js';
+import { CellContentSnapshot } from '../cell-content-snapshot.js';
 import * as ft from '../../jquery.fittext.js';
 
 declare var $: any;
@@ -30,6 +31,10 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
 
   get isDraft(): boolean {
     return !this.isFixed && this.draftValues.length > 0;
+  }
+
+  get isEmpty(): boolean {
+    return !this.isDraft && this.value === undefined;
   }
 
   constructor(private _numberSequenceService: NumberSequenceService) {
@@ -67,6 +72,18 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
       this.userValue = undefined;
       this.draftValues.push(value);
     }
+  }
+
+  getContentSnapshot(): CellContentSnapshot {
+    return {
+      userValue: this.userValue,
+      draftValues: this.draftValues.slice()
+    };
+  }
+
+  restoreContentSnapshot(snapshot: CellContentSnapshot) {
+    this.draftValues = snapshot.draftValues.slice();
+    this.userValue = snapshot.userValue;
   }
 
   onBoxClicked() {

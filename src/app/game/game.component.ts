@@ -6,6 +6,8 @@ import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleData } from '../puzzle-data';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
 import { HttpRequestController } from '../http-request-controller';
+import { DigitCellComponent } from '../digit-cell/digit-cell.component';
+import { UndoCommand } from '../undo-command';
 
 @Component({
   selector: 'app-game',
@@ -19,6 +21,7 @@ export class GameComponent implements OnInit {
   boardSize: number;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
+  undoStack: UndoCommand[] = [];
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
@@ -64,15 +67,28 @@ export class GameComponent implements OnInit {
   restart() {
     this.isBoardCompleted = false;
     this.isGameSolved = false;
+    this.undoStack = [];
 
     if (this.boardComponent) {
       this.boardComponent.reset();
     }
   }
 
+  undo() {
+    const undoCommand = this.undoStack.pop();
+    if (undoCommand) {
+      const cell = this.boardComponent.getCellAtOffset(undoCommand.targetCellOffset);
+      if (cell) {
+        cell.restoreContentSnapshot(undoCommand.previousState);
+        this.boardComponent.clearSelection();
+      }
+    }
+  }
+
   onClearClicked() {
     const cell = this.boardComponent.getSelectedCell();
-    if (cell !== undefined) {
+    if (cell !== undefined && !cell.isEmpty) {
+      this.pushUndoCommand(cell);
       cell.clear();
     }
   }
@@ -81,9 +97,13 @@ export class GameComponent implements OnInit {
     const cell = this.boardComponent.getSelectedCell();
     if (cell !== undefined) {
       if (data.isDraft) {
+        this.pushUndoCommand(cell);
         cell.toggleDraftValue(data.value);
       } else {
-        cell.setUserValue(data.value);
+        if (cell.value !== data.value) {
+          this.pushUndoCommand(cell);
+          cell.setUserValue(data.value);
+        }
       }
     }
 
@@ -110,6 +130,18 @@ export class GameComponent implements OnInit {
     });
 
     return isCorrect;
+  }
+
+  private pushUndoCommand(cell: DigitCellComponent) {
+    const snapshot = cell.getContentSnapshot();
+    const offset = this.boardComponent.getOffsetForCell(cell);
+
+    if (offset !== -1) {
+      this.undoStack.push({
+        targetCellOffset: offset,
+        previousState: snapshot
+      });
+    }
   }
 
   onPuzzleChanged(value: PuzzleInfo) {

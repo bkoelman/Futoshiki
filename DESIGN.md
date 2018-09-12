@@ -15,7 +15,7 @@
   - [x] ignore when incoming request is same as pending request
   - [x] show download indicator when loading exceeds time threshold
 - [x] extra button bar for temporary digits -or- toggle existing bar (caption: draft)
-- [ ] undo last move(s)
+- [x] undo last move(s)
 
 # Enhancements
 - [ ] puzzle selection: leave number empty for random puzzle

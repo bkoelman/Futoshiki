@@ -82,8 +82,25 @@ export class BoardComponent implements OnInit {
   }
 
   getCellValueAt(offset: number): number | undefined {
-    const cell = this._cells.find((item, index) => index === offset);
+    const cell = this.getCellAtOffset(offset);
     return cell === undefined ? undefined : cell.value;
+  }
+
+  getCellAtOffset(offset: number): DigitCellComponent | undefined {
+    return this._cells.find((item, index) => index === offset);
+  }
+
+  getOffsetForCell(cell: DigitCellComponent): number {
+    let offset = -1;
+
+    this._cells.some((item, index) => {
+      if (item === cell) {
+        offset = index;
+        return true;
+      }
+    });
+
+    return offset;
   }
 
   onCellClicked(sender: DigitCellComponent) {
