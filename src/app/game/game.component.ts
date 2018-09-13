@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../puzzle-data.service';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
@@ -9,12 +9,13 @@ import { HttpRequestController } from '../http-request-controller';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { UndoCommand } from '../undo-command';
 import { Coordinate } from '../coordinate';
+import { PuzzleSolver } from '../puzzle-solver';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html'
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, AfterViewChecked {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   puzzle: PuzzleData | undefined;
@@ -23,6 +24,8 @@ export class GameComponent implements OnInit {
   isBoardCompleted: boolean;
   isGameSolved: boolean;
   undoStack: UndoCommand[] = [];
+
+  private _solver: PuzzleSolver;
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
@@ -35,6 +38,12 @@ export class GameComponent implements OnInit {
     };
 
     this.initPuzzle(defaultRequest);
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this._solver && this.boardComponent) {
+      this._solver = new PuzzleSolver(this.boardComponent);
+    }
   }
 
   private initPuzzle(request: PuzzleInfo) {
@@ -143,6 +152,22 @@ export class GameComponent implements OnInit {
         targetCell: coordinate,
         previousState: snapshot
       });
+    }
+  }
+
+  calculateDraftValues() {
+    for (let row = 1; row <= this.boardSize; row++) {
+      for (let column = 1; column <= this.boardSize; column++) {
+        const coordinate = new Coordinate(row, column);
+        const cell = this.boardComponent.getCellAtCoordinate(coordinate);
+        if (cell && cell.value === undefined) {
+          const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
+          cell.restoreContentSnapshot({
+            userValue: undefined,
+            draftValues: possibleValues
+          });
+        }
+      }
     }
   }
 
