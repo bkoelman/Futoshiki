@@ -8,6 +8,7 @@ import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component'
 import { HttpRequestController } from '../http-request-controller';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { UndoCommand } from '../undo-command';
+import { Coordinate } from '../coordinate';
 
 @Component({
   selector: 'app-game',
@@ -77,7 +78,7 @@ export class GameComponent implements OnInit {
   undo() {
     const undoCommand = this.undoStack.pop();
     if (undoCommand) {
-      const cell = this.boardComponent.getCellAtOffset(undoCommand.targetCellOffset);
+      const cell = this.boardComponent.getCellAtCoordinate(undoCommand.targetCell);
       if (cell) {
         cell.restoreContentSnapshot(undoCommand.previousState);
         this.boardComponent.clearSelection();
@@ -123,7 +124,8 @@ export class GameComponent implements OnInit {
     let isCorrect = true;
     answerDigits.forEach((digit, index) => {
       const answerValue = parseInt(digit, 10);
-      const userValue = this.boardComponent.getCellValueAt(index);
+      const coordinate = Coordinate.fromIndex(index, this.boardSize);
+      const userValue = this.boardComponent.getCellValueAtCoordinate(coordinate);
       if (userValue !== answerValue) {
         isCorrect = false;
       }
@@ -134,11 +136,11 @@ export class GameComponent implements OnInit {
 
   private pushUndoCommand(cell: DigitCellComponent) {
     const snapshot = cell.getContentSnapshot();
-    const offset = this.boardComponent.getOffsetForCell(cell);
+    const coordinate = this.boardComponent.getCoordinateForCell(cell);
 
-    if (offset !== -1) {
+    if (coordinate) {
       this.undoStack.push({
-        targetCellOffset: offset,
+        targetCell: coordinate,
         previousState: snapshot
       });
     }

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChildren, QueryList, Input } from '@angular/core';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
+import { Coordinate } from '../coordinate';
 
 @Component({
   selector: 'app-board',
@@ -81,26 +82,27 @@ export class BoardComponent implements OnInit {
     return this._cells.some(cell => cell.value === undefined);
   }
 
-  getCellValueAt(offset: number): number | undefined {
-    const cell = this.getCellAtOffset(offset);
+  getCellValueAtCoordinate(coordinate: Coordinate): number | undefined {
+    const cell = this.getCellAtCoordinate(coordinate);
     return cell === undefined ? undefined : cell.value;
   }
 
-  getCellAtOffset(offset: number): DigitCellComponent | undefined {
-    return this._cells.find((item, index) => index === offset);
+  getCellAtCoordinate(coordinate: Coordinate): DigitCellComponent | undefined {
+    const arrayIndex = coordinate.toIndex(this.boardSize);
+    return this._cells.find((item, index) => index === arrayIndex);
   }
 
-  getOffsetForCell(cell: DigitCellComponent): number {
-    let offset = -1;
+  getCoordinateForCell(cell: DigitCellComponent): Coordinate | undefined {
+    let arrayIndex = -1;
 
     this._cells.some((item, index) => {
       if (item === cell) {
-        offset = index;
+        arrayIndex = index;
         return true;
       }
     });
 
-    return offset;
+    return arrayIndex === -1 ? undefined : Coordinate.fromIndex(arrayIndex, this.boardSize);
   }
 
   onCellClicked(sender: DigitCellComponent) {
