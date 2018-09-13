@@ -102,7 +102,7 @@ export class BoardComponent implements OnInit {
       }
     });
 
-    return arrayIndex === -1 ? undefined : Coordinate.fromIndex(arrayIndex, this.boardSize);
+    return arrayIndex > -1 ? Coordinate.fromIndex(arrayIndex, this.boardSize) : undefined;
   }
 
   onCellClicked(sender: DigitCellComponent) {

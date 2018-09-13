@@ -156,6 +156,8 @@ export class GameComponent implements OnInit, AfterViewChecked {
   }
 
   calculateDraftValues() {
+    // TODO: Create undo snapshot of entire puzzle
+
     for (let row = 1; row <= this.boardSize; row++) {
       for (let column = 1; column <= this.boardSize; column++) {
         const coordinate = new Coordinate(row, column);

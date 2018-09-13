@@ -86,6 +86,38 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     this.userValue = snapshot.userValue;
   }
 
+  getSingleValue(): number | undefined {
+    let result = this.value;
+
+    if (result === undefined) {
+      if (this.draftValues.length === 1) {
+        result = this.draftValues[0];
+      }
+    }
+
+    return result;
+  }
+
+  getMinValue(): number | undefined {
+    let result = this.value;
+
+    if (result === undefined && this.draftValues.length > 0) {
+      result = Math.min(...this.draftValues);
+    }
+
+    return result;
+  }
+
+  getMaxValue(): number | undefined {
+    let result = this.value;
+
+    if (result === undefined && this.draftValues.length > 0) {
+      result = Math.max(...this.draftValues);
+    }
+
+    return result;
+  }
+
   onBoxClicked() {
     this.cellClicked.emit(this);
   }
