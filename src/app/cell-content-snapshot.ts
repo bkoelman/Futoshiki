@@ -1,4 +1,4 @@
 export class CellContentSnapshot {
-    userValue: number | undefined;
-    draftValues: number[];
+    constructor(public userValue: number | undefined, public draftValues: number[]) {
+    }
 }

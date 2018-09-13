@@ -7,9 +7,11 @@ import { PuzzleData } from '../puzzle-data';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
 import { HttpRequestController } from '../http-request-controller';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
-import { UndoCommand } from '../undo-command';
+import { SingleUndoCommand } from '../single-undo-command';
+import { AggregateUndoCommand } from '../aggregate-undo-command';
 import { Coordinate } from '../coordinate';
 import { PuzzleSolver } from '../puzzle-solver';
+import { CellContentSnapshot } from '../cell-content-snapshot';
 
 @Component({
   selector: 'app-game',
@@ -23,7 +25,7 @@ export class GameComponent implements OnInit, AfterViewChecked {
   boardSize: number;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
-  undoStack: UndoCommand[] = [];
+  undoStack: Array<SingleUndoCommand | AggregateUndoCommand> = [];
 
   private _solver: PuzzleSolver;
 
@@ -86,12 +88,21 @@ export class GameComponent implements OnInit, AfterViewChecked {
 
   undo() {
     const undoCommand = this.undoStack.pop();
-    if (undoCommand) {
-      const cell = this.boardComponent.getCellAtCoordinate(undoCommand.targetCell);
-      if (cell) {
-        cell.restoreContentSnapshot(undoCommand.previousState);
-        this.boardComponent.clearSelection();
+
+    if (undoCommand instanceof SingleUndoCommand) {
+      this.undoSingleCommand(undoCommand);
+    } else if (undoCommand instanceof AggregateUndoCommand) {
+      for (const nestedCommand of undoCommand.commands) {
+        this.undoSingleCommand(nestedCommand);
       }
+    }
+  }
+
+  private undoSingleCommand(undoCommand: SingleUndoCommand) {
+    const cell = this.boardComponent.getCellAtCoordinate(undoCommand.targetCell);
+    if (cell) {
+      cell.restoreContentSnapshot(undoCommand.previousState);
+      this.boardComponent.clearSelection();
     }
   }
 
@@ -148,15 +159,16 @@ export class GameComponent implements OnInit, AfterViewChecked {
     const coordinate = this.boardComponent.getCoordinateForCell(cell);
 
     if (coordinate) {
-      this.undoStack.push({
-        targetCell: coordinate,
-        previousState: snapshot
-      });
+      this.undoStack.push(new SingleUndoCommand(coordinate, snapshot));
     }
   }
 
+  private pushAggregateUndoCommand(commands: SingleUndoCommand[]) {
+    this.undoStack.push(new AggregateUndoCommand(commands));
+  }
+
   calculateDraftValues() {
-    // TODO: Create undo snapshot of entire puzzle
+    const undoCommands: SingleUndoCommand[] = [];
 
     for (let row = 1; row <= this.boardSize; row++) {
       for (let column = 1; column <= this.boardSize; column++) {
@@ -164,12 +176,20 @@ export class GameComponent implements OnInit, AfterViewChecked {
         const cell = this.boardComponent.getCellAtCoordinate(coordinate);
         if (cell && cell.value === undefined) {
           const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-          cell.restoreContentSnapshot({
-            userValue: undefined,
-            draftValues: possibleValues
-          });
+
+          const snapshotBefore = cell.getContentSnapshot();
+          const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
+
+          if (JSON.stringify(snapshotBefore) !== JSON.stringify(snapshotAfter)) {
+            undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
+            cell.restoreContentSnapshot(snapshotAfter);
+          }
         }
       }
+    }
+
+    if (undoCommands.length > 0) {
+      this.pushAggregateUndoCommand(undoCommands);
     }
   }
 
