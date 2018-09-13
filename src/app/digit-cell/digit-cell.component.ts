@@ -72,6 +72,8 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
       this.userValue = undefined;
       this.draftValues.push(value);
     }
+
+    this.draftValues.sort();
   }
 
   getContentSnapshot(): CellContentSnapshot {
