@@ -26,5 +26,6 @@
   <button type="button" class="btn btn-secondary" [disabled]="undoStack.length === 0 || isGameSolved" (click)="undo()">Undo</button>
   <button type="button" class="btn btn-secondary ml-2" (click)="restart()">Restart</button>
   <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#changePuzzleModal">Change puzzle</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="isGameSolved" (click)="calculateDraftValue()">?</button>
   <button type="button" class="btn btn-secondary ml-2" [disabled]="isGameSolved" (click)="calculateDraftValues()">Help</button>
 </div>

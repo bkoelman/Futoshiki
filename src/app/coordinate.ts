@@ -8,6 +8,10 @@ export class Coordinate {
         return new Coordinate(row, column);
     }
 
+    toString(): string {
+        return `(${this.row},${this.column})`;
+    }
+
     toIndex(boardSize: number): number {
         return (this.row - 1) * boardSize + this.column - 1;
     }

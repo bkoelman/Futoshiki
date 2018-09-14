@@ -108,7 +108,7 @@ export class GameComponent implements OnInit, AfterViewChecked {
 
   onClearClicked() {
     const cell = this.boardComponent.getSelectedCell();
-    if (cell !== undefined && !cell.isEmpty) {
+    if (cell && !cell.isEmpty) {
       this.pushUndoCommand(cell);
       cell.clear();
     }
@@ -116,7 +116,7 @@ export class GameComponent implements OnInit, AfterViewChecked {
 
   onDigitClicked(data: { value: number, isDraft: boolean }) {
     const cell = this.boardComponent.getSelectedCell();
-    if (cell !== undefined) {
+    if (cell) {
       if (data.isDraft) {
         this.pushUndoCommand(cell);
         cell.toggleDraftValue(data.value);
@@ -165,6 +165,18 @@ export class GameComponent implements OnInit, AfterViewChecked {
 
   private pushAggregateUndoCommand(commands: SingleUndoCommand[]) {
     this.undoStack.push(new AggregateUndoCommand(commands));
+  }
+
+  calculateDraftValue() {
+    const cell = this.boardComponent.getSelectedCell();
+    if (cell && cell.value === undefined) {
+      this.pushUndoCommand(cell);
+
+      const coordinate = this.boardComponent.getCoordinateForCell(cell);
+      const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
+      const snapshot = new CellContentSnapshot(undefined, possibleValues);
+      cell.restoreContentSnapshot(snapshot);
+    }
   }
 
   calculateDraftValues() {

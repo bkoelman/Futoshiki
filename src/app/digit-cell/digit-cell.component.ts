@@ -71,9 +71,8 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     } else {
       this.userValue = undefined;
       this.draftValues.push(value);
+      this.draftValues.sort();
     }
-
-    this.draftValues.sort();
   }
 
   getContentSnapshot(): CellContentSnapshot {
@@ -98,6 +97,14 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     }
 
     return result;
+  }
+
+  getPossibleValues(): number[] {
+    if (this.value !== undefined) {
+      return [this.value];
+    }
+
+    return this.draftValues.slice();
   }
 
   getMinValue(): number | undefined {
