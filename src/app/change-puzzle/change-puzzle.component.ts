@@ -12,43 +12,44 @@ export class ChangePuzzleComponent implements OnInit {
   PuzzleDifficultyAlias = PuzzleDifficulty;
 
   @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
-  @Input() difficulty: PuzzleDifficulty;
-  @Input() boardSize: number;
-  @Input() id: number;
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
+
+  private _info: PuzzleInfo | undefined;
+  private _lastChangeEventData: string;
 
   ngOnInit() {
   }
 
   setDefaults(info: PuzzleInfo) {
-    this.difficulty = info.difficulty;
-    this.boardSize = info.boardSize;
-    this.id = info.id;
+    this._info = {
+      difficulty: info.difficulty,
+      boardSize: info.boardSize,
+      id: info.id
+    };
+    this._lastChangeEventData = undefined;
   }
 
   onPreviousButtonClicked(event: Event) {
-    this.id--;
-    this.puzzleChangeForm.onSubmit(event);
+    this._info.id--;
+    this.onPuzzleChanged();
   }
 
   onNextButtonClicked(event: Event) {
-    this.id++;
-    this.puzzleChangeForm.onSubmit(event);
+    this._info.id++;
+    this.onPuzzleChanged();
   }
 
-  onApplyButtonClicked(event: Event): boolean {
-    return this.puzzleChangeForm.onSubmit(event);
+  onApplyButtonClicked(event: Event) {
+    this.onPuzzleChanged();
   }
 
-  onFormSubmit(form: NgForm) {
-    if (form.valid) {
-      const info: PuzzleInfo = {
-        difficulty: this.difficulty,
-        boardSize: this.boardSize,
-        id: this.id
-      };
-      this.puzzleChanged.emit(info);
+  onPuzzleChanged() {
+    const infoData = JSON.stringify(this._info);
+
+    if (this._lastChangeEventData !== infoData) {
+      this._lastChangeEventData = infoData;
+      this.puzzleChanged.emit(this._info);
     }
   }
 }
