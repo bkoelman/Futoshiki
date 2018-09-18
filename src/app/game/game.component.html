@@ -7,13 +7,15 @@
   </div>
 </div>
 <div *ngIf="puzzle !== undefined">
-  <app-change-puzzle [puzzleInfo]="puzzle.info" (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
-  <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="boardSize"></app-board>
+  <app-change-puzzle [difficulty]="puzzle.info.difficulty" [boardSize]="puzzle.info.boardSize" [id]="puzzle.info.id"
+    (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
+  <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="puzzle.info.boardSize"></app-board>
 
   <div class="clearfix"></div>
   <p></p>
 
-  <app-button-bar [boardSize]="boardSize" [isEnabled]="!isGameSolved" (clearClicked)="onClearClicked()" (digitClicked)="onDigitClicked($event)"></app-button-bar>
+  <app-button-bar [boardSize]="puzzle.info.boardSize" [isEnabled]="!isGameSolved" (clearClicked)="onClearClicked()"
+    (digitClicked)="onDigitClicked($event)"></app-button-bar>
 
   <p></p>
   <div class="alert alert-success" role="alert" *ngIf="isGameSolved">
@@ -25,7 +27,8 @@
 
   <button type="button" class="btn btn-secondary" [disabled]="undoStack.length === 0 || isGameSolved" (click)="undo()">Undo</button>
   <button type="button" class="btn btn-secondary ml-2" (click)="restart()">Restart</button>
-  <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#changePuzzleModal">Change puzzle</button>
+  <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">Change
+    puzzle</button>
   <button type="button" class="btn btn-secondary ml-2" [disabled]="isGameSolved" (click)="calculateDraftValue()">?</button>
   <button type="button" class="btn btn-secondary ml-2" [disabled]="isGameSolved" (click)="calculateDraftValues()">Help</button>
 </div>

@@ -12,24 +12,28 @@ export class ChangePuzzleComponent implements OnInit {
   PuzzleDifficultyAlias = PuzzleDifficulty;
 
   @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
-  @Input() puzzleInfo: PuzzleInfo = {
-    difficulty: PuzzleDifficulty.Easy,
-    boardSize: 4,
-    id: 1
-  };
+  @Input() difficulty: PuzzleDifficulty = PuzzleDifficulty.Easy;
+  @Input() boardSize = 4;
+  @Input() id = 1;
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
   ngOnInit() {
   }
 
+  setDefaults(info: PuzzleInfo) {
+    this.difficulty = info.difficulty;
+    this.boardSize = info.boardSize;
+    this.id = info.id;
+  }
+
   onPreviousButtonClicked(event: Event) {
-    this.puzzleInfo.id--;
+    this.id--;
     this.puzzleChangeForm.onSubmit(event);
   }
 
   onNextButtonClicked(event: Event) {
-    this.puzzleInfo.id++;
+    this.id++;
     this.puzzleChangeForm.onSubmit(event);
   }
 
@@ -39,7 +43,12 @@ export class ChangePuzzleComponent implements OnInit {
 
   onFormSubmit(form: NgForm) {
     if (form.valid) {
-      this.puzzleChanged.emit(this.puzzleInfo);
+      const info: PuzzleInfo = {
+        difficulty: this.difficulty,
+        boardSize: this.boardSize,
+        id: this.id
+      };
+      this.puzzleChanged.emit(info);
     }
   }
 }

@@ -22,7 +22,6 @@ export class GameComponent implements OnInit, AfterViewChecked {
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   puzzle: PuzzleData | undefined;
   hasError: boolean;
-  boardSize: number;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
   undoStack: Array<SingleUndoCommand | AggregateUndoCommand> = [];
@@ -66,8 +65,6 @@ export class GameComponent implements OnInit, AfterViewChecked {
 
   private onPuzzleDownloadSucceeded(data: PuzzleData) {
     this.puzzle = data;
-    this.boardSize = data.info.boardSize;
-
     this.restart();
   }
 
@@ -84,6 +81,10 @@ export class GameComponent implements OnInit, AfterViewChecked {
     if (this.boardComponent) {
       this.boardComponent.reset();
     }
+  }
+
+  showChangePuzzleModal() {
+    this.changePuzzleComponent.setDefaults(this.puzzle.info);
   }
 
   undo() {
@@ -144,7 +145,7 @@ export class GameComponent implements OnInit, AfterViewChecked {
     let isCorrect = true;
     answerDigits.forEach((digit, index) => {
       const answerValue = parseInt(digit, 10);
-      const coordinate = Coordinate.fromIndex(index, this.boardSize);
+      const coordinate = Coordinate.fromIndex(index, this.puzzle.info.boardSize);
       const userValue = this.boardComponent.getCellValueAtCoordinate(coordinate);
       if (userValue !== answerValue) {
         isCorrect = false;
@@ -182,8 +183,8 @@ export class GameComponent implements OnInit, AfterViewChecked {
   calculateDraftValues() {
     const undoCommands: SingleUndoCommand[] = [];
 
-    for (let row = 1; row <= this.boardSize; row++) {
-      for (let column = 1; column <= this.boardSize; column++) {
+    for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
+      for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
         const coordinate = new Coordinate(row, column);
         const cell = this.boardComponent.getCellAtCoordinate(coordinate);
         if (cell && cell.value === undefined) {

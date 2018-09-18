@@ -13,11 +13,11 @@
             <div class="row">
               <legend class="col-form-label col-sm-3 pt-0">Difficulty</legend>
               <div class="col-sm-9">
-                <div *ngFor="let difficulty of PuzzleDifficultyAlias | enumNamesToArray" class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="difficultyGroup" [id]="'difficulty' + difficulty" [value]="PuzzleDifficultyAlias[difficulty]"
-                    [(ngModel)]="puzzleInfo.difficulty">
-                  <label class="form-check-label" [for]="'difficulty' + difficulty">
-                    {{difficulty}}
+                <div *ngFor="let difficultyMember of PuzzleDifficultyAlias | enumNamesToArray" class="form-check-inline">
+                  <input class="form-check-input" type="radio" name="difficultyGroup" [id]="'difficulty' + difficultyMember"
+                    [value]="PuzzleDifficultyAlias[difficultyMember]" [(ngModel)]="difficulty">
+                  <label class="form-check-label" [for]="'difficulty' + difficultyMember">
+                    {{difficultyMember}}
                   </label>
                 </div>
               </div>
@@ -28,7 +28,8 @@
               <legend class="col-form-label col-sm-3 pt-0">Size</legend>
               <div class="col-sm-9">
                 <div *ngFor="let size of [4,5,6,7,8,9]" class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="sizeGroup" [id]="'size' + size" [value]="size" [(ngModel)]="puzzleInfo.boardSize">
+                  <input class="form-check-input" type="radio" name="sizeGroup" [id]="'size' + size" [value]="size"
+                    [(ngModel)]="boardSize">
                   <label class="form-check-label" [for]="'size' + size">
                     {{size}}x{{size}}
                   </label>
@@ -39,8 +40,8 @@
           <div class="form-group row">
             <label for="puzzleId" class="col-sm-3 col-form-label" style="white-space: nowrap;">Puzzle <wbr>(1-{{maxPuzzleId}})</label>
             <div class="col-sm-8">
-              <input type="number" required [(ngModel)]="puzzleInfo.id" #puzzleId="ngModel" name="puzzleId" class="form-control" min="1"
-                max="{{maxPuzzleId}}" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])$">
+              <input type="number" required [(ngModel)]="id" #puzzleId="ngModel" name="puzzleId" class="form-control"
+                min="1" max="{{maxPuzzleId}}" step="1" pattern="^$|^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])$">
               <div *ngIf="puzzleId.errors && (puzzleId.dirty || puzzleId.touched)">
                 <div class="validation-error-message" [hidden]="puzzleId.valid || puzzleId.pristine">
                   Puzzle number is required
@@ -50,8 +51,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="onPreviousButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || puzzleInfo.id <= 1">&lt;</button>
-          <button type="button" class="btn btn-secondary mr-auto" (click)="onNextButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || puzzleInfo.id >= maxPuzzleId">&gt;</button>
+          <button type="button" class="btn btn-secondary" (click)="onPreviousButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || id <= 1">&lt;</button>
+          <button type="button" class="btn btn-secondary mr-auto" (click)="onNextButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || id >= maxPuzzleId">&gt;</button>
           <div class="loader" [hidden]='!isLoaderVisible'></div>
           <button type="submit" class="btn btn-primary" (click)="onApplyButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid"
             data-dismiss="modal">Ok</button>
