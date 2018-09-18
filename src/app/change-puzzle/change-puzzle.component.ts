@@ -10,19 +10,18 @@ import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
 export class ChangePuzzleComponent implements OnInit {
   readonly maxPuzzleId = 9999;
   PuzzleDifficultyAlias = PuzzleDifficulty;
-
+  info: PuzzleInfo | undefined;
   @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
-  private _info: PuzzleInfo | undefined;
   private _lastChangeEventData: string;
 
   ngOnInit() {
   }
 
   setDefaults(info: PuzzleInfo) {
-    this._info = {
+    this.info = {
       difficulty: info.difficulty,
       boardSize: info.boardSize,
       id: info.id
@@ -31,12 +30,12 @@ export class ChangePuzzleComponent implements OnInit {
   }
 
   onPreviousButtonClicked(event: Event) {
-    this._info.id--;
+    this.info.id--;
     this.onPuzzleChanged();
   }
 
   onNextButtonClicked(event: Event) {
-    this._info.id++;
+    this.info.id++;
     this.onPuzzleChanged();
   }
 
@@ -45,14 +44,14 @@ export class ChangePuzzleComponent implements OnInit {
   }
 
   onPuzzleChanged() {
-    const infoData = JSON.stringify(this._info);
+    const infoData = JSON.stringify(this.info);
 
     if (this._lastChangeEventData !== infoData) {
       this._lastChangeEventData = infoData;
       this.puzzleChanged.emit({
-        difficulty: this._info.difficulty,
-        boardSize: this._info.boardSize,
-        id: this._info.id
+        difficulty: this.info.difficulty,
+        boardSize: this.info.boardSize,
+        id: this.info.id
       });
 
     }
