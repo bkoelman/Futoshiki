@@ -9,7 +9,7 @@
 <div *ngIf="puzzle !== undefined">
   <app-change-puzzle [difficulty]="puzzle.info.difficulty" [boardSize]="puzzle.info.boardSize" [id]="puzzle.info.id"
     (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
-  <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="puzzle.info.boardSize"></app-board>
+  <app-board [puzzleLines]="puzzle.puzzleLines" [boardSize]="puzzle.info.boardSize" (contentChanged)="onBoardContentChanged()"></app-board>
 
   <div class="clearfix"></div>
   <p></p>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, Input } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter } from '@angular/core';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { Coordinate } from '../coordinate';
 
@@ -9,9 +9,12 @@ import { Coordinate } from '../coordinate';
 export class BoardComponent implements OnInit {
   @Input() puzzleLines: string[];
   @Input() boardSize: number;
-  @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;
+  @Output() contentChanged = new EventEmitter();
 
+  @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;
   private _canSelect = true;
+  private _isUpdatingBoard = false;
+  private _hasPendingChangeEvent = false;
 
   get canSelect(): boolean {
     return this._canSelect;
@@ -65,9 +68,30 @@ export class BoardComponent implements OnInit {
   }
 
   reset() {
-    this._cells.forEach(cell => cell.clear());
-    this.clearSelection();
-    this.canSelect = true;
+    this.collectBulkChanges(() => {
+      this._cells.forEach(cell => cell.clear());
+      this.clearSelection();
+      this.canSelect = true;
+    });
+  }
+
+  collectBulkChanges(action: () => void) {
+    const isNested = this._isUpdatingBoard;
+
+    if (!isNested) {
+      this._hasPendingChangeEvent = false;
+      this._isUpdatingBoard = true;
+    }
+
+    action();
+
+    if (!isNested) {
+      this._isUpdatingBoard = false;
+
+      if (this._hasPendingChangeEvent) {
+        this.onCellContentChanged();
+      }
+    }
   }
 
   clearSelection() {
@@ -110,6 +134,15 @@ export class BoardComponent implements OnInit {
 
     if (this.canSelect && !sender.isFixed) {
       sender.isSelected = true;
+    }
+  }
+
+  onCellContentChanged() {
+    if (this._isUpdatingBoard) {
+      this._hasPendingChangeEvent = true;
+    } else {
+      this._hasPendingChangeEvent = false;
+      this.contentChanged.emit(undefined);
     }
   }
 }

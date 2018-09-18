@@ -15,14 +15,15 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   @Input() isSelected: boolean;
   @Input() canSelect;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
+  @Output() contentChanged = new EventEmitter();
 
   @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
 
-  private userValue: number | undefined;
-  private draftValues: number[] = [];
+  private _userValue: number | undefined;
+  private _draftValues: number[] = [];
 
   get value(): number | undefined {
-    return this.fixedValue !== undefined ? this.fixedValue : this.userValue;
+    return this.fixedValue !== undefined ? this.fixedValue : this._userValue;
   }
 
   get isFixed(): boolean {
@@ -30,7 +31,7 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   }
 
   get isDraft(): boolean {
-    return !this.isFixed && this.draftValues.length > 0;
+    return !this.isFixed && this._draftValues.length > 0;
   }
 
   get isEmpty(): boolean {
@@ -56,43 +57,52 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   }
 
   clear() {
-    this.userValue = undefined;
-    this.draftValues = [];
-  }
+    if (this._userValue !== undefined || this._draftValues.length > 0) {
+      this._userValue = undefined;
+      this._draftValues = [];
 
-  setUserValue(value: number) {
-    this.userValue = value;
-    this.draftValues = [];
-  }
-
-  toggleDraftValue(value: number) {
-    if (this.draftValues.indexOf(value) >= 0) {
-      this.draftValues = this.draftValues.filter(item => item !== value);
-    } else {
-      this.userValue = undefined;
-      this.draftValues.push(value);
-      this.draftValues.sort();
+      this.onContentChanged();
     }
   }
 
+  setUserValue(value: number) {
+    if (this._userValue !== value) {
+      this._userValue = value;
+      this._draftValues = [];
+
+      this.onContentChanged();
+    }
+  }
+
+  toggleDraftValue(value: number) {
+    if (this._draftValues.indexOf(value) >= 0) {
+      this._draftValues = this._draftValues.filter(item => item !== value);
+    } else {
+      this._userValue = undefined;
+      this._draftValues.push(value);
+      this._draftValues.sort();
+    }
+
+    this.onContentChanged();
+  }
+
   getContentSnapshot(): CellContentSnapshot {
-    return {
-      userValue: this.userValue,
-      draftValues: this.draftValues.slice()
-    };
+    return new CellContentSnapshot(this._userValue, this._draftValues.slice());
   }
 
   restoreContentSnapshot(snapshot: CellContentSnapshot) {
-    this.draftValues = snapshot.draftValues.slice();
-    this.userValue = snapshot.userValue;
+    this._draftValues = snapshot.draftValues.slice();
+    this._userValue = snapshot.userValue;
+
+    this.onContentChanged();
   }
 
   getSingleValue(): number | undefined {
     let result = this.value;
 
     if (result === undefined) {
-      if (this.draftValues.length === 1) {
-        result = this.draftValues[0];
+      if (this._draftValues.length === 1) {
+        result = this._draftValues[0];
       }
     }
 
@@ -104,14 +114,14 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
       return [this.value];
     }
 
-    return this.draftValues.slice();
+    return this._draftValues.slice();
   }
 
   getMinValue(): number | undefined {
     let result = this.value;
 
-    if (result === undefined && this.draftValues.length > 0) {
-      result = Math.min(...this.draftValues);
+    if (result === undefined && this._draftValues.length > 0) {
+      result = Math.min(...this._draftValues);
     }
 
     return result;
@@ -120,8 +130,8 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   getMaxValue(): number | undefined {
     let result = this.value;
 
-    if (result === undefined && this.draftValues.length > 0) {
-      result = Math.max(...this.draftValues);
+    if (result === undefined && this._draftValues.length > 0) {
+      result = Math.max(...this._draftValues);
     }
 
     return result;
@@ -129,5 +139,9 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
 
   onBoxClicked() {
     this.cellClicked.emit(this);
+  }
+
+  onContentChanged() {
+    this.contentChanged.emit(undefined);
   }
 }

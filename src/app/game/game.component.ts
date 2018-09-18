@@ -93,9 +93,11 @@ export class GameComponent implements OnInit, AfterViewChecked {
     if (undoCommand instanceof SingleUndoCommand) {
       this.undoSingleCommand(undoCommand);
     } else if (undoCommand instanceof AggregateUndoCommand) {
-      for (const nestedCommand of undoCommand.commands) {
-        this.undoSingleCommand(nestedCommand);
-      }
+      this.boardComponent.collectBulkChanges(() => {
+        for (const nestedCommand of undoCommand.commands) {
+          this.undoSingleCommand(nestedCommand);
+        }
+      });
     }
   }
 
@@ -171,42 +173,52 @@ export class GameComponent implements OnInit, AfterViewChecked {
   calculateDraftValue() {
     const cell = this.boardComponent.getSelectedCell();
     if (cell && cell.value === undefined) {
-      this.pushUndoCommand(cell);
-
       const coordinate = this.boardComponent.getCoordinateForCell(cell);
       const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-      const snapshot = new CellContentSnapshot(undefined, possibleValues);
-      cell.restoreContentSnapshot(snapshot);
+
+      const snapshotBefore = cell.getContentSnapshot();
+      const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
+
+      if (!snapshotBefore.isEqualTo(snapshotAfter)) {
+        this.pushUndoCommand(cell);
+        cell.restoreContentSnapshot(snapshotAfter);
+      }
     }
   }
 
   calculateDraftValues() {
-    const undoCommands: SingleUndoCommand[] = [];
+    this.boardComponent.collectBulkChanges(() => {
+      const undoCommands: SingleUndoCommand[] = [];
 
-    for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
-      for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
-        const coordinate = new Coordinate(row, column);
-        const cell = this.boardComponent.getCellAtCoordinate(coordinate);
-        if (cell && cell.value === undefined) {
-          const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
+      for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
+        for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
+          const coordinate = new Coordinate(row, column);
+          const cell = this.boardComponent.getCellAtCoordinate(coordinate);
+          if (cell && cell.value === undefined) {
+            const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
 
-          const snapshotBefore = cell.getContentSnapshot();
-          const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
+            const snapshotBefore = cell.getContentSnapshot();
+            const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
 
-          if (JSON.stringify(snapshotBefore) !== JSON.stringify(snapshotAfter)) {
-            undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
-            cell.restoreContentSnapshot(snapshotAfter);
+            if (!snapshotBefore.isEqualTo(snapshotAfter)) {
+              undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
+              cell.restoreContentSnapshot(snapshotAfter);
+            }
           }
         }
       }
-    }
 
-    if (undoCommands.length > 0) {
-      this.pushAggregateUndoCommand(undoCommands);
-    }
+      if (undoCommands.length > 0) {
+        this.pushAggregateUndoCommand(undoCommands);
+      }
+    });
   }
 
   onPuzzleChanged(value: PuzzleInfo) {
     this.initPuzzle(value);
+  }
+
+  onBoardContentChanged() {
+    console.log('board changed.');
   }
 }
