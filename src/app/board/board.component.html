@@ -1,4 +1,4 @@
-<div *ngFor="let puzzleLine of puzzleLines">
+<div *ngFor="let puzzleLine of puzzleLines || []">
     <div *ngIf="lineStartsWithDotOrDigit(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split('')">
             <span *ngIf="isDigitToken(token)">

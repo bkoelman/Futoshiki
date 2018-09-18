@@ -12,9 +12,9 @@ export class ChangePuzzleComponent implements OnInit {
   PuzzleDifficultyAlias = PuzzleDifficulty;
 
   @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
-  @Input() difficulty: PuzzleDifficulty = PuzzleDifficulty.Easy;
-  @Input() boardSize = 4;
-  @Input() id = 1;
+  @Input() difficulty: PuzzleDifficulty;
+  @Input() boardSize: number;
+  @Input() id: number;
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 

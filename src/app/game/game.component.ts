@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../puzzle-data.service';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
@@ -17,7 +17,7 @@ import { CellContentSnapshot } from '../cell-content-snapshot';
   selector: 'app-game',
   templateUrl: './game.component.html'
 })
-export class GameComponent implements OnInit, AfterViewChecked {
+export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   puzzle: PuzzleData | undefined;
@@ -32,6 +32,8 @@ export class GameComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
+    this._solver = new PuzzleSolver(this.boardComponent);
+
     const defaultRequest: PuzzleInfo = {
       difficulty: PuzzleDifficulty.Easy,
       boardSize: 4,
@@ -39,12 +41,6 @@ export class GameComponent implements OnInit, AfterViewChecked {
     };
 
     this.initPuzzle(defaultRequest);
-  }
-
-  ngAfterViewChecked(): void {
-    if (!this._solver && this.boardComponent) {
-      this._solver = new PuzzleSolver(this.boardComponent);
-    }
   }
 
   private initPuzzle(request: PuzzleInfo) {
@@ -78,9 +74,7 @@ export class GameComponent implements OnInit, AfterViewChecked {
     this.isGameSolved = false;
     this.undoStack = [];
 
-    if (this.boardComponent) {
-      this.boardComponent.reset();
-    }
+    this.boardComponent.reset();
   }
 
   showChangePuzzleModal() {

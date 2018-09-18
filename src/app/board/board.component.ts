@@ -7,8 +7,8 @@ import { Coordinate } from '../coordinate';
   templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit {
-  @Input() puzzleLines: string[];
-  @Input() boardSize: number;
+  @Input() puzzleLines: string[] | undefined;
+  @Input() boardSize: number | undefined;
   @Output() contentChanged = new EventEmitter();
 
   @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;

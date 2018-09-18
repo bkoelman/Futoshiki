@@ -10,7 +10,7 @@ declare var $: any;
   templateUrl: './button-bar.component.html'
 })
 export class ButtonBarComponent implements OnInit, AfterViewChecked {
-  @Input() boardSize: number;
+  @Input() boardSize: number | undefined;
   @Input() isEnabled: boolean;
   @Output() digitClicked = new EventEmitter<{ value: number, isDraft: boolean }>();
   @Output() clearClicked = new EventEmitter();

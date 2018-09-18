@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, delay } from 'rxjs/operators';
 import { PuzzleDifficulty } from './puzzle-difficulty.enum';
 import { PuzzleInfo } from './puzzle-info';
 import { PuzzleData } from './puzzle-data';
@@ -21,7 +21,9 @@ export class PuzzleDataService {
         map(responseText => {
           return PuzzleTextParser.parseText(responseText, request);
         })
-      );
+      )
+      // .pipe(delay(5000)) // Uncomment to debug slow networks
+      ;
   }
 
   private formatPuzzleUrl(request: PuzzleInfo): string {
