@@ -49,7 +49,12 @@ export class ChangePuzzleComponent implements OnInit {
 
     if (this._lastChangeEventData !== infoData) {
       this._lastChangeEventData = infoData;
-      this.puzzleChanged.emit(this._info);
+      this.puzzleChanged.emit({
+        difficulty: this._info.difficulty,
+        boardSize: this._info.boardSize,
+        id: this._info.id
+      });
+
     }
   }
 }
