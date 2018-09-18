@@ -26,7 +26,7 @@ export class PuzzleSolver {
         return candidateValueSet;
     }
 
-    ensureCache() {
+    private ensureCache() {
         if (this._boardSizeCached !== this._board.boardSize) {
             this._boardSizeCached = this._board.boardSize;
             this._allCellValuesCached = this._numberSequenceService.createNumberSequence(this._board.boardSize);
