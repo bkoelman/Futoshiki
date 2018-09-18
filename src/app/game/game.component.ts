@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import * as Cookies from 'js-cookie';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../puzzle-data.service';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
@@ -12,6 +13,8 @@ import { AggregateUndoCommand } from '../aggregate-undo-command';
 import { Coordinate } from '../coordinate';
 import { PuzzleSolver } from '../puzzle-solver';
 import { CellContentSnapshot } from '../cell-content-snapshot';
+import { GameSaveState } from '../game-save-state';
+import { SaveGameAdapter } from '../save-game-adapter';
 
 @Component({
   selector: 'app-game',
@@ -27,6 +30,8 @@ export class GameComponent implements OnInit {
   undoStack: Array<SingleUndoCommand | AggregateUndoCommand> = [];
 
   private _solver: PuzzleSolver;
+  private _saveGameAdapter = new SaveGameAdapter();
+  private _isLoadingGame = false;
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
@@ -34,21 +39,38 @@ export class GameComponent implements OnInit {
   ngOnInit() {
     this._solver = new PuzzleSolver(this.boardComponent);
 
-    const defaultRequest: PuzzleInfo = {
-      difficulty: PuzzleDifficulty.Easy,
-      boardSize: 4,
-      id: 1
-    };
-
-    this.initPuzzle(defaultRequest);
+    const saveState = this.getGameSaveStateFromCookie();
+    this.retrievePuzzle(saveState.info, () => this.boardComponent.loadGame(saveState));
   }
 
-  private initPuzzle(request: PuzzleInfo) {
+  private getGameSaveStateFromCookie(): GameSaveState {
+    const saveText = Cookies.get('save');
+    if (saveText) {
+      console.log('Save cookie detected.');
+
+      const saveState = this._saveGameAdapter.parseText(saveText);
+      if (saveState) {
+        return saveState;
+      }
+    }
+
+    return {
+      info: {
+        difficulty: PuzzleDifficulty.Easy,
+        boardSize: 4,
+        id: 1
+      },
+      cellSnapshotMap: undefined
+    };
+  }
+
+  private retrievePuzzle(request: PuzzleInfo, downloadCompletedAsyncCallback?: () => void) {
+    this._isLoadingGame = true;
     this.hasError = false;
     this.puzzleDownloadController.startRequest(request,
       () => this._dataService.getPuzzle(request),
       (isVisible) => this.onPuzzleLoaderVisibilityChanged(isVisible),
-      (data) => this.onPuzzleDownloadSucceeded(data),
+      (data) => this.onPuzzleDownloadSucceeded(data, downloadCompletedAsyncCallback),
       (err) => this.onPuzzleDownloadFailed(err)
     );
   }
@@ -59,12 +81,27 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private onPuzzleDownloadSucceeded(data: PuzzleData) {
+  private onPuzzleDownloadSucceeded(data: PuzzleData, downloadCompletedAsyncCallback?: () => void) {
     this.puzzle = data;
     this.restart();
+
+    if (downloadCompletedAsyncCallback) {
+      setTimeout(() => {
+        downloadCompletedAsyncCallback();
+        this.afterPuzzleDownloadSucceeded();
+      });
+    } else {
+      this.afterPuzzleDownloadSucceeded();
+    }
+  }
+
+  private afterPuzzleDownloadSucceeded() {
+    this._isLoadingGame = false;
+    this.storeGameSaveStateInCookie();
   }
 
   private onPuzzleDownloadFailed(err: any) {
+    this._isLoadingGame = false;
     this.hasError = true;
     console.log(err);
   }
@@ -208,11 +245,22 @@ export class GameComponent implements OnInit {
     });
   }
 
-  onPuzzleChanged(value: PuzzleInfo) {
-    this.initPuzzle(value);
+  onPuzzleSelectionChanged(value: PuzzleInfo) {
+    this.retrievePuzzle(value);
   }
 
   onBoardContentChanged() {
-    console.log('board changed.');
+    if (!this._isLoadingGame) {
+      this.storeGameSaveStateInCookie();
+    }
+  }
+
+  private storeGameSaveStateInCookie() {
+    const saveGameText = this._saveGameAdapter.toText(this.puzzle.info, this.boardComponent);
+    Cookies.set('save', saveGameText, {
+      expires: 30
+    });
+
+    console.log('Save cookie updated.');
   }
 }

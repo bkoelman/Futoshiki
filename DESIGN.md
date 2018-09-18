@@ -19,7 +19,8 @@
 
 # Enhancements
 - [ ] puzzle selection: leave number empty for random puzzle
-- [ ] save game progress in cookie
+- [x] save game progress in cookie
+- [ ] BUG: app does not load in IE11
 - [ ] warning when navigating away from page
 - [ ] option to track elapsed time
 - [ ] auto-cleanup temporary digits on regular digit entry

@@ -6,7 +6,7 @@
     Failed to load puzzle.
   </div>
 </div>
-<app-change-puzzle (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
+<app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
 <app-board [puzzleLines]="puzzle?.puzzleLines" [boardSize]="puzzle?.info?.boardSize" (contentChanged)="onBoardContentChanged()"></app-board>
 
 <div class="clearfix"></div>
