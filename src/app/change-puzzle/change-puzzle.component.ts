@@ -53,7 +53,6 @@ export class ChangePuzzleComponent implements OnInit {
         boardSize: this.info.boardSize,
         id: this.info.id
       });
-
     }
   }
 }
