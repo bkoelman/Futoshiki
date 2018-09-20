@@ -34,33 +34,33 @@ export class PuzzleSolver {
     }
 
     private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]) {
-        // Rule: When a cell is greater than another cell, it cannot contain digit 1 and
-        // its minimum value must be higher than the minimum draft value in the other cell.
-        // Likewise, when a cell is less than another cell, it cannot contain the highest digit on the board and
-        // its maximum value must be lower than the maximum draft value in the other cell.
+        // Rule: When a cell is greater than its adjacent cell, it cannot contain digit 1 and
+        // its minimum value must be higher than the minimum draft value in the adjacent cell.
+        // Likewise, when a cell is less than its adjacent cell, it cannot contain the highest digit on the board and
+        // its maximum value must be lower than the maximum draft value in the adjacent cell.
 
         const isGreaterThanOperatorLeftToCell = this.getIsGreaterThanOperatorLeftToCell(coordinate);
         if (isGreaterThanOperatorLeftToCell !== undefined) {
-            const otherCoordinate = coordinate.moveLeft();
-            this.applyOperatorRule(isGreaterThanOperatorLeftToCell, otherCoordinate, coordinate, candidateValueSet, 'left');
+            const adjacentCoordinate = coordinate.moveLeft();
+            this.applyOperatorRule(isGreaterThanOperatorLeftToCell, adjacentCoordinate, coordinate, candidateValueSet, 'left');
         }
 
         const isGreaterThanOperatorRightToCell = this.getIsGreaterThanOperatorRightToCell(coordinate);
         if (isGreaterThanOperatorRightToCell !== undefined) {
-            const otherCoordinate = coordinate.moveRight();
-            this.applyOperatorRule(!isGreaterThanOperatorRightToCell, otherCoordinate, coordinate, candidateValueSet, 'right');
+            const adjacentCoordinate = coordinate.moveRight();
+            this.applyOperatorRule(!isGreaterThanOperatorRightToCell, adjacentCoordinate, coordinate, candidateValueSet, 'right');
         }
 
         const isGreaterThanOperatorAboveCell = this.getIsGreaterThanOperatorAboveCell(coordinate);
         if (isGreaterThanOperatorAboveCell !== undefined) {
-            const otherCoordinate = coordinate.moveUp();
-            this.applyOperatorRule(isGreaterThanOperatorAboveCell, otherCoordinate, coordinate, candidateValueSet, 'above');
+            const adjacentCoordinate = coordinate.moveUp();
+            this.applyOperatorRule(isGreaterThanOperatorAboveCell, adjacentCoordinate, coordinate, candidateValueSet, 'above');
         }
 
         const isGreaterThanOperatorBelowCell = this.getIsGreaterThanOperatorBelowCell(coordinate);
         if (isGreaterThanOperatorBelowCell !== undefined) {
-            const otherCoordinate = coordinate.moveDown();
-            this.applyOperatorRule(!isGreaterThanOperatorBelowCell, otherCoordinate, coordinate, candidateValueSet, 'below');
+            const adjacentCoordinate = coordinate.moveDown();
+            this.applyOperatorRule(!isGreaterThanOperatorBelowCell, adjacentCoordinate, coordinate, candidateValueSet, 'below');
         }
     }
 
@@ -119,65 +119,33 @@ export class PuzzleSolver {
         };
     }
 
-    private applyOperatorRule(isGreaterThanOperator: boolean, otherCellCoordinate: Coordinate,
+    private applyOperatorRule(isGreaterThanOperator: boolean, adjacentCellCoordinate: Coordinate,
         currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string) {
-        const otherCell = this._board.getCellAtCoordinate(otherCellCoordinate);
+        const adjacentCell = this._board.getCellAtCoordinate(adjacentCellCoordinate);
 
         if (isGreaterThanOperator) {
-            const otherMaxValue = otherCell.getMaxValue() || this._boardSizeCached;
-            const generateCount = this._boardSizeCached - otherMaxValue + 1;
-            const digitsToRemove = this._numberSequenceService.createNumberSequence(generateCount, otherMaxValue);
+            const adjacentMaxValue = adjacentCell.getMaxValue() || this._boardSizeCached;
+            const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
+            const digitsToRemove = this._numberSequenceService.createNumberSequence(generateCount, adjacentMaxValue);
             this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate, `Operator rule < ${direction}`);
         } else {
-            const otherMinValue = otherCell.getMinValue() || 1;
-            const digitsToRemove = this._numberSequenceService.createNumberSequence(otherMinValue);
+            const adjacentMinValue = adjacentCell.getMinValue() || 1;
+            const digitsToRemove = this._numberSequenceService.createNumberSequence(adjacentMinValue);
             this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate, `Operator rule > ${direction}`);
         }
     }
 
     private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]) {
-        const possibleValuesPerCellAtRow = this.getPossibleValuesPerCellAtRow(coordinate.row, coordinate.column);
-        const possibleValuesPerCellAtColumn = this.getPossibleValuesPerCellAtColumn(coordinate.column, coordinate.row);
+        const possibleValuesInCurrentCell = this.getPossibleValuesForCell(coordinate);
 
-        this.applySetRuleInSequence(coordinate, candidateValueSet, possibleValuesPerCellAtRow, 'Set rule (row)');
-        this.applySetRuleInSequence(coordinate, candidateValueSet, possibleValuesPerCellAtColumn, 'Set rule (column)');
+        const coordinatesInRow = this.getCoordinatesInRow(coordinate.row, coordinate.column);
+        const coordinatesInColumn = this.getCoordinatesInColumn(coordinate.column, coordinate.row);
 
-        const possibleValuesInCurrentCell = this.getPossibleValuesForCell(coordinate.row, coordinate.column);
-
-        this.applyUniqueRuleInSequence(coordinate, candidateValueSet, possibleValuesPerCellAtRow,
-            possibleValuesInCurrentCell, 'Unique rule (row)');
-        this.applyUniqueRuleInSequence(coordinate, candidateValueSet, possibleValuesPerCellAtColumn,
-            possibleValuesInCurrentCell, 'Unique rule (column)');
+        this.applyDigitRulesInSequence(coordinate, coordinatesInRow, possibleValuesInCurrentCell, candidateValueSet, 'row');
+        this.applyDigitRulesInSequence(coordinate, coordinatesInColumn, possibleValuesInCurrentCell, candidateValueSet, 'column');
     }
 
-    private getPossibleValuesPerCellAtRow(row: number, columnToSkip: number): Array<number[]> {
-        const possibleValuesPerCell: Array<number[]> = [];
-
-        for (let column = 1; column <= this._boardSizeCached; column++) {
-            if (column !== columnToSkip) {
-                const cellValues = this.getPossibleValuesForCell(row, column);
-                possibleValuesPerCell.push(cellValues);
-            }
-        }
-
-        return possibleValuesPerCell;
-    }
-
-    private getPossibleValuesPerCellAtColumn(column: number, rowToSkip: number): Array<number[]> {
-        const possibleValuesPerCell: Array<number[]> = [];
-
-        for (let row = 1; row <= this._boardSizeCached; row++) {
-            if (row !== rowToSkip) {
-                const cellValues = this.getPossibleValuesForCell(row, column);
-                possibleValuesPerCell.push(cellValues);
-            }
-        }
-
-        return possibleValuesPerCell;
-    }
-
-    private getPossibleValuesForCell(row: number, column: number): number[] {
-        const coordinate = new Coordinate(row, column);
+    private getPossibleValuesForCell(coordinate: Coordinate): number[] {
         const cell = this._board.getCellAtCoordinate(coordinate);
         if (cell) {
             const possibleValues = cell.getPossibleValues();
@@ -189,12 +157,58 @@ export class PuzzleSolver {
         return this._allCellValuesCached;
     }
 
+    private getCoordinatesInRow(row: number, columnToSkip: number): Coordinate[] {
+        const coordinates: Coordinate[] = [];
+
+        for (let column = 1; column <= this._boardSizeCached; column++) {
+            if (column !== columnToSkip) {
+                coordinates.push(new Coordinate(row, column));
+            }
+        }
+
+        return coordinates;
+    }
+
+    private getCoordinatesInColumn(column: number, rowToSkip: number): Coordinate[] {
+        const coordinates: Coordinate[] = [];
+
+        for (let row = 1; row <= this._boardSizeCached; row++) {
+            if (row !== rowToSkip) {
+                coordinates.push(new Coordinate(row, column));
+            }
+        }
+
+        return coordinates;
+    }
+
+    private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[],
+        possibleValuesInCurrentCell: number[], candidateValueSet: number[], sequenceName: string) {
+        const possibleValuesInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
+
+        this.applySetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
+        this.applyUniqueRuleInSequence(coordinate, candidateValueSet, possibleValuesInCurrentCell, possibleValuesInSequence, sequenceName);
+    }
+
+    private getPossibleCellValuesInSequence(sequence: Coordinate[]): Array<number[]> {
+        const possibleValuesPerCell: Array<number[]> = [];
+
+        for (const coordinate of sequence) {
+            const possibleCellValues = this.getPossibleValuesForCell(coordinate);
+            possibleValuesPerCell.push(possibleCellValues);
+        }
+
+        return possibleValuesPerCell;
+    }
 
     private applySetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: Array<number[]>,
-        ruleName: string) {
+        sequenceName: string) {
         // Rule: When a sequence (row or column) contains N cells with the exact same N draft digits,
         // then the other cells in that same sequence cannot contain those digits.
         // N ranges from 1 to the size of the board (exclusive).
+        //
+        // Example:
+        //      12 | 12 | 123 | 245 | 135
+        //  =>  12 | 12 |   3 |  45 |  35
 
         for (const setSize of this._numberSequenceService.createNumberSequence(this._boardSizeCached - 1, 1)) {
             const digitSetFrequencyMap = this.createDigitSetFrequencyMap(setSize, possibleValuesPerCell);
@@ -204,7 +218,8 @@ export class PuzzleSolver {
                     const frequency = digitSetFrequencyMap[digitSet];
                     if (frequency >= setSize) {
                         const digitsToRemove: number[] = digitSet.split(',').map(text => parseInt(text, 10));
-                        this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate, `${ruleName}@${setSize}`);
+                        this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
+                            `Set rule (${sequenceName} at size ${setSize})`);
                     }
                 }
             }
@@ -232,8 +247,8 @@ export class PuzzleSolver {
         digitSetFrequencyMap[digitSet]++;
     }
 
-    private applyUniqueRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: Array<number[]>,
-        possibleValuesInCurrentCell: number[], ruleName: string) {
+    private applyUniqueRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesInCurrentCell: number[],
+        possibleValuesPerCell: Array<number[]>, sequenceName: string) {
         // Rule: When a certain digit occurs in the draft set of only one cell in a sequence (row or column),
         // then that digit must be the final value of that cell.
 
@@ -249,7 +264,7 @@ export class PuzzleSolver {
 
         if (exclusiveDigits.length > 0) {
             if (exclusiveDigits.length === 1) {
-                this.selectCandidateValue(candidateValueSet, exclusiveDigits[0], coordinate, `${ruleName}`);
+                this.selectCandidateValue(candidateValueSet, exclusiveDigits[0], coordinate, `Unique rule (${sequenceName})`);
             } else {
                 console.log(`WARN: Found multiple exclusive digits for cell at ${coordinate}: ${exclusiveDigits}`);
             }
