@@ -16,7 +16,6 @@ import { CacheInterceptor } from './cache-interceptor';
 import { HttpRequestController } from './http-request-controller';
 import { HttpCacheService } from './http-cache.service';
 import { PuzzleDataService } from './puzzle-data.service';
-import { NumberSequenceService } from './number-sequence.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import { NumberSequenceService } from './number-sequence.service';
     HttpRequestController,
     HttpCacheService,
     PuzzleDataService,
-    NumberSequenceService,
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

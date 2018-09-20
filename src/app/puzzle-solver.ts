@@ -1,10 +1,8 @@
-import { NumberSequenceService } from './number-sequence.service';
 import { BoardComponent } from './board/board.component';
 import { Coordinate } from './coordinate';
+import { ObjectFacilities } from './object-facilities';
 
 export class PuzzleSolver {
-    private _numberSequenceService: NumberSequenceService = new NumberSequenceService();
-
     private _boardSizeCached: number;
     private _allCellValuesCached: number[];
 
@@ -29,7 +27,7 @@ export class PuzzleSolver {
     private ensureCache() {
         if (this._boardSizeCached !== this._board.boardSize) {
             this._boardSizeCached = this._board.boardSize;
-            this._allCellValuesCached = this._numberSequenceService.createNumberSequence(this._board.boardSize);
+            this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.boardSize);
         }
     }
 
@@ -126,11 +124,11 @@ export class PuzzleSolver {
         if (isGreaterThanOperator) {
             const adjacentMaxValue = adjacentCell.getMaxValue() || this._boardSizeCached;
             const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
-            const digitsToRemove = this._numberSequenceService.createNumberSequence(generateCount, adjacentMaxValue);
+            const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
             this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate, `Operator rule < ${direction}`);
         } else {
             const adjacentMinValue = adjacentCell.getMinValue() || 1;
-            const digitsToRemove = this._numberSequenceService.createNumberSequence(adjacentMinValue);
+            const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
             this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate, `Operator rule > ${direction}`);
         }
     }
@@ -210,19 +208,16 @@ export class PuzzleSolver {
         //      12 | 12 | 123 | 245 | 135
         //  =>  12 | 12 |   3 |  45 |  35
 
-        for (const setSize of this._numberSequenceService.createNumberSequence(this._boardSizeCached - 1, 1)) {
+        for (const setSize of ObjectFacilities.createNumberSequence(this._boardSizeCached - 1, 1)) {
             const digitSetFrequencyMap = this.createDigitSetFrequencyMap(setSize, possibleValuesPerCell);
 
-            for (const digitSet in digitSetFrequencyMap) {
-                if (Object.prototype.hasOwnProperty.call(digitSetFrequencyMap, digitSet)) {
-                    const frequency = digitSetFrequencyMap[digitSet];
-                    if (frequency >= setSize) {
-                        const digitsToRemove: number[] = digitSet.split(',').map(text => parseInt(text, 10));
-                        this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
-                            `Set rule (${sequenceName} at size ${setSize})`);
-                    }
+            ObjectFacilities.iterateObjectProperties<number>(digitSetFrequencyMap, (digitSet, frequency) => {
+                if (frequency >= setSize) {
+                    const digitsToRemove: number[] = digitSet.split(',').map(text => parseInt(text, 10));
+                    this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
+                        `Set rule (${sequenceName}) using size ${setSize}`);
                 }
-            }
+            });
         }
     }
 

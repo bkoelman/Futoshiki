@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { Coordinate } from '../coordinate';
 import { GameSaveState } from '../game-save-state';
+import { ObjectFacilities } from '../object-facilities';
+import { CellContentSnapshot } from '../cell-content-snapshot';
 
 @Component({
   selector: 'app-board',
@@ -132,17 +134,16 @@ export class BoardComponent implements OnInit {
 
   loadGame(saveState: GameSaveState) {
     if (saveState.cellSnapshotMap !== undefined) {
-      for (const index in saveState.cellSnapshotMap) {
-        if (Object.prototype.hasOwnProperty.call(saveState.cellSnapshotMap, index)) {
-          const snapshot = saveState.cellSnapshotMap[index];
-          const coordinate = Coordinate.fromIndex(parseInt(index, 10), this.boardSize);
 
-          const cell = this.getCellAtCoordinate(coordinate);
-          if (cell) {
-            cell.restoreContentSnapshot(snapshot);
-          }
+      ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(saveState.cellSnapshotMap, (indexText, snapshot) => {
+        const indexValue = parseInt(indexText, 10);
+        const coordinate = Coordinate.fromIndex(indexValue, this.boardSize);
+
+        const cell = this.getCellAtCoordinate(coordinate);
+        if (cell) {
+          cell.restoreContentSnapshot(snapshot);
         }
-      }
+      });
     }
   }
 

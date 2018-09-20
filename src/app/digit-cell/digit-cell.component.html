@@ -7,7 +7,7 @@
         <span *ngIf="!isFixed && value !== undefined" class="text-success">{{value}}</span>
       </div>
       <div *ngIf="isDraft">
-        <div *ngFor="let number of _numberSequenceService.createNumberSequence(9)" class="box-container draft-cell-block">
+        <div *ngFor="let number of createNumberSequence(9)" class="box-container draft-cell-block">
           <div class="container-content">
             <div class="container-content-table">
               <div #autoSizeText class="container-content-table-cell">

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChildren, ElementRef, AfterViewChecked } from '@angular/core';
-import { NumberSequenceService } from '../number-sequence.service.js';
 import { CellContentSnapshot } from '../cell-content-snapshot.js';
 import * as ft from '../../jquery.fittext.js';
+import { ObjectFacilities } from '../object-facilities.js';
 
 declare var $: any;
 
@@ -38,9 +38,6 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     return !this.isDraft && this.value === undefined;
   }
 
-  constructor(private _numberSequenceService: NumberSequenceService) {
-  }
-
   ngOnInit() {
   }
 
@@ -54,6 +51,10 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
       const autoSizeTextTarget = $(textRef.nativeElement);
       autoSizeTextTarget.fitText(0.15);
     });
+  }
+
+  createNumberSequence(count: number) {
+    return ObjectFacilities.createNumberSequence(count);
   }
 
   clear() {
