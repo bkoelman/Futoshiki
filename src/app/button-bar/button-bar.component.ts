@@ -14,6 +14,7 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   @Input() isEnabled: boolean;
   @Output() digitClicked = new EventEmitter<{ value: number, isDraft: boolean }>();
   @Output() clearClicked = new EventEmitter();
+  @Output() hintClicked = new EventEmitter();
 
   @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
 
@@ -50,6 +51,12 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   onClearButtonClicked() {
     if (this.isEnabled) {
       this.clearClicked.emit();
+    }
+  }
+
+  onHintButtonClicked() {
+    if (this.isEnabled) {
+      this.hintClicked.emit();
     }
   }
 

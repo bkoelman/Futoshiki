@@ -205,7 +205,7 @@ export class GameComponent implements OnInit {
     this.undoStack.push(new AggregateUndoCommand(commands));
   }
 
-  calculateDraftValue() {
+  onHintClicked() {
     const cell = this.boardComponent.getSelectedCell();
     if (cell && cell.value === undefined) {
       const coordinate = this.boardComponent.getCoordinateForCell(cell);
