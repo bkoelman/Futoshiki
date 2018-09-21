@@ -11,4 +11,8 @@ export class ObjectFacilities {
             }
         }
     }
+
+    static getRandomIntegerInRange(minInclusive: number, maxInclusive: number): number {
+        return Math.floor(Math.random() * (maxInclusive - minInclusive + 1) + minInclusive);
+    }
 }

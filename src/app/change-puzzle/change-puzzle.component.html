@@ -1,4 +1,4 @@
-<div *ngIf="info" class="modal fade" id="changePuzzleModal" tabindex="-1">
+<div *ngIf="info" class="modal fade transparent" id="changePuzzleModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form #puzzleChangeForm="ngForm" autocomplete="off" novalidate>
@@ -52,7 +52,8 @@
         </div>
         <div class="modal-footer justify-content-start">
           <button type="button" class="btn btn-secondary" (click)="onPreviousButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || info.id <= 1">&lt;</button>
-          <button type="button" class="btn btn-secondary mr-auto" (click)="onNextButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || info.id >= maxPuzzleId">&gt;</button>
+          <button type="button" class="btn btn-secondary" (click)="onNextButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || info.id >= maxPuzzleId">&gt;</button>
+          <button type="button" class="btn btn-secondary mr-auto" (click)="onRandomButtonClicked($event)">?</button>
           <div class="loader" [hidden]='!isLoaderVisible'></div>
           <button type="submit" class="btn btn-primary" (click)="onApplyButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid"
             data-dismiss="modal">Ok</button>

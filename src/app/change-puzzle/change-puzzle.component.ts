@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angu
 import { NgForm } from '@angular/forms';
 import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
+import { ObjectFacilities } from '../object-facilities';
 
 @Component({
   selector: 'app-change-puzzle',
@@ -36,6 +37,11 @@ export class ChangePuzzleComponent implements OnInit {
 
   onNextButtonClicked(event: Event) {
     this.info.id++;
+    this.onPuzzleChanged();
+  }
+
+  onRandomButtonClicked() {
+    this.info.id = ObjectFacilities.getRandomIntegerInRange(1, this.maxPuzzleId);
     this.onPuzzleChanged();
   }
 

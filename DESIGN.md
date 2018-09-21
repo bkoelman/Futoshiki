@@ -18,7 +18,7 @@
 - [x] undo last move(s)
 
 # Enhancements
-- [ ] puzzle selection: leave number empty for random puzzle
+- [x] puzzle selection: enable selection of a random puzzle
 - [x] save game progress in cookie
 - [ ] warning when navigating away from page
 - [ ] option to track elapsed time

@@ -105,6 +105,10 @@
     border: 1px solid #DADCDF;
 }
 
+.transparent {
+    opacity: 0.85;
+}
+
 input.ng-invalid {
     border: 1px red solid;
 }
