@@ -29,7 +29,7 @@
   - highlght wrong temporary digits (based on rules)
 - [ ] learn mode: auto-select all possible numbers in empty cells
 - [ ] automated solver
-- [ ] print puzzle
+- [x] print puzzle
 - [ ] helptext: game rules and strategies
 - [ ] nicer styling when puzzle solved (show button "new random game")
 - [ ] nicer styling of button bar

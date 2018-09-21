@@ -139,3 +139,12 @@ input.ng-invalid {
         transform: rotate(360deg);
     }
 }
+
+@media print {
+    .rounded-button {
+        display: none;
+    }
+    .btn {
+        display: none !important;
+    }
+}
