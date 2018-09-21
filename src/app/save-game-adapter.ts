@@ -39,7 +39,9 @@ export class SaveGameAdapter {
             for (const draftValue of snapshot.draftValues) {
                 draftBitmask += Math.pow(2, draftValue - 1);
             }
-            return this.decimalToHex(draftBitmask).padStart(4, '0');
+
+            const hexValue = this.decimalToHex(draftBitmask);
+            return hexValue.length === 2 ? '00' + hexValue : hexValue;
         } else {
             return SaveGameAdapter.emptyCellText;
         }
