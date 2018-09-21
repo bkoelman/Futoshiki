@@ -20,7 +20,6 @@
 # Enhancements
 - [x] puzzle selection: enable selection of a random puzzle
 - [x] save game progress in cookie
-- [ ] warning when navigating away from page
 - [ ] option to track elapsed time
 - [ ] auto-cleanup temporary digits on regular digit entry
 - [ ] help modes:
