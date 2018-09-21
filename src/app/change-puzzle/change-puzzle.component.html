@@ -50,7 +50,7 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer justify-content-start">
           <button type="button" class="btn btn-secondary" (click)="onPreviousButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || info.id <= 1">&lt;</button>
           <button type="button" class="btn btn-secondary mr-auto" (click)="onNextButtonClicked($event)" [disabled]="!puzzleChangeForm.form.valid || info.id >= maxPuzzleId">&gt;</button>
           <div class="loader" [hidden]='!isLoaderVisible'></div>
