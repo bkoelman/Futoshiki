@@ -29,7 +29,7 @@
   <div class="row">
     <div class="col-1"></div>
     <div class="col-10">
-      <div class="rounded-button-group">
+      <div class="rounded-button-group mt-1">
         <div *ngFor="let number of createNumberSequence(this.boardSize)" (click)="onDigitButtonClicked($event, true)"
           class="box-container rounded-button" [class.clickable]="isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled"
           [ngClass]="'button-' + boardSize">
