@@ -19,8 +19,12 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              { "glob": "**/*", "input": "src/assets/", "output": "/assets/" },
+              { "glob": "favicon.ico", "input": "src/", "output": "/" },
+              { "glob": "*.png", "input": "src/", "output": "/" },
+              { "glob": "*.svg", "input": "src/", "output": "/" },
+              { "glob": "browserconfig.xml", "input": "src/", "output": "/" },
+              { "glob": "site.webmanifest", "input": "src/", "output": "/" }
             ],
             "styles": [
               "src/styles.css",
