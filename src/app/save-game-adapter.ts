@@ -6,18 +6,23 @@ import { Coordinate } from './coordinate';
 
 export class SaveGameAdapter {
     private static readonly _separator = '-';
+    private static readonly emptyCellText = '0000';
     private static readonly _allCellValuesCached = [9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-    toText(info: PuzzleInfo, board: BoardComponent): string {
+    toText(info: PuzzleInfo, board: BoardComponent, useEmptyBoard: boolean): string {
         let cells = '';
 
-        for (let row = 1; row <= board.boardSize; row++) {
-            for (let column = 1; column <= board.boardSize; column++) {
-                const coordinate = new Coordinate(row, column);
-                const cell = board.getCellAtCoordinate(coordinate);
-                if (cell) {
-                    const snapshot = cell.getContentSnapshot();
-                    cells += this.formatCellSnapshot(snapshot);
+        for (let row = 1; row <= info.boardSize; row++) {
+            for (let column = 1; column <= info.boardSize; column++) {
+                if (useEmptyBoard) {
+                    cells += SaveGameAdapter.emptyCellText;
+                } else {
+                    const coordinate = new Coordinate(row, column);
+                    const cell = board.getCellAtCoordinate(coordinate);
+                    if (cell) {
+                        const snapshot = cell.getContentSnapshot();
+                        cells += this.formatCellSnapshot(snapshot);
+                    }
                 }
             }
         }
@@ -36,7 +41,7 @@ export class SaveGameAdapter {
             }
             return this.decimalToHex(draftBitmask).padStart(4, '0');
         } else {
-            return '0000';
+            return SaveGameAdapter.emptyCellText;
         }
     }
 

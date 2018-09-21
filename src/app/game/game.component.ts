@@ -171,6 +171,7 @@ export class GameComponent implements OnInit {
       if (this.BoardContainsSolution()) {
         this.isGameSolved = true;
         this.boardComponent.canSelect = false;
+        this.storeGameSaveStateInCookie();
       }
     }
   }
@@ -260,7 +261,7 @@ export class GameComponent implements OnInit {
   }
 
   private storeGameSaveStateInCookie() {
-    const saveGameText = this._saveGameAdapter.toText(this.puzzle.info, this.boardComponent);
+    const saveGameText = this._saveGameAdapter.toText(this.puzzle.info, this.boardComponent, this.isGameSolved);
     Cookies.set('save', saveGameText, {
       expires: 30
     });
