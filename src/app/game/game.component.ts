@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as Cookies from 'js-cookie';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../puzzle-data.service';
@@ -23,6 +23,7 @@ import { SaveGameAdapter } from '../save-game-adapter';
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
+  @ViewChild('gameState') gameStateElement: ElementRef;
   puzzle: PuzzleData | undefined;
   hasError: boolean;
   isBoardCompleted: boolean;
@@ -32,12 +33,15 @@ export class GameComponent implements OnInit {
   private _solver: PuzzleSolver;
   private _saveGameAdapter = new SaveGameAdapter();
   private _isLoadingGame = false;
+  private _inDebugMode = false;
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
 
   ngOnInit() {
     this._solver = new PuzzleSolver(this.boardComponent);
+
+    this._inDebugMode = location.search.indexOf('debug') >= 0;
 
     const saveState = this.getGameSaveStateFromCookie();
     this.retrievePuzzle(saveState.info, () => this.boardComponent.loadGame(saveState));
@@ -262,5 +266,24 @@ export class GameComponent implements OnInit {
     });
 
     console.log('Save cookie updated.');
+
+    if (this._inDebugMode) {
+      this.gameStateElement.nativeElement.value = saveGameText;
+    }
+  }
+
+  loadGame() {
+    const saveState = this._saveGameAdapter.parseText(this.gameStateElement.nativeElement.value);
+    if (saveState) {
+      if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
+        this._isLoadingGame = true;
+        this.boardComponent.loadGame(saveState);
+        this._isLoadingGame = false;
+      } else {
+        this.retrievePuzzle(saveState.info, () => this.boardComponent.loadGame(saveState));
+      }
+
+      this.storeGameSaveStateInCookie();
+    }
   }
 }
