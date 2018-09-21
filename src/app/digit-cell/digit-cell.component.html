@@ -1,5 +1,5 @@
-<div class="box-container box-border" [class.clickable]="!isFixed && canSelect" [class.square-selected]="isSelected"
-  [ngClass]="'square-' + boardSize" (click)="onBoxClicked()">
+<div class="box-container box-border" [class.clickable]="!isFixed && canSelect" [class.non-clickable]="isFixed || !canSelect"
+  [class.square-selected]="isSelected" [ngClass]="'square-' + boardSize" (click)="onBoxClicked()">
   <div class="container-content">
     <div class="container-content-table">
       <div *ngIf="!isDraft" #autoSizeText class="container-content-table-cell">

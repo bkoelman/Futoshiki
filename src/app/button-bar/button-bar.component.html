@@ -3,8 +3,8 @@
     <div class="col-12">
       <div class="rounded-button-group">
         <div *ngFor="let number of createNumberSequence(this.boardSize)" (click)="onDigitButtonClicked($event, false)"
-          class="box-container rounded-button" [class.clickable]="isEnabled" [class.inactive]="!isEnabled"
-          [class.green]="isEnabled" [ngClass]="'button-' + boardSize">
+          class="box-container rounded-button" [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled"
+          [class.inactive]="!isEnabled" [class.green]="isEnabled" [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div #autoSizeText class="container-content-table-cell">
@@ -14,7 +14,7 @@
           </div>
         </div>
         <div (click)="onClearButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
-          [class.inactive]="!isEnabled" [class.gray]="isEnabled" [ngClass]="'button-' + boardSize">
+          [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.gray]="isEnabled" [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div #autoSizeText class="container-content-table-cell">
@@ -31,8 +31,8 @@
     <div class="col-10">
       <div class="rounded-button-group mt-1">
         <div *ngFor="let number of createNumberSequence(this.boardSize)" (click)="onDigitButtonClicked($event, true)"
-          class="box-container rounded-button" [class.clickable]="isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled"
-          [ngClass]="'button-' + boardSize">
+          class="box-container rounded-button" [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled"
+          [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div #autoSizeText class="container-content-table-cell">
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div (click)="onHintButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
-          [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'button-' + boardSize">
+          [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div #autoSizeText class="container-content-table-cell">

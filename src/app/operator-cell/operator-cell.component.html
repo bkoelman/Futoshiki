@@ -1,4 +1,4 @@
-<div class="box-container" [ngClass]="(isRotated ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
+<div class="box-container non-clickable" [ngClass]="(isRotated ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
   <div class="container-content">
     <div class="container-content-table">
       <div #autoSizeText class="container-content-table-cell" [class.rotated-right]="isRotated">

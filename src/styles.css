@@ -59,6 +59,10 @@
     cursor: pointer;
 }
 
+.non-clickable {
+    cursor: default;
+}
+
 .rounded-button-group {
     display: flex;
     flex-wrap: wrap;
