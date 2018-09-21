@@ -12,8 +12,8 @@
 <div class="clearfix"></div>
 <p></p>
 
-<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" (digitClicked)="onDigitClicked($event)"
-  (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
+<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" [areKeysEnabled]="!changePuzzleComponent.isModalVisible"
+  (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
 
 <p></p>
 <div class="alert alert-success" role="alert" *ngIf="isGameSolved">

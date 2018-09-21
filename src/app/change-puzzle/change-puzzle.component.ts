@@ -1,24 +1,54 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, NgZone } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
 import { ObjectFacilities } from '../object-facilities';
 
+declare var $: any;
+
 @Component({
   selector: 'app-change-puzzle',
   templateUrl: './change-puzzle.component.html'
 })
-export class ChangePuzzleComponent implements OnInit {
+export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
   readonly maxPuzzleId = 9999;
   PuzzleDifficultyAlias = PuzzleDifficulty;
   info: PuzzleInfo | undefined;
+  isModalVisible: boolean;
   @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
+  private _bootstrapHooksRegistered = false;
   private _lastChangeEventData: string;
 
+  constructor(private _zone: NgZone) {
+  }
+
   ngOnInit() {
+  }
+
+  ngAfterViewChecked(): void {
+    this.registerBootstrapHooks();
+  }
+
+  private registerBootstrapHooks() {
+    if (!this._bootstrapHooksRegistered) {
+      const target = $('#changePuzzleModal');
+      if (target.length > 0) {
+        target.on('show.bs.modal', () => {
+          this._zone.run(() => {
+            this.isModalVisible = true;
+          });
+        });
+        target.on('hide.bs.modal', () => {
+          this._zone.run(() => {
+            this.isModalVisible = false;
+          });
+        });
+        this._bootstrapHooksRegistered = true;
+      }
+    }
   }
 
   setDefaults(info: PuzzleInfo) {

@@ -12,6 +12,7 @@ declare var $: any;
 export class ButtonBarComponent implements OnInit, AfterViewChecked {
   @Input() boardSize: number | undefined;
   @Input() isEnabled: boolean;
+  @Input() areKeysEnabled = true;
   @Output() digitClicked = new EventEmitter<{ value: number, isDraft: boolean }>();
   @Output() clearClicked = new EventEmitter();
   @Output() hintClicked = new EventEmitter();
@@ -61,9 +62,12 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   }
 
   @HostListener('window:keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
-    if (this.isEnabled) {
-      if (event.code === 'Delete' || event.code === 'Backspace') {
+    if (this.isEnabled && this.areKeysEnabled) {
+      if (event.code === 'Delete' || event.key === 'Del' || event.code === 'Backspace' || event.key === 'Backspace') {
+        event.preventDefault();
         this.clearClicked.emit();
+      } else if (event.key === '?') {
+        this.hintClicked.emit();
       } else {
         const digit = parseInt(event.key, 10);
         if (!isNaN(digit) && digit > 0 && digit <= this.boardSize) {
