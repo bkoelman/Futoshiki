@@ -5,6 +5,7 @@ import { ObjectFacilities } from './object-facilities';
 export class PuzzleSolver {
     private _boardSizeCached: number;
     private _allCellValuesCached: number[];
+    private _powerSetForAllCellValuesCached: number[][];
 
     constructor(private _board: BoardComponent) {
     }
@@ -26,14 +27,15 @@ export class PuzzleSolver {
         return candidateValueSet;
     }
 
-    private ensureCache() {
+    private ensureCache(): void {
         if (this._boardSizeCached !== this._board.boardSize) {
             this._boardSizeCached = this._board.boardSize;
             this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.boardSize);
+            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached)
         }
     }
 
-    private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]) {
+    private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]): void {
         // Rule: When a cell is greater than its adjacent cell, it cannot contain digit 1 and
         // its minimum value must be higher than the minimum draft value in the adjacent cell.
         // Likewise, when a cell is less than its adjacent cell, it cannot contain the highest digit on the board and
@@ -120,7 +122,7 @@ export class PuzzleSolver {
     }
 
     private applyOperatorRule(isGreaterThanOperator: boolean, adjacentCellCoordinate: Coordinate,
-        currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string) {
+        currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string): void {
         const adjacentCell = this._board.getCellAtCoordinate(adjacentCellCoordinate);
 
         if (isGreaterThanOperator) {
@@ -135,7 +137,7 @@ export class PuzzleSolver {
         }
     }
 
-    private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]) {
+    private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]): void {
         const coordinatesInRow = this.getCoordinatesInRow(coordinate.row, coordinate.column);
         const coordinatesInColumn = this.getCoordinatesInColumn(coordinate.column, coordinate.row);
 
@@ -168,7 +170,7 @@ export class PuzzleSolver {
     }
 
     private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],
-        sequenceName: string) {
+        sequenceName: string): void {
         const possibleValuesInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
 
         this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
@@ -199,53 +201,49 @@ export class PuzzleSolver {
     }
 
     private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
-        sequenceName: string) {
-        // Rule: When a sequence (row or column) contains N cells with the exact same N draft digits,
-        // then the other cells in that same sequence cannot contain those digits.
+        sequenceName: string): void {
+        // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells each contain only the same N digits,
+        // then those digits must be the answers for the N cells, and any occurrences of those digits in other cells in the sequence
+        // can be deleted.
         // N ranges from 1 to the size of the board (exclusive).
         //
         // Example:
         //      12 | 12 | 123 | 245 | 135
         //  =>  12 | 12 |   3 |  45 |  35
 
-        for (const setSize of ObjectFacilities.createNumberSequence(this._boardSizeCached - 1, 1)) {
-            const digitSetFrequencyMap = this.createDigitSetFrequencyMap(setSize, possibleValuesPerCell);
-
-            ObjectFacilities.iterateObjectProperties<number>(digitSetFrequencyMap, (digitSet, frequency) => {
-                if (frequency >= setSize) {
-                    const digitsToRemove: number[] = digitSet.split(',').map(text => parseInt(text, 10));
+        for (const digitSet of this._powerSetForAllCellValuesCached) {
+            if (digitSet.length > 0 && digitSet.length < this._boardSizeCached) {
+                const frequency = this.getNakedSetFrequency(digitSet, possibleValuesPerCell);
+                if (frequency >= digitSet.length) {
+                    const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) > -1);
                     this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
                         `Naked Set rule with set {${digitSet}} in ${sequenceName}`);
                 }
-            });
+            }
         }
     }
 
-    private createDigitSetFrequencyMap(setSize: number, possibleValuesPerCell: number[][]): object {
-        const digitSetFrequencyMap: object = {};
+    private getNakedSetFrequency(digitSet: number[], possibleValuesPerCell: number[][]): number {
+        let setFoundCount = 0;
 
         for (const possibleValues of possibleValuesPerCell) {
-            if (possibleValues.length === setSize) {
-                const digitSet = possibleValues.join(',');
-                this.incrementFrequencyInSet(digitSet, digitSetFrequencyMap);
+            if (this.isNakedSet(digitSet, possibleValues)) {
+                setFoundCount++;
             }
         }
 
-        return digitSetFrequencyMap;
+        return setFoundCount;
     }
 
-    private incrementFrequencyInSet(digitSet: string | number, digitSetFrequencyMap: object) {
-        if (!digitSetFrequencyMap[digitSet]) {
-            digitSetFrequencyMap[digitSet] = 0;
-        }
-
-        digitSetFrequencyMap[digitSet]++;
+    private isNakedSet(digitSet: number[], possibleValues: number[]) {
+        return JSON.stringify(digitSet) === JSON.stringify(possibleValues);
     }
 
     private applyHiddenSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
-        sequenceName: string) {
+        sequenceName: string): void {
         // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells contain the only copies of N digits
         // in a sequence, then those digits must be the answers for the N cells, and any other digits in those cells can be deleted.
+        // N ranges from 1 to the size of the board (exclusive).
         //
         // Example:
         //      123 | 124 | 35 | 345 | 34
@@ -286,7 +284,7 @@ export class PuzzleSolver {
         return setFoundCount;
     }
 
-    private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string) {
+    private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string): void {
         const beforeText = candidateValueSet.join(',');
         this.removeNumbersFromArray(candidateValueSet, digitsToRemove);
         const afterText = candidateValueSet.join(',');
@@ -296,7 +294,7 @@ export class PuzzleSolver {
         }
     }
 
-    private removeNumbersFromArray(targetArray: number[], numbersToRemove: number[]) {
+    private removeNumbersFromArray(targetArray: number[], numbersToRemove: number[]): void {
         for (const numberToRemove of numbersToRemove) {
             const indexToRemove = targetArray.indexOf(numberToRemove);
             if (indexToRemove > -1) {
