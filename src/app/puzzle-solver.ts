@@ -14,6 +14,8 @@ export class PuzzleSolver {
 
         const candidateValueSet = this._allCellValuesCached.slice();
 
+        // Rules described at: http://pzl.org.uk/futoshiki.html
+
         this.applyOperatorRules(coordinate, candidateValueSet);
         this.applyDigitRules(coordinate, candidateValueSet);
 
@@ -134,25 +136,11 @@ export class PuzzleSolver {
     }
 
     private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]) {
-        const possibleValuesInCurrentCell = this.getPossibleValuesForCell(coordinate);
-
         const coordinatesInRow = this.getCoordinatesInRow(coordinate.row, coordinate.column);
         const coordinatesInColumn = this.getCoordinatesInColumn(coordinate.column, coordinate.row);
 
-        this.applyDigitRulesInSequence(coordinate, coordinatesInRow, possibleValuesInCurrentCell, candidateValueSet, 'row');
-        this.applyDigitRulesInSequence(coordinate, coordinatesInColumn, possibleValuesInCurrentCell, candidateValueSet, 'column');
-    }
-
-    private getPossibleValuesForCell(coordinate: Coordinate): number[] {
-        const cell = this._board.getCellAtCoordinate(coordinate);
-        if (cell) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length > 0) {
-                return possibleValues;
-            }
-        }
-
-        return this._allCellValuesCached;
+        this.applyDigitRulesInSequence(coordinate, coordinatesInRow, candidateValueSet, 'row');
+        this.applyDigitRulesInSequence(coordinate, coordinatesInColumn, candidateValueSet, 'column');
     }
 
     private getCoordinatesInRow(row: number, columnToSkip: number): Coordinate[] {
@@ -179,16 +167,16 @@ export class PuzzleSolver {
         return coordinates;
     }
 
-    private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[],
-        possibleValuesInCurrentCell: number[], candidateValueSet: number[], sequenceName: string) {
+    private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],
+        sequenceName: string) {
         const possibleValuesInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
 
-        this.applySetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
-        this.applyUniqueRuleInSequence(coordinate, candidateValueSet, possibleValuesInCurrentCell, possibleValuesInSequence, sequenceName);
+        this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
+        this.applyHiddenSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
     }
 
-    private getPossibleCellValuesInSequence(sequence: Coordinate[]): Array<number[]> {
-        const possibleValuesPerCell: Array<number[]> = [];
+    private getPossibleCellValuesInSequence(sequence: Coordinate[]): number[][] {
+        const possibleValuesPerCell: number[][] = [];
 
         for (const coordinate of sequence) {
             const possibleCellValues = this.getPossibleValuesForCell(coordinate);
@@ -198,7 +186,19 @@ export class PuzzleSolver {
         return possibleValuesPerCell;
     }
 
-    private applySetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: Array<number[]>,
+    private getPossibleValuesForCell(coordinate: Coordinate): number[] {
+        const cell = this._board.getCellAtCoordinate(coordinate);
+        if (cell) {
+            const possibleValues = cell.getPossibleValues();
+            if (possibleValues.length > 0) {
+                return possibleValues;
+            }
+        }
+
+        return this._allCellValuesCached;
+    }
+
+    private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
         sequenceName: string) {
         // Rule: When a sequence (row or column) contains N cells with the exact same N draft digits,
         // then the other cells in that same sequence cannot contain those digits.
@@ -215,26 +215,26 @@ export class PuzzleSolver {
                 if (frequency >= setSize) {
                     const digitsToRemove: number[] = digitSet.split(',').map(text => parseInt(text, 10));
                     this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
-                        `Set rule (${sequenceName}) using size ${setSize}`);
+                        `Naked Set rule with set {${digitSet}} in ${sequenceName}`);
                 }
             });
         }
     }
 
-    private createDigitSetFrequencyMap(setSize: number, possibleValuesPerCell: Array<number[]>): object {
+    private createDigitSetFrequencyMap(setSize: number, possibleValuesPerCell: number[][]): object {
         const digitSetFrequencyMap: object = {};
 
         for (const possibleValues of possibleValuesPerCell) {
             if (possibleValues.length === setSize) {
                 const digitSet = possibleValues.join(',');
-                this.incrementDigitSetFrequency(digitSet, digitSetFrequencyMap);
+                this.incrementFrequencyInSet(digitSet, digitSetFrequencyMap);
             }
         }
 
         return digitSetFrequencyMap;
     }
 
-    private incrementDigitSetFrequency(digitSet: string, digitSetFrequencyMap: object) {
+    private incrementFrequencyInSet(digitSet: string | number, digitSetFrequencyMap: object) {
         if (!digitSetFrequencyMap[digitSet]) {
             digitSetFrequencyMap[digitSet] = 0;
         }
@@ -242,61 +242,48 @@ export class PuzzleSolver {
         digitSetFrequencyMap[digitSet]++;
     }
 
-    private applyUniqueRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesInCurrentCell: number[],
-        possibleValuesPerCell: Array<number[]>, sequenceName: string) {
-        // Rule: When a certain digit occurs in the draft set of only one cell in a sequence (row or column),
-        // then that digit must be the final value of that cell.
+    private applyHiddenSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
+        sequenceName: string) {
+        // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells contain the only copies of N digits
+        // in a sequence, then those digits must be the answers for the N cells, and any other digits in those cells can be deleted.
+        //
+        // Example:
+        //      123 | 124 | 35 | 345 | 34
+        //  =>  12  | 12  | 35 | 345 | 34
 
-        const exclusiveDigits: number[] = [];
+        const powerSet = ObjectFacilities.createPowerSet(candidateValueSet);
 
-        const digitFrequencyMap = this.createDigitFrequencyMap(possibleValuesPerCell);
-        for (const digit of possibleValuesInCurrentCell) {
-            const frequency = digitFrequencyMap[digit];
-            if (frequency === undefined) {
-                exclusiveDigits.push(digit);
-            }
-        }
-
-        if (exclusiveDigits.length > 0) {
-            if (exclusiveDigits.length === 1) {
-                this.selectCandidateValue(candidateValueSet, exclusiveDigits[0], coordinate, `Unique rule (${sequenceName})`);
-            } else {
-                console.log(`WARN: Found multiple exclusive digits for cell at ${coordinate}: ${exclusiveDigits}`);
-            }
-        }
-    }
-
-    private createDigitFrequencyMap(possibleValuesPerCell: Array<number[]>): object {
-        const digitFrequencyMap: object = {};
-
-        for (const digit of this._allCellValuesCached) {
-            for (const possibleValues of possibleValuesPerCell) {
-                if (possibleValues.indexOf(digit) > -1) {
-                    this.incrementDigitFrequency(digit, digitFrequencyMap);
+        for (const digitSet of powerSet) {
+            if (digitSet.length > 0 && digitSet.length < this._boardSizeCached) {
+                const frequency = this.getHiddenSetFrequency(digitSet, possibleValuesPerCell);
+                if (frequency === digitSet.length - 1) {
+                    const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) <= -1);
+                    this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
+                        `Hidden Set rule with set {${digitSet}} in ${sequenceName}`);
                 }
             }
         }
-
-        return digitFrequencyMap;
     }
 
-    private incrementDigitFrequency(digit: number, digitFrequencyMap: object) {
-        if (!digitFrequencyMap[digit]) {
-            digitFrequencyMap[digit] = 0;
+    private getHiddenSetFrequency(digitSet: number[], possibleValuesPerCell: number[][]): number {
+        let setFoundCount = 0;
+
+        for (const possibleValues of possibleValuesPerCell) {
+            let digitFoundCount = 0;
+            for (const digit of digitSet) {
+                if (possibleValues.indexOf(digit) > -1) {
+                    digitFoundCount++;
+                }
+            }
+
+            if (digitFoundCount === digitSet.length) {
+                setFoundCount++;
+            } else if (digitFoundCount > 0) {
+                return 0;
+            }
         }
 
-        digitFrequencyMap[digit]++;
-    }
-
-    private selectCandidateValue(candidateValueSet: number[], digitToSelect: number, coordinate: Coordinate, ruleName: string) {
-        const beforeText = candidateValueSet.join(',');
-        candidateValueSet.length = 0;
-        candidateValueSet.push(digitToSelect);
-        const afterText = candidateValueSet.join(',');
-
-        if (beforeText !== afterText) {
-            console.log(`Applying ${ruleName} at cell ${coordinate}: ${beforeText} => ${afterText}`);
-        }
+        return setFoundCount;
     }
 
     private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string) {

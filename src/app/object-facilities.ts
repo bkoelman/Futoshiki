@@ -15,4 +15,41 @@ export class ObjectFacilities {
     static getRandomIntegerInRange(minInclusive: number, maxInclusive: number): number {
         return Math.floor(Math.random() * (maxInclusive - minInclusive + 1) + minInclusive);
     }
+
+    static createPowerSet<T>(set: T[]): T[][] {
+        // Based on https://www.mathsisfun.com/sets/power-set-maker.html
+
+        if (set.length === 0) {
+            return [[]];
+        }
+
+        const answer: T[][] = [];
+        const bitArray: number[] = [0];
+        const cardinality = Math.pow(2, set.length);
+
+        for (let index = 0; index < cardinality; index++) {
+            const subset: T[] = [];
+            for (let setIndex = 0; setIndex < set.length; setIndex++) {
+                if (bitArray[setIndex] === 1) {
+                    subset.push(set[setIndex]);
+                }
+            }
+
+            answer.push(subset);
+            ObjectFacilities.incrementBitArray(bitArray, 0);
+        }
+
+        return answer;
+    }
+
+    private static incrementBitArray(bitArray: number[], index): void {
+        if (bitArray.length <= index) {
+            bitArray.push(1);
+        } else if (bitArray[index] === 1) {
+            bitArray[index] = 0;
+            ObjectFacilities.incrementBitArray(bitArray, index + 1);
+        } else {
+            bitArray[index] = 1;
+        }
+    }
 }

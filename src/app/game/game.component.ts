@@ -166,6 +166,10 @@ export class GameComponent implements OnInit {
       }
     }
 
+    this.verifyBoardSolved();
+  }
+
+  private verifyBoardSolved() {
     this.isBoardCompleted = !this.boardComponent.hasIncompleteCells();
     if (this.isBoardCompleted) {
       if (this.BoardContainsSolution()) {
@@ -239,6 +243,35 @@ export class GameComponent implements OnInit {
             if (!snapshotBefore.isEqualTo(snapshotAfter)) {
               undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
               cell.restoreContentSnapshot(snapshotAfter);
+            }
+          }
+        }
+      }
+
+      if (undoCommands.length > 0) {
+        this.pushAggregateUndoCommand(undoCommands);
+      }
+    });
+  }
+
+  promoteDraftValues() {
+    this.boardComponent.collectBulkChanges(() => {
+      const undoCommands: SingleUndoCommand[] = [];
+
+      for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
+        for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
+          const coordinate = new Coordinate(row, column);
+          const cell = this.boardComponent.getCellAtCoordinate(coordinate);
+          if (cell && cell.value === undefined) {
+            const possibleValues = cell.getPossibleValues();
+            if (possibleValues.length === 1) {
+              const snapshotBefore = cell.getContentSnapshot();
+              const snapshotAfter = new CellContentSnapshot(possibleValues[0], []);
+
+              undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
+              cell.restoreContentSnapshot(snapshotAfter);
+
+              this.verifyBoardSolved();
             }
           }
         }
