@@ -107,7 +107,7 @@ export class GameComponent implements OnInit {
   private onPuzzleDownloadFailed(err: any) {
     this._isLoadingGame = false;
     this.hasError = true;
-    console.log(err);
+    console.error(err);
   }
 
   restart() {
