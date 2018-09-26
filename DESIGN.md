@@ -28,13 +28,23 @@
   - button to undo back to first mistake
   - highlght wrong temporary digits (based on rules)
 - [ ] learn mode: auto-select all possible numbers in empty cells
-- [ ] automated solver
+- [ ] automated solver (http://pzl.org.uk/futoshiki.html)
+  - [x] Naked Set
+  - [x] Hidden Set
+  - [x] Relative Size
+  - [ ] Relative Size 2 (http://www.davdata.nl/futoshiki.html point 4)
+  - [ ] X Wing
 - [x] print puzzle
 - [ ] helptext: game rules and strategies
 - [ ] nicer styling when puzzle solved (show button "new random game")
 - [ ] nicer styling of button bar
 - [x] replace favicon
 - [ ] cleanup README.md
+- [ ] switch to TypeScript strict mode
+- [ ] consider to use "prettier" code-formatter
+- [ ] optimize performance
+  - type table layout instead of divs
+  - replace arrays with bitmasks
 
 # Links for inspiration
 https://sudoku.game/
