@@ -15,6 +15,7 @@ import { PuzzleSolver } from '../puzzle-solver';
 import { CellContentSnapshot } from '../cell-content-snapshot';
 import { GameSaveState } from '../game-save-state';
 import { SaveGameAdapter } from '../save-game-adapter';
+import { DebugConsoleComponent } from '../debug-console/debug-console.component';
 
 @Component({
   selector: 'app-game',
@@ -23,7 +24,7 @@ import { SaveGameAdapter } from '../save-game-adapter';
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent: BoardComponent;
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
-  @ViewChild('gameState') gameStateElement: ElementRef;
+  @ViewChild(DebugConsoleComponent) debugConsoleComponent: DebugConsoleComponent;
   puzzle: PuzzleData | undefined;
   hasError: boolean;
   isBoardCompleted: boolean;
@@ -284,6 +285,7 @@ export class GameComponent implements OnInit {
   }
 
   onPuzzleSelectionChanged(value: PuzzleInfo) {
+    this.puzzle = undefined;
     this.retrievePuzzle(value);
   }
 
@@ -294,30 +296,29 @@ export class GameComponent implements OnInit {
   }
 
   private storeGameSaveStateInCookie() {
-    const saveGameText = this._saveGameAdapter.toText(this.puzzle.info, this.boardComponent, this.isGameSolved);
-    Cookies.set('save', saveGameText, {
+    const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this.boardComponent, this.isGameSolved);
+    Cookies.set('save', gameStateText, {
       expires: 30
     });
 
     console.log('Save cookie updated.');
 
     if (this._inDebugMode) {
-      this.gameStateElement.nativeElement.value = saveGameText;
+      this.debugConsoleComponent.updateSaveGameText(gameStateText);
     }
   }
 
-  loadGame() {
-    const saveState = this._saveGameAdapter.parseText(this.gameStateElement.nativeElement.value);
+  loadGame(gameStateText) {
+    const saveState = this._saveGameAdapter.parseText(gameStateText);
     if (saveState) {
       if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
-        this._isLoadingGame = true;
         this.boardComponent.loadGame(saveState);
-        this._isLoadingGame = false;
       } else {
-        this.retrievePuzzle(saveState.info, () => this.boardComponent.loadGame(saveState));
+        this.puzzle = undefined;
+        this.retrievePuzzle(saveState.info, () => {
+          this.boardComponent.loadGame(saveState);
+        });
       }
-
-      this.storeGameSaveStateInCookie();
     }
   }
 }

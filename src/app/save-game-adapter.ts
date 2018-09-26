@@ -9,26 +9,36 @@ export class SaveGameAdapter {
     private static readonly emptyCellText = '0000';
     private static readonly _allCellValuesCached = [9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-    toText(info: PuzzleInfo, board: BoardComponent, useEmptyBoard: boolean): string {
+    toText(info: PuzzleInfo, board: BoardComponent, forceEmptyBoard: boolean): string {
         let cells = '';
+        let seenValues = false;
 
-        for (let row = 1; row <= info.boardSize; row++) {
-            for (let column = 1; column <= info.boardSize; column++) {
-                if (useEmptyBoard) {
-                    cells += SaveGameAdapter.emptyCellText;
-                } else {
+        if (!forceEmptyBoard) {
+            for (let row = 1; row <= info.boardSize; row++) {
+                for (let column = 1; column <= info.boardSize; column++) {
                     const coordinate = new Coordinate(row, column);
                     const cell = board.getCellAtCoordinate(coordinate);
                     if (cell) {
                         const snapshot = cell.getContentSnapshot();
-                        cells += this.formatCellSnapshot(snapshot);
+                        const text = this.formatCellSnapshot(snapshot);
+                        cells += text;
+
+                        if (text !== SaveGameAdapter.emptyCellText) {
+                            seenValues = true;
+                        }
                     }
                 }
             }
         }
 
-        return `D${info.difficulty}${SaveGameAdapter._separator}S${info.boardSize}` +
-            `${SaveGameAdapter._separator}I${info.id}${SaveGameAdapter._separator}B` + cells;
+        let result = `D${info.difficulty}${SaveGameAdapter._separator}S${info.boardSize}` +
+            `${SaveGameAdapter._separator}I${info.id}`;
+
+        if (seenValues) {
+            result += `${SaveGameAdapter._separator}B` + cells;
+        }
+
+        return result;
     }
 
     private formatCellSnapshot(snapshot: CellContentSnapshot): string {
@@ -77,7 +87,7 @@ export class SaveGameAdapter {
             }
         }
 
-        if (difficulty === undefined || boardSize === undefined || puzzleId === undefined || cellSnapshotMap === undefined) {
+        if (difficulty === undefined || boardSize === undefined || puzzleId === undefined) {
             return undefined;
         }
 

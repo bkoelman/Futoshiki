@@ -16,6 +16,7 @@ import { CacheInterceptor } from './cache-interceptor';
 import { HttpRequestController } from './http-request-controller';
 import { HttpCacheService } from './http-cache.service';
 import { PuzzleDataService } from './puzzle-data.service';
+import { DebugConsoleComponent } from './debug-console/debug-console.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PuzzleDataService } from './puzzle-data.service';
     SpacerCellComponent,
     ButtonBarComponent,
     ChangePuzzleComponent,
-    EnumNamesToArrayPipe
+    EnumNamesToArrayPipe,
+    DebugConsoleComponent
   ],
   imports: [
     BrowserModule,
