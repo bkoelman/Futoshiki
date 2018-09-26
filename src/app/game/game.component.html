@@ -12,7 +12,7 @@
 <div class="clearfix"></div>
 <p></p>
 
-<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" [areKeysEnabled]="!changePuzzleComponent.isModalVisible"
+<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" [areKeysEnabled]="!changePuzzleComponent.isModalVisible && !isTypingText"
   (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
 
 <p></p>
@@ -30,5 +30,5 @@
     Change puzzle
   </button>
 </div>
-<app-debug-console [isEnabled]="_inDebugMode && puzzle !== undefined" (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()"
-  (promoteClicked)="promoteDraftValues()"></app-debug-console>
+<app-debug-console [isEnabled]="inDebugMode && puzzle !== undefined" (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()"
+  (promoteClicked)="promoteDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>

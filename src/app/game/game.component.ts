@@ -30,11 +30,12 @@ export class GameComponent implements OnInit {
   isBoardCompleted: boolean;
   isGameSolved: boolean;
   undoStack: Array<SingleUndoCommand | AggregateUndoCommand> = [];
+  isTypingText = false;
 
   private _solver: PuzzleSolver;
   private _saveGameAdapter = new SaveGameAdapter();
   private _isLoadingGame = false;
-  private _inDebugMode = false;
+  inDebugMode = false;
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
@@ -42,7 +43,7 @@ export class GameComponent implements OnInit {
   ngOnInit() {
     this._solver = new PuzzleSolver(this.boardComponent);
 
-    this._inDebugMode = location.search.indexOf('debug') >= 0;
+    this.inDebugMode = location.search.indexOf('debug') >= 0;
 
     const saveState = this.getGameSaveStateFromCookie();
     this.retrievePuzzle(saveState.info, () => this.boardComponent.loadGame(saveState));
@@ -303,7 +304,7 @@ export class GameComponent implements OnInit {
 
     console.log('Save cookie updated.');
 
-    if (this._inDebugMode) {
+    if (this.inDebugMode) {
       this.debugConsoleComponent.updateSaveGameText(gameStateText);
     }
   }
@@ -320,5 +321,9 @@ export class GameComponent implements OnInit {
         });
       }
     }
+  }
+
+  debugIsTypingTextChanged(isTypingText: boolean) {
+    this.isTypingText = isTypingText;
   }
 }

@@ -9,6 +9,7 @@ export class DebugConsoleComponent implements OnInit {
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();
   @Output() promoteClicked = new EventEmitter();
+  @Output() isTypingTextChanged = new EventEmitter<boolean>();
 
   private _gameStateText: string;
 
@@ -29,5 +30,13 @@ export class DebugConsoleComponent implements OnInit {
 
   onPromoteClicked() {
     this.promoteClicked.emit();
+  }
+
+  textGotFocus() {
+    this.isTypingTextChanged.emit(true);
+  }
+
+  textLostFocus() {
+    this.isTypingTextChanged.emit(false);
   }
 }
