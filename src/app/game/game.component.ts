@@ -313,6 +313,7 @@ export class GameComponent implements OnInit {
     const saveState = this._saveGameAdapter.parseText(gameStateText);
     if (saveState) {
       if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
+        this.restart();
         this.boardComponent.loadGame(saveState);
       } else {
         this.puzzle = undefined;
