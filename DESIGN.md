@@ -45,6 +45,7 @@
 - [ ] optimize performance
   - type table layout instead of divs
   - replace arrays with bitmasks
+- [ ] have some automated (unit) tests
 
 # Links for inspiration
 https://sudoku.game/
