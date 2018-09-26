@@ -31,7 +31,7 @@ export class PuzzleSolver {
         if (this._boardSizeCached !== this._board.boardSize) {
             this._boardSizeCached = this._board.boardSize;
             this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.boardSize);
-            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached)
+            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached);
         }
     }
 
