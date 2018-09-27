@@ -280,7 +280,9 @@ export class GameComponent implements OnInit {
   onBoardContentChanged(event: { cell: Coordinate, snapshotBefore: CellContentSnapshot }) {
     if (this._isTrackingChanges) {
       const index = event.cell.toIndex(this.puzzle.info.boardSize);
-      this._changesTracked[index] = event.snapshotBefore;
+      if (!this._changesTracked[index]) {
+        this._changesTracked[index] = event.snapshotBefore;
+      }
     }
   }
 
