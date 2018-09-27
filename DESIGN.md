@@ -31,8 +31,8 @@
 - [ ] automated solver (http://pzl.org.uk/futoshiki.html)
   - [x] Naked Set
   - [x] Hidden Set
-  - [x] Relative Size
-  - [ ] Relative Size 2 (http://www.davdata.nl/futoshiki.html point 4)
+  - [x] Relative Size (Single)
+  - [x] Relative Size (Double) (http://www.davdata.nl/futoshiki.html point 4)
   - [ ] X Wing
 - [x] print puzzle
 - [ ] helptext: game rules and strategies

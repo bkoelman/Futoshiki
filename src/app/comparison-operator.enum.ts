@@ -16,3 +16,14 @@ export function parseComparisonOperator(text: string): ComparisonOperator {
             return ComparisonOperator.None;
     }
 }
+
+export function reverseOperator(operator: ComparisonOperator): ComparisonOperator {
+    switch (operator) {
+        case ComparisonOperator.GreaterThan:
+            return ComparisonOperator.LessThan;
+        case ComparisonOperator.LessThan:
+            return ComparisonOperator.GreaterThan;
+        default:
+            return operator;
+    }
+}
