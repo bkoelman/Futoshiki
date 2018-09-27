@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { ComparisonOperator } from '../comparison-operator.enum.js';
 import * as ft from '../../jquery.fittext.js';
 
 declare var $: any;
@@ -8,8 +9,9 @@ declare var $: any;
   templateUrl: './operator-cell.component.html'
 })
 export class OperatorCellComponent implements OnInit, AfterViewInit {
+  ComparisonOperatorAlias = ComparisonOperator;
   @Input() boardSize = 4;
-  @Input() isGreaterThan: boolean | undefined;
+  @Input() operatorValue = ComparisonOperator.None;
   @Input() isRotated = false;
   @ViewChild('autoSizeText') autoSizeTextRef: ElementRef;
 

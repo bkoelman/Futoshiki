@@ -1,6 +1,7 @@
 import { BoardComponent } from './board/board.component';
 import { Coordinate } from './coordinate';
 import { ObjectFacilities } from './object-facilities';
+import { ComparisonOperator, parseComparisonOperator } from './comparison-operator.enum';
 
 export class PuzzleSolver {
     private _boardSizeCached: number;
@@ -41,77 +42,73 @@ export class PuzzleSolver {
         // Likewise, when a cell is less than its adjacent cell, it cannot contain the highest digit on the board and
         // its maximum value must be lower than the maximum draft value in the adjacent cell.
 
-        const isGreaterThanOperatorLeftToCell = this.getIsGreaterThanOperatorLeftToCell(coordinate);
-        if (isGreaterThanOperatorLeftToCell !== undefined) {
+        const operatorLeftToCell = this.getOperatorLeftToCell(coordinate);
+        if (operatorLeftToCell !== ComparisonOperator.None) {
             const adjacentCoordinate = coordinate.moveLeft();
+            const isGreaterThanOperatorLeftToCell = operatorLeftToCell === ComparisonOperator.GreaterThan;
             this.applyOperatorRule(isGreaterThanOperatorLeftToCell, adjacentCoordinate, coordinate, candidateValueSet, 'left');
         }
 
-        const isGreaterThanOperatorRightToCell = this.getIsGreaterThanOperatorRightToCell(coordinate);
-        if (isGreaterThanOperatorRightToCell !== undefined) {
+        const operatorRightToCell = this.getOperatorRightToCell(coordinate);
+        if (operatorRightToCell !== ComparisonOperator.None) {
             const adjacentCoordinate = coordinate.moveRight();
+            const isGreaterThanOperatorRightToCell = operatorRightToCell === ComparisonOperator.GreaterThan;
             this.applyOperatorRule(!isGreaterThanOperatorRightToCell, adjacentCoordinate, coordinate, candidateValueSet, 'right');
         }
 
-        const isGreaterThanOperatorAboveCell = this.getIsGreaterThanOperatorAboveCell(coordinate);
-        if (isGreaterThanOperatorAboveCell !== undefined) {
+        const operatorAboveCell = this.getOperatorAboveCell(coordinate);
+        if (operatorAboveCell !== ComparisonOperator.None) {
             const adjacentCoordinate = coordinate.moveUp();
+            const isGreaterThanOperatorAboveCell = operatorAboveCell === ComparisonOperator.GreaterThan;
             this.applyOperatorRule(isGreaterThanOperatorAboveCell, adjacentCoordinate, coordinate, candidateValueSet, 'above');
         }
 
-        const isGreaterThanOperatorBelowCell = this.getIsGreaterThanOperatorBelowCell(coordinate);
-        if (isGreaterThanOperatorBelowCell !== undefined) {
+        const operatorBelowCell = this.getOperatorBelowCell(coordinate);
+        if (operatorBelowCell !== ComparisonOperator.None) {
             const adjacentCoordinate = coordinate.moveDown();
+            const isGreaterThanOperatorBelowCell = operatorBelowCell === ComparisonOperator.GreaterThan;
             this.applyOperatorRule(!isGreaterThanOperatorBelowCell, adjacentCoordinate, coordinate, candidateValueSet, 'below');
         }
     }
 
-    private getIsGreaterThanOperatorLeftToCell(coordinate: Coordinate): boolean | undefined {
+    private getOperatorLeftToCell(coordinate: Coordinate): ComparisonOperator {
         if (coordinate.column > 1) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const leftOperator = this._board.puzzleLines[lineSetOffset.line][lineSetOffset.column - 1];
-            if (leftOperator !== '_') {
-                return leftOperator === ')';
-            }
+            const offset = this.getOffsetInLineArrayForCoordinate(coordinate);
+            const operatorChar = this._board.puzzleLines[offset.line][offset.column - 1];
+            return parseComparisonOperator(operatorChar);
         }
 
-        return undefined;
+        return ComparisonOperator.None;
     }
 
-    private getIsGreaterThanOperatorRightToCell(coordinate: Coordinate): boolean | undefined {
+    private getOperatorRightToCell(coordinate: Coordinate): ComparisonOperator {
         if (coordinate.column < this._boardSizeCached) {
             const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const rightOperator = this._board.puzzleLines[lineSetOffset.line][lineSetOffset.column + 1];
-            if (rightOperator !== '_') {
-                return rightOperator === ')';
-            }
+            const operatorChar = this._board.puzzleLines[lineSetOffset.line][lineSetOffset.column + 1];
+            return parseComparisonOperator(operatorChar);
         }
 
-        return undefined;
+        return ComparisonOperator.None;
     }
 
-    private getIsGreaterThanOperatorAboveCell(coordinate: Coordinate): boolean | undefined {
+    private getOperatorAboveCell(coordinate: Coordinate): ComparisonOperator {
         if (coordinate.row > 1) {
             const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const aboveOperator = this._board.puzzleLines[lineSetOffset.line - 1][lineSetOffset.column];
-            if (aboveOperator !== '_') {
-                return aboveOperator === 'v';
-            }
+            const operatorChar = this._board.puzzleLines[lineSetOffset.line - 1][lineSetOffset.column];
+            return parseComparisonOperator(operatorChar);
         }
 
-        return undefined;
+        return ComparisonOperator.None;
     }
 
-    private getIsGreaterThanOperatorBelowCell(coordinate: Coordinate): boolean | undefined {
+    private getOperatorBelowCell(coordinate: Coordinate): ComparisonOperator {
         if (coordinate.row < this._boardSizeCached) {
             const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const belowOperator = this._board.puzzleLines[lineSetOffset.line + 1][lineSetOffset.column];
-            if (belowOperator !== '_') {
-                return belowOperator === 'v';
-            }
+            const operatorChar = this._board.puzzleLines[lineSetOffset.line + 1][lineSetOffset.column];
+            return parseComparisonOperator(operatorChar);
         }
 
-        return undefined;
+        return ComparisonOperator.None;
     }
 
     private getOffsetInLineArrayForCoordinate(coordinate: Coordinate): { line: number, column: number } {

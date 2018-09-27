@@ -9,8 +9,8 @@
                 <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
                     (contentChanged)="onCellContentChanged()"></app-digit-cell>
             </span>
-            <span *ngIf="isOperatorToken(token)">
-                <app-operator-cell [boardSize]="boardSize" [isGreaterThan]="isGreaterThanToken(token)"></app-operator-cell>
+            <span *ngIf="parseOperatorToken(token); let operatorValue">
+                <app-operator-cell [boardSize]="boardSize" [operatorValue]="operatorValue"></app-operator-cell>
             </span>
             <span *ngIf="isUnderscoreToken(token)">
                 <app-operator-cell [boardSize]="boardSize"></app-operator-cell>
@@ -19,15 +19,19 @@
     </div>
     <div *ngIf="lineStartsWithUnderscoreOrOperator(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split(''); let idx = index">
-            <span *ngIf="isOperatorToken(token)">
-                <app-operator-cell [boardSize]="boardSize" isRotated="true" [isGreaterThan]="isGreaterThanToken(token)"></app-operator-cell>
+            <span *ngIf="parseOperatorToken(token); else noneOperator; let operatorValue">
+                <app-operator-cell [boardSize]="boardSize" isRotated="true" [operatorValue]="operatorValue"></app-operator-cell>
             </span>
-            <span *ngIf="!isOperatorToken(token) && isEvenNumber(idx)">
-                <app-operator-cell [boardSize]="boardSize" isRotated="true"></app-operator-cell>
-            </span>
-            <span *ngIf="!isOperatorToken(token) && !isEvenNumber(idx)">
-                <app-spacer-cell [boardSize]="boardSize"></app-spacer-cell>
-            </span>
+            <ng-template #noneOperator>
+                <span *ngIf="isEvenNumber(idx); else notEvenNumber">
+                    <app-operator-cell [boardSize]="boardSize" isRotated="true"></app-operator-cell>
+                </span>
+                <ng-template #notEvenNumber>
+                    <span>
+                        <app-spacer-cell [boardSize]="boardSize"></app-spacer-cell>
+                    </span>
+                </ng-template>
+            </ng-template>
         </span>
     </div>
 </div>

@@ -4,6 +4,7 @@ import { Coordinate } from '../coordinate';
 import { GameSaveState } from '../game-save-state';
 import { ObjectFacilities } from '../object-facilities';
 import { CellContentSnapshot } from '../cell-content-snapshot';
+import { ComparisonOperator, parseComparisonOperator } from '../comparison-operator.enum';
 
 @Component({
   selector: 'app-board',
@@ -41,7 +42,7 @@ export class BoardComponent implements OnInit {
 
   lineStartsWithUnderscoreOrOperator(line: string): boolean {
     if (line.length > 0) {
-      return this.isUnderscoreToken(line[0]) || this.isOperatorToken(line[0]);
+      return this.isUnderscoreToken(line[0]) || this.parseOperatorToken(line[0]) !== ComparisonOperator.None;
     }
     return false;
   }
@@ -58,12 +59,8 @@ export class BoardComponent implements OnInit {
     return token === '_';
   }
 
-  isOperatorToken(token: string): boolean {
-    return token === 'v' || token === '^' || token === '(' || token === ')';
-  }
-
-  isGreaterThanToken(token: string): boolean {
-    return token === ')' || token === 'v';
+  parseOperatorToken(token: string): ComparisonOperator {
+    return parseComparisonOperator(token);
   }
 
   isEvenNumber(index: number): boolean {
