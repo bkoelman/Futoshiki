@@ -14,26 +14,26 @@
   - [x] cancel existing pending request when different one comes in
   - [x] ignore when incoming request is same as pending request
   - [x] show download indicator when loading exceeds time threshold
-- [x] extra button bar for temporary digits -or- toggle existing bar (caption: draft)
+- [x] extra button bar for draft digits
 - [x] undo last move(s)
 
 # Enhancements
 - [x] puzzle selection: enable selection of a random puzzle
 - [x] save game progress in cookie
 - [ ] option to track elapsed time
-- [ ] auto-cleanup temporary digits on regular digit entry
-- [ ] help modes:
-  - highlight wrong digit on entry (based on solution -or- rules + highlight conflicts)
-  - button to highlight all wrong digits so far
-  - button to undo back to first mistake
-  - highlght wrong temporary digits (based on rules)
+- [ ] auto-cleanup draft digits on regular digit entry
+- [ ] block invalid (based on rules) digit entry; highlight related cells
+- [ ] block invalid (based on rules) draft digit entry; highlight related cells
 - [ ] learn mode: auto-select all possible numbers in empty cells
 - [ ] automated solver (http://pzl.org.uk/futoshiki.html)
   - [x] Naked Set
+  - [ ] Naked Triples/Quads with subsets
   - [x] Hidden Set
+  - [ ] Hidden Triples/Quads with subsets
   - [x] Relative Size (Single)
   - [x] Relative Size (Double) (http://www.davdata.nl/futoshiki.html point 4)
-  - [ ] X Wing
+  - [ ] X-Wing
+  - .... see http://www.sudokuwiki.org
 - [x] print puzzle
 - [ ] helptext: game rules and strategies
 - [ ] nicer styling when puzzle solved (show button "new random game")
