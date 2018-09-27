@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as Cookies from 'js-cookie';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../puzzle-data.service';
@@ -7,7 +7,6 @@ import { PuzzleInfo } from '../puzzle-info';
 import { PuzzleData } from '../puzzle-data';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
 import { HttpRequestController } from '../http-request-controller';
-import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { SingleUndoCommand } from '../single-undo-command';
 import { AggregateUndoCommand } from '../aggregate-undo-command';
 import { Coordinate } from '../coordinate';
@@ -16,6 +15,8 @@ import { CellContentSnapshot } from '../cell-content-snapshot';
 import { GameSaveState } from '../game-save-state';
 import { SaveGameAdapter } from '../save-game-adapter';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
+import { DraftCleaner } from '../draft-cleaner';
+import { ObjectFacilities } from '../object-facilities';
 
 @Component({
   selector: 'app-game',
@@ -29,19 +30,22 @@ export class GameComponent implements OnInit {
   hasError: boolean;
   isBoardCompleted: boolean;
   isGameSolved: boolean;
-  undoStack: Array<SingleUndoCommand | AggregateUndoCommand> = [];
+  undoStack: AggregateUndoCommand[] = [];
+  inDebugMode = false;
   isTypingText = false;
 
   private _solver: PuzzleSolver;
+  private _draftCleaner: DraftCleaner;
   private _saveGameAdapter = new SaveGameAdapter();
-  private _isLoadingGame = false;
-  inDebugMode = false;
+  private _isTrackingChanges: boolean;
+  private _changesTracked = {};
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
 
   ngOnInit() {
     this._solver = new PuzzleSolver(this.boardComponent);
+    this._draftCleaner = new DraftCleaner(this.boardComponent);
 
     this.inDebugMode = location.search.indexOf('debug') >= 0;
 
@@ -71,7 +75,6 @@ export class GameComponent implements OnInit {
   }
 
   private retrievePuzzle(request: PuzzleInfo, downloadCompletedAsyncCallback?: () => void) {
-    this._isLoadingGame = true;
     this.hasError = false;
     this.puzzleDownloadController.startRequest(request,
       () => this._dataService.getPuzzle(request),
@@ -82,14 +85,12 @@ export class GameComponent implements OnInit {
   }
 
   private onPuzzleLoaderVisibilityChanged(isVisible: boolean) {
-    if (this.changePuzzleComponent) {
-      this.changePuzzleComponent.isLoaderVisible = isVisible;
-    }
+    this.changePuzzleComponent.isLoaderVisible = isVisible;
   }
 
   private onPuzzleDownloadSucceeded(data: PuzzleData, downloadCompletedAsyncCallback?: () => void) {
     this.puzzle = data;
-    this.restart();
+    this.restart(false);
 
     if (downloadCompletedAsyncCallback) {
       setTimeout(() => {
@@ -102,22 +103,24 @@ export class GameComponent implements OnInit {
   }
 
   private afterPuzzleDownloadSucceeded() {
-    this._isLoadingGame = false;
     this.storeGameSaveStateInCookie();
   }
 
   private onPuzzleDownloadFailed(err: any) {
-    this._isLoadingGame = false;
     this.hasError = true;
     console.error(err);
   }
 
-  restart() {
+  restart(updateGameSaveState: boolean) {
     this.isBoardCompleted = false;
     this.isGameSolved = false;
     this.undoStack = [];
 
     this.boardComponent.reset();
+
+    if (updateGameSaveState) {
+      this.storeGameSaveStateInCookie();
+    }
   }
 
   showChangePuzzleModal() {
@@ -126,63 +129,80 @@ export class GameComponent implements OnInit {
 
   undo() {
     const undoCommand = this.undoStack.pop();
-
-    if (undoCommand instanceof SingleUndoCommand) {
-      this.undoSingleCommand(undoCommand);
-    } else if (undoCommand instanceof AggregateUndoCommand) {
-      this.boardComponent.collectBulkChanges(() => {
-        for (const nestedCommand of undoCommand.commands) {
-          this.undoSingleCommand(nestedCommand);
-        }
-      });
+    for (const nestedCommand of undoCommand.commands) {
+      const cell = this.boardComponent.getCellAtCoordinate(nestedCommand.targetCell);
+      if (cell) {
+        cell.restoreContentSnapshot(nestedCommand.previousState);
+        this.boardComponent.clearSelection();
+      }
     }
-  }
 
-  private undoSingleCommand(undoCommand: SingleUndoCommand) {
-    const cell = this.boardComponent.getCellAtCoordinate(undoCommand.targetCell);
-    if (cell) {
-      cell.restoreContentSnapshot(undoCommand.previousState);
-      this.boardComponent.clearSelection();
-    }
+    this.storeGameSaveStateInCookie();
   }
 
   onClearClicked() {
     const cell = this.boardComponent.getSelectedCell();
     if (cell && !cell.isEmpty) {
-      this.pushUndoCommand(cell);
-      cell.clear();
+
+      this.captureUndoCommand(() => {
+        cell.clear();
+      });
+    }
+  }
+
+  private captureUndoCommand(action: () => void) {
+    this._changesTracked = {};
+    this._isTrackingChanges = true;
+
+    action();
+
+    this._isTrackingChanges = false;
+
+    const commands: SingleUndoCommand[] = [];
+    ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._changesTracked, (index, snapshotBefore) => {
+      const coordinate = Coordinate.fromIndex(parseInt(index, 10), this.puzzle.info.boardSize);
+      commands.push(new SingleUndoCommand(coordinate, snapshotBefore));
+    });
+
+    if (commands.length > 0) {
+      this.undoStack.push(new AggregateUndoCommand(commands));
+      this.storeGameSaveStateInCookie();
     }
   }
 
   onDigitClicked(data: { value: number, isDraft: boolean }) {
-    const cell = this.boardComponent.getSelectedCell();
-    if (cell) {
-      if (data.isDraft) {
-        this.pushUndoCommand(cell);
-        cell.toggleDraftValue(data.value);
-      } else {
-        if (cell.value !== data.value) {
-          this.pushUndoCommand(cell);
-          cell.setUserValue(data.value);
+    this.captureUndoCommand(() => {
+      const cell = this.boardComponent.getSelectedCell();
+      if (cell) {
+        if (data.isDraft) {
+          cell.toggleDraftValue(data.value);
+        } else {
+          if (cell.value !== data.value) {
+            cell.setUserValue(data.value);
+
+            const coordinate = this.boardComponent.getCoordinateForCell(cell);
+            if (coordinate) {
+              this._draftCleaner.cleanupDraftValues(data.value, coordinate);
+            }
+          }
         }
       }
-    }
 
-    this.verifyBoardSolved();
+      this.verifyBoardSolved();
+    });
   }
 
   private verifyBoardSolved() {
     this.isBoardCompleted = !this.boardComponent.hasIncompleteCells();
     if (this.isBoardCompleted) {
-      if (this.BoardContainsSolution()) {
+      if (this.boardContainsSolution()) {
         this.isGameSolved = true;
         this.boardComponent.canSelect = false;
-        this.storeGameSaveStateInCookie();
       }
     }
   }
 
-  BoardContainsSolution(): boolean {
+  boardContainsSolution(): boolean {
     const answerText = this.puzzle.answerLines.reduce((left, right) => left.concat(right));
     const answerDigits = answerText.match(/\d+/g);
 
@@ -199,39 +219,23 @@ export class GameComponent implements OnInit {
     return isCorrect;
   }
 
-  private pushUndoCommand(cell: DigitCellComponent) {
-    const snapshot = cell.getContentSnapshot();
-    const coordinate = this.boardComponent.getCoordinateForCell(cell);
-
-    if (coordinate) {
-      this.undoStack.push(new SingleUndoCommand(coordinate, snapshot));
-    }
-  }
-
-  private pushAggregateUndoCommand(commands: SingleUndoCommand[]) {
-    this.undoStack.push(new AggregateUndoCommand(commands));
-  }
-
   onHintClicked() {
-    const cell = this.boardComponent.getSelectedCell();
-    if (cell && cell.value === undefined) {
-      const coordinate = this.boardComponent.getCoordinateForCell(cell);
-      const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
+    this.captureUndoCommand(() => {
+      const cell = this.boardComponent.getSelectedCell();
+      if (cell && cell.value === undefined) {
+        const coordinate = this.boardComponent.getCoordinateForCell(cell);
+        if (coordinate) {
+          const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
 
-      const snapshotBefore = cell.getContentSnapshot();
-      const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
-
-      if (!snapshotBefore.isEqualTo(snapshotAfter)) {
-        this.pushUndoCommand(cell);
-        cell.restoreContentSnapshot(snapshotAfter);
+          const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
+          cell.restoreContentSnapshot(snapshotAfter);
+        }
       }
-    }
+    });
   }
 
   calculateDraftValues() {
-    this.boardComponent.collectBulkChanges(() => {
-      const undoCommands: SingleUndoCommand[] = [];
-
+    this.captureUndoCommand(() => {
       for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
         for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
           const coordinate = new Coordinate(row, column);
@@ -239,27 +243,16 @@ export class GameComponent implements OnInit {
           if (cell && cell.value === undefined) {
             const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
 
-            const snapshotBefore = cell.getContentSnapshot();
             const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
-
-            if (!snapshotBefore.isEqualTo(snapshotAfter)) {
-              undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
-              cell.restoreContentSnapshot(snapshotAfter);
-            }
+            cell.restoreContentSnapshot(snapshotAfter);
           }
         }
-      }
-
-      if (undoCommands.length > 0) {
-        this.pushAggregateUndoCommand(undoCommands);
       }
     });
   }
 
   promoteDraftValues() {
-    this.boardComponent.collectBulkChanges(() => {
-      const undoCommands: SingleUndoCommand[] = [];
-
+    this.captureUndoCommand(() => {
       for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
         for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
           const coordinate = new Coordinate(row, column);
@@ -267,21 +260,15 @@ export class GameComponent implements OnInit {
           if (cell && cell.value === undefined) {
             const possibleValues = cell.getPossibleValues();
             if (possibleValues.length === 1) {
-              const snapshotBefore = cell.getContentSnapshot();
+
               const snapshotAfter = new CellContentSnapshot(possibleValues[0], []);
-
-              undoCommands.push(new SingleUndoCommand(coordinate, snapshotBefore));
               cell.restoreContentSnapshot(snapshotAfter);
-
-              this.verifyBoardSolved();
             }
           }
         }
       }
 
-      if (undoCommands.length > 0) {
-        this.pushAggregateUndoCommand(undoCommands);
-      }
+      this.verifyBoardSolved();
     });
   }
 
@@ -290,9 +277,10 @@ export class GameComponent implements OnInit {
     this.retrievePuzzle(value);
   }
 
-  onBoardContentChanged() {
-    if (!this._isLoadingGame) {
-      this.storeGameSaveStateInCookie();
+  onBoardContentChanged(event: { cell: Coordinate, snapshotBefore: CellContentSnapshot }) {
+    if (this._isTrackingChanges) {
+      const index = event.cell.toIndex(this.puzzle.info.boardSize);
+      this._changesTracked[index] = event.snapshotBefore;
     }
   }
 
@@ -313,8 +301,9 @@ export class GameComponent implements OnInit {
     const saveState = this._saveGameAdapter.parseText(gameStateText);
     if (saveState) {
       if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
-        this.restart();
+        this.restart(false);
         this.boardComponent.loadGame(saveState);
+        this.storeGameSaveStateInCookie();
       } else {
         this.puzzle = undefined;
         this.retrievePuzzle(saveState.info, () => {

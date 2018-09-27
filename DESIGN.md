@@ -21,7 +21,7 @@
 - [x] puzzle selection: enable selection of a random puzzle
 - [x] save game progress in cookie
 - [ ] option to track elapsed time
-- [ ] auto-cleanup draft digits on regular digit entry
+- [x] auto-cleanup draft digits on regular digit entry
 - [ ] block invalid (based on rules) digit entry; highlight related cells
 - [ ] block invalid (based on rules) draft digit entry; highlight related cells
 - [ ] learn mode: auto-select all possible numbers in empty cells

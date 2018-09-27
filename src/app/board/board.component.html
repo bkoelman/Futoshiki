@@ -3,11 +3,11 @@
         <span *ngFor="let token of puzzleLine.split('')">
             <span *ngIf="isDigitToken(token)">
                 <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
-                    (contentChanged)="onCellContentChanged()" [fixedValue]="+token"></app-digit-cell>
+                    (contentChanged)="onCellContentChanged($event)" [fixedValue]="+token"></app-digit-cell>
             </span>
             <span *ngIf="isDotToken(token)">
                 <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
-                    (contentChanged)="onCellContentChanged()"></app-digit-cell>
+                    (contentChanged)="onCellContentChanged($event)"></app-digit-cell>
             </span>
             <span *ngIf="parseOperatorToken(token); let operatorValue">
                 <app-operator-cell [boardSize]="boardSize" [operatorValue]="operatorValue"></app-operator-cell>

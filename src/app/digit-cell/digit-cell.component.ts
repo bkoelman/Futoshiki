@@ -15,7 +15,7 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   @Input() isSelected: boolean;
   @Input() canSelect;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
-  @Output() contentChanged = new EventEmitter();
+  @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 
   @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
 
@@ -59,32 +59,40 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
 
   clear() {
     if (this._userValue !== undefined || this._draftValues.length > 0) {
-      this._userValue = undefined;
-      this._draftValues = [];
-
-      this.onContentChanged();
+      this.raiseChangeEventFor(() => {
+        this._userValue = undefined;
+        this._draftValues = [];
+      });
     }
   }
 
   setUserValue(value: number) {
     if (this._userValue !== value) {
-      this._userValue = value;
-      this._draftValues = [];
-
-      this.onContentChanged();
+      this.raiseChangeEventFor(() => {
+        this._userValue = value;
+        this._draftValues = [];
+      });
     }
   }
 
   toggleDraftValue(value: number) {
-    if (this._draftValues.indexOf(value) >= 0) {
-      this._draftValues = this._draftValues.filter(item => item !== value);
-    } else {
-      this._userValue = undefined;
-      this._draftValues.push(value);
-      this._draftValues.sort();
-    }
+    this.raiseChangeEventFor(() => {
+      if (this._draftValues.indexOf(value) >= 0) {
+        this._draftValues = this._draftValues.filter(item => item !== value);
+      } else {
+        this._userValue = undefined;
+        this._draftValues.push(value);
+        this._draftValues.sort();
+      }
+    });
+  }
 
-    this.onContentChanged();
+  removeDraftValue(value: number) {
+    if (this._draftValues.indexOf(value) >= 0) {
+      this.raiseChangeEventFor(() => {
+        this._draftValues = this._draftValues.filter(item => item !== value);
+      });
+    }
   }
 
   getContentSnapshot(): CellContentSnapshot {
@@ -92,10 +100,13 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
   }
 
   restoreContentSnapshot(snapshot: CellContentSnapshot) {
-    this._draftValues = snapshot.draftValues.slice();
-    this._userValue = snapshot.userValue;
-
-    this.onContentChanged();
+    const snapshotBefore = this.getContentSnapshot();
+    if (!snapshotBefore.isEqualTo(snapshot)) {
+      this.raiseChangeEventFor(() => {
+        this._draftValues = snapshot.draftValues.slice();
+        this._userValue = snapshot.userValue;
+      });
+    }
   }
 
   getSingleValue(): number | undefined {
@@ -142,7 +153,12 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     this.cellClicked.emit(this);
   }
 
-  onContentChanged() {
-    this.contentChanged.emit(undefined);
+  private raiseChangeEventFor(changeAction: () => void) {
+    const snapshotBefore = this.getContentSnapshot();
+    changeAction();
+    this.contentChanged.emit({
+      sender: this,
+      snapshotBefore: snapshotBefore
+    });
   }
 }

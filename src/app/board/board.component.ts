@@ -13,12 +13,10 @@ import { ComparisonOperator, parseComparisonOperator } from '../comparison-opera
 export class BoardComponent implements OnInit {
   @Input() puzzleLines: string[] | undefined;
   @Input() boardSize: number | undefined;
-  @Output() contentChanged = new EventEmitter();
+  @Output() contentChanged = new EventEmitter<{ cell: Coordinate, snapshotBefore: CellContentSnapshot }>();
 
   @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;
   private _canSelect = true;
-  private _isUpdatingBoard = false;
-  private _hasPendingChangeEvent = false;
 
   get canSelect(): boolean {
     return this._canSelect;
@@ -68,30 +66,9 @@ export class BoardComponent implements OnInit {
   }
 
   reset() {
-    this.collectBulkChanges(() => {
-      this._cells.forEach(cell => cell.clear());
-      this.clearSelection();
-      this.canSelect = true;
-    });
-  }
-
-  collectBulkChanges(action: () => void) {
-    const isNested = this._isUpdatingBoard;
-
-    if (!isNested) {
-      this._hasPendingChangeEvent = false;
-      this._isUpdatingBoard = true;
-    }
-
-    action();
-
-    if (!isNested) {
-      this._isUpdatingBoard = false;
-
-      if (this._hasPendingChangeEvent) {
-        this.onCellContentChanged();
-      }
-    }
+    this._cells.forEach(cell => cell.clear());
+    this.clearSelection();
+    this.canSelect = true;
   }
 
   clearSelection() {
@@ -131,16 +108,14 @@ export class BoardComponent implements OnInit {
 
   loadGame(saveState: GameSaveState) {
     if (saveState.cellSnapshotMap !== undefined) {
-      this.collectBulkChanges(() => {
-        ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(saveState.cellSnapshotMap, (indexText, snapshot) => {
-          const indexValue = parseInt(indexText, 10);
-          const coordinate = Coordinate.fromIndex(indexValue, this.boardSize);
+      ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(saveState.cellSnapshotMap, (indexText, snapshot) => {
+        const indexValue = parseInt(indexText, 10);
+        const coordinate = Coordinate.fromIndex(indexValue, this.boardSize);
 
-          const cell = this.getCellAtCoordinate(coordinate);
-          if (cell) {
-            cell.restoreContentSnapshot(snapshot);
-          }
-        });
+        const cell = this.getCellAtCoordinate(coordinate);
+        if (cell) {
+          cell.restoreContentSnapshot(snapshot);
+        }
       });
     } else {
       this.reset();
@@ -155,12 +130,13 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  onCellContentChanged() {
-    if (this._isUpdatingBoard) {
-      this._hasPendingChangeEvent = true;
-    } else {
-      this._hasPendingChangeEvent = false;
-      this.contentChanged.emit(undefined);
+  onCellContentChanged(event: { sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }) {
+    const coordinate = this.getCoordinateForCell(event.sender);
+    if (coordinate) {
+      this.contentChanged.emit({
+        cell: coordinate,
+        snapshotBefore: event.snapshotBefore
+      });
     }
   }
 }

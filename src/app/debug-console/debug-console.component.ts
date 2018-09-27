@@ -11,17 +11,17 @@ export class DebugConsoleComponent implements OnInit {
   @Output() promoteClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
 
-  private _gameStateText: string;
+  private _saveText: string;
 
   ngOnInit() {
   }
 
-  updateSaveGameText(gameStateText: string): void {
-    this._gameStateText = gameStateText;
+  updateSaveGameText(saveText: string): void {
+    this._saveText = saveText;
   }
 
   onLoadClicked() {
-    this.loadClicked.emit(this._gameStateText);
+    this.loadClicked.emit(this._saveText);
   }
 
   onHelpClicked() {
