@@ -35,7 +35,7 @@ export class GameComponent implements OnInit {
   isTypingText = false;
 
   private _solver: PuzzleSolver;
-  private _draftCleaner: DraftCleaner;
+  private _autoCleaner: DraftCleaner;
   private _saveGameAdapter = new SaveGameAdapter();
   private _isTrackingChanges: boolean;
   private _changesTracked = {};
@@ -45,7 +45,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this._solver = new PuzzleSolver(this.boardComponent);
-    this._draftCleaner = new DraftCleaner(this.boardComponent);
+    this._autoCleaner = new DraftCleaner(this.boardComponent);
 
     this.inDebugMode = location.search.indexOf('debug') >= 0;
 
@@ -182,7 +182,7 @@ export class GameComponent implements OnInit {
 
             const coordinate = this.boardComponent.getCoordinateForCell(cell);
             if (coordinate) {
-              this._draftCleaner.cleanupDraftValues(data.value, coordinate);
+              this._autoCleaner.reduceDraftValues(data.value, coordinate);
             }
           }
         }
