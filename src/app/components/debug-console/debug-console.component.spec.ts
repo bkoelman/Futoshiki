@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { DebugConsoleComponent } from './debug-console.component';
 
@@ -8,9 +9,10 @@ describe('DebugConsoleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DebugConsoleComponent ]
+      imports: [FormsModule],
+      declarations: [DebugConsoleComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

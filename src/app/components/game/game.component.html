@@ -7,7 +7,7 @@
   </div>
 </div>
 <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
-<app-board [puzzleLines]="puzzle?.puzzleLines" [boardSize]="puzzle?.info?.boardSize" (contentChanged)="onBoardContentChanged($event)"></app-board>
+<app-board [puzzleLines]="puzzle?.puzzleLines" [size]="puzzle?.info?.boardSize" (contentChanged)="onBoardContentChanged($event)"></app-board>
 
 <div class="clearfix"></div>
 <p></p>
@@ -32,4 +32,3 @@
 </div>
 <app-debug-console [isEnabled]="inDebugMode && puzzle !== undefined" (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()"
   (promoteClicked)="promoteDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
-  

@@ -9,9 +9,10 @@ import { OperatorCellComponent } from '../operator-cell/operator-cell.component'
 import { SpacerCellComponent } from '../spacer-cell/spacer-cell.component';
 import { ButtonBarComponent } from '../button-bar/button-bar.component';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
-import { EnumNamesToArrayPipe } from '../enum-names-to-array.pipe';
-import { HttpRequestController } from '../http-request-controller';
-import { PuzzleDataService } from '../puzzle-data.service';
+import { EnumNamesToArrayPipe } from '../../enum-names-to-array.pipe';
+import { HttpRequestController } from '../../services/http-request-controller';
+import { PuzzleDataService } from '../../services/puzzle-data.service';
+import { DebugConsoleComponent } from '../debug-console/debug-console.component';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -31,7 +32,8 @@ describe('GameComponent', () => {
         SpacerCellComponent,
         ButtonBarComponent,
         ChangePuzzleComponent,
-        EnumNamesToArrayPipe
+        EnumNamesToArrayPipe,
+        DebugConsoleComponent
       ],
       providers: [
         HttpRequestController,

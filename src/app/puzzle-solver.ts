@@ -1,14 +1,15 @@
-import { BoardComponent } from './board/board.component';
-import { Coordinate } from './coordinate';
+import { Board } from './models/board';
+import { Coordinate } from './models/coordinate';
 import { ObjectFacilities } from './object-facilities';
-import { ComparisonOperator, parseComparisonOperator, reverseOperator } from './comparison-operator.enum';
+import { ComparisonOperator } from './models/comparison-operator.enum';
+import { MoveDirection } from './models/move-direction.enum';
 
 export class PuzzleSolver {
     private _boardSizeCached: number;
     private _allCellValuesCached: number[];
     private _powerSetForAllCellValuesCached: number[][];
 
-    constructor(private _board: BoardComponent) {
+    constructor(private _board: Board) {
     }
 
     getPossibleValuesAtCoordinate(coordinate: Coordinate): number[] {
@@ -29,96 +30,55 @@ export class PuzzleSolver {
     }
 
     private ensureCache(): void {
-        if (this._boardSizeCached !== this._board.boardSize) {
-            this._boardSizeCached = this._board.boardSize;
-            this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.boardSize);
+        if (this._boardSizeCached !== this._board.size) {
+            this._boardSizeCached = this._board.size;
+            this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.size);
             this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached);
         }
     }
 
     private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]): void {
-        const comparisonToLeft = this.getComparisonToLeftCell(coordinate);
+        const comparisonToLeft = this._board.getOperator(coordinate, MoveDirection.Left);
         if (comparisonToLeft !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToLeft === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveLeft(), coordinate, candidateValueSet, 'left');
+            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Left),
+                coordinate, candidateValueSet, 'left');
         }
 
-        const comparisonToRight = this.getComparisonToRightCell(coordinate);
+        const comparisonToRight = this._board.getOperator(coordinate, MoveDirection.Right);
         if (comparisonToRight !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToRight === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveRight(), coordinate, candidateValueSet, 'right');
+            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Right),
+                coordinate, candidateValueSet, 'right');
         }
 
         if (comparisonToLeft !== ComparisonOperator.None && comparisonToLeft === comparisonToRight) {
             const isLessThanAdjacentCells = comparisonToLeft === ComparisonOperator.LessThan;
-            this.applyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveLeft(), coordinate.moveRight(), coordinate,
+            this.applyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveOne(MoveDirection.Left),
+                coordinate.moveOne(MoveDirection.Right), coordinate,
                 candidateValueSet, 'left', 'right');
         }
 
-        const comparisonToAbove = this.getComparisonToAboveCell(coordinate);
+        const comparisonToAbove = this._board.getOperator(coordinate, MoveDirection.Up);
         if (comparisonToAbove !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToAbove === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveUp(), coordinate, candidateValueSet, 'above');
+            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Up),
+                coordinate, candidateValueSet, 'above');
         }
 
-        const comparisonToBelow = this.getComparisonToBelowCell(coordinate);
+        const comparisonToBelow = this._board.getOperator(coordinate, MoveDirection.Down);
         if (comparisonToBelow !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToBelow === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveDown(), coordinate, candidateValueSet, 'below');
+            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Down),
+                coordinate, candidateValueSet, 'below');
         }
 
         if (comparisonToAbove !== ComparisonOperator.None && comparisonToAbove === comparisonToBelow) {
             const isLessThanAdjacentCells = comparisonToAbove === ComparisonOperator.LessThan;
-            this.applyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveUp(), coordinate.moveDown(), coordinate,
+            this.applyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveOne(MoveDirection.Up),
+                coordinate.moveOne(MoveDirection.Down), coordinate,
                 candidateValueSet, 'above', 'below');
         }
-    }
-
-    private getComparisonToLeftCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.column > 1) {
-            const offset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[offset.line][offset.column - 1];
-            return reverseOperator(parseComparisonOperator(operatorChar));
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getComparisonToRightCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.column < this._boardSizeCached) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[lineSetOffset.line][lineSetOffset.column + 1];
-            return parseComparisonOperator(operatorChar);
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getComparisonToAboveCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.row > 1) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[lineSetOffset.line - 1][lineSetOffset.column];
-            return reverseOperator(parseComparisonOperator(operatorChar));
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getComparisonToBelowCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.row < this._boardSizeCached) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[lineSetOffset.line + 1][lineSetOffset.column];
-            return parseComparisonOperator(operatorChar);
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getOffsetInLineArrayForCoordinate(coordinate: Coordinate): { line: number, column: number } {
-        return {
-            line: (coordinate.row * 2) - 2,
-            column: (coordinate.column * 2) - 2
-        };
     }
 
     private applySingleOperatorRule(isLessThanAdjacentCell: boolean, adjacentCellCoordinate: Coordinate,
@@ -132,16 +92,16 @@ export class PuzzleSolver {
         //      | | 12345 > 12345 |
         //  =>  | |  2345 > 1234  |
 
-        const adjacentCell = this._board.getCellAtCoordinate(adjacentCellCoordinate);
+        const adjacentCell = this._board.getCell(adjacentCellCoordinate);
 
         if (isLessThanAdjacentCell) {
-            const adjacentMaxValue = adjacentCell.getMaxValue() || this._boardSizeCached;
+            const adjacentMaxValue = adjacentCell.getMaximum() || this._boardSizeCached;
             const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
             const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
             this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
                 `Single Operator rule (this < ${direction})`);
         } else {
-            const adjacentMinValue = adjacentCell.getMinValue() || 1;
+            const adjacentMinValue = adjacentCell.getMinimum() || 1;
             const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
             this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
                 `Single Operator rule (this > ${direction})`);
@@ -162,12 +122,12 @@ export class PuzzleSolver {
         //      | 2345 > 12345 < 2345 |
         //  =>  | 2345 > 123   < 2345 |
 
-        const adjacentCell1 = this._board.getCellAtCoordinate(adjacentCellCoordinate1);
-        const adjacentCell2 = this._board.getCellAtCoordinate(adjacentCellCoordinate2);
+        const adjacentCell1 = this._board.getCell(adjacentCellCoordinate1);
+        const adjacentCell2 = this._board.getCell(adjacentCellCoordinate2);
 
         if (isLessThanAdjacentCells) {
-            const adjacentMaxValue1 = adjacentCell1.getMaxValue() || this._boardSizeCached;
-            const adjacentMaxValue2 = adjacentCell2.getMaxValue() || this._boardSizeCached;
+            const adjacentMaxValue1 = adjacentCell1.getMaximum() || this._boardSizeCached;
+            const adjacentMaxValue2 = adjacentCell2.getMaximum() || this._boardSizeCached;
 
             if (adjacentMaxValue1 === adjacentMaxValue2) {
                 const adjacentMaxValue = adjacentMaxValue1 - 1;
@@ -177,8 +137,8 @@ export class PuzzleSolver {
                     `Double Operator rule (${direction1} > this < ${direction2})`);
             }
         } else {
-            const adjacentMinValue1 = adjacentCell1.getMinValue() || 1;
-            const adjacentMinValue2 = adjacentCell2.getMinValue() || 1;
+            const adjacentMinValue1 = adjacentCell1.getMinimum() || 1;
+            const adjacentMinValue2 = adjacentCell2.getMinimum() || 1;
 
             if (adjacentMinValue1 === adjacentMinValue2) {
                 const adjacentMinValue = adjacentMinValue1 + 1;
@@ -241,7 +201,7 @@ export class PuzzleSolver {
     }
 
     private getPossibleValuesForCell(coordinate: Coordinate): number[] {
-        const cell = this._board.getCellAtCoordinate(coordinate);
+        const cell = this._board.getCell(coordinate);
         if (cell) {
             const possibleValues = cell.getPossibleValues();
             if (possibleValues.length > 0) {

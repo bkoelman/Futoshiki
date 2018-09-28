@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ComparisonOperator } from '../comparison-operator.enum.js';
-import * as ft from '../../jquery.fittext.js';
+import { ComparisonOperator } from '../../models/comparison-operator.enum.js';
+import * as ft from '../../../jquery.fittext.js';
 
 declare var $: any;
 

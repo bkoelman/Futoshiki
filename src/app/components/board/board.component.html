@@ -2,33 +2,33 @@
     <div *ngIf="lineStartsWithDotOrDigit(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split('')">
             <span *ngIf="isDigitToken(token)">
-                <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
+                <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
                     (contentChanged)="onCellContentChanged($event)" [fixedValue]="+token"></app-digit-cell>
             </span>
             <span *ngIf="isDotToken(token)">
-                <app-digit-cell [boardSize]="boardSize" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
+                <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
                     (contentChanged)="onCellContentChanged($event)"></app-digit-cell>
             </span>
             <span *ngIf="parseOperatorToken(token); let operatorValue">
-                <app-operator-cell [boardSize]="boardSize" [operatorValue]="operatorValue"></app-operator-cell>
+                <app-operator-cell [boardSize]="size" [operatorValue]="operatorValue"></app-operator-cell>
             </span>
             <span *ngIf="isUnderscoreToken(token)">
-                <app-operator-cell [boardSize]="boardSize"></app-operator-cell>
+                <app-operator-cell [boardSize]="size"></app-operator-cell>
             </span>
         </span>
     </div>
     <div *ngIf="lineStartsWithUnderscoreOrOperator(puzzleLine)">
         <span *ngFor="let token of puzzleLine.split(''); let idx = index">
             <span *ngIf="parseOperatorToken(token); else noneOperator; let operatorValue">
-                <app-operator-cell [boardSize]="boardSize" isRotated="true" [operatorValue]="operatorValue"></app-operator-cell>
+                <app-operator-cell [boardSize]="size" isRotated="true" [operatorValue]="operatorValue"></app-operator-cell>
             </span>
             <ng-template #noneOperator>
                 <span *ngIf="isEvenNumber(idx); else notEvenNumber">
-                    <app-operator-cell [boardSize]="boardSize" isRotated="true"></app-operator-cell>
+                    <app-operator-cell [boardSize]="size" isRotated="true"></app-operator-cell>
                 </span>
                 <ng-template #notEvenNumber>
                     <span>
-                        <app-spacer-cell [boardSize]="boardSize"></app-spacer-cell>
+                        <app-spacer-cell [boardSize]="size"></app-spacer-cell>
                     </span>
                 </ng-template>
             </ng-template>

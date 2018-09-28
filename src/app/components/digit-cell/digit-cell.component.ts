@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChildren, ElementRef, AfterViewChecked } from '@angular/core';
-import { CellContentSnapshot } from '../cell-content-snapshot.js';
-import * as ft from '../../jquery.fittext.js';
-import { ObjectFacilities } from '../object-facilities.js';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ElementRef, AfterViewChecked } from '@angular/core';
+import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
+import * as ft from '../../../jquery.fittext.js';
+import { ObjectFacilities } from '../../object-facilities.js';
+import { Cell } from '../../models/cell.js';
 
 declare var $: any;
 
@@ -9,7 +10,7 @@ declare var $: any;
   selector: 'app-digit-cell',
   templateUrl: './digit-cell.component.html'
 })
-export class DigitCellComponent implements OnInit, AfterViewChecked {
+export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
   @Input() boardSize = 4;
   @Input() fixedValue: number | undefined;
   @Input() isSelected: boolean;
@@ -66,31 +67,31 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  setUserValue(value: number) {
-    if (this._userValue !== value) {
+  setUserValue(digit: number) {
+    if (this._userValue !== digit) {
       this.raiseChangeEventFor(() => {
-        this._userValue = value;
+        this._userValue = digit;
         this._draftValues = [];
       });
     }
   }
 
-  toggleDraftValue(value: number) {
+  toggleDraftValue(digit: number) {
     this.raiseChangeEventFor(() => {
-      if (this._draftValues.indexOf(value) >= 0) {
-        this._draftValues = this._draftValues.filter(item => item !== value);
+      if (this._draftValues.indexOf(digit) >= 0) {
+        this._draftValues = this._draftValues.filter(item => item !== digit);
       } else {
         this._userValue = undefined;
-        this._draftValues.push(value);
+        this._draftValues.push(digit);
         this._draftValues.sort();
       }
     });
   }
 
-  removeDraftValue(value: number) {
-    if (this._draftValues.indexOf(value) >= 0) {
+  removeDraftValue(digit: number) {
+    if (this._draftValues.indexOf(digit) >= 0) {
       this.raiseChangeEventFor(() => {
-        this._draftValues = this._draftValues.filter(item => item !== value);
+        this._draftValues = this._draftValues.filter(item => item !== digit);
       });
     }
   }
@@ -129,7 +130,7 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     return this._draftValues.slice();
   }
 
-  getMinValue(): number | undefined {
+  getMinimum(): number | undefined {
     let result = this.value;
 
     if (result === undefined && this._draftValues.length > 0) {
@@ -139,7 +140,7 @@ export class DigitCellComponent implements OnInit, AfterViewChecked {
     return result;
   }
 
-  getMaxValue(): number | undefined {
+  getMaximum(): number | undefined {
     let result = this.value;
 
     if (result === undefined && this._draftValues.length > 0) {

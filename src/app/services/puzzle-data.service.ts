@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, delay } from 'rxjs/operators';
-import { PuzzleDifficulty } from './puzzle-difficulty.enum';
-import { PuzzleInfo } from './puzzle-info';
-import { PuzzleData } from './puzzle-data';
-import { PuzzleTextParser } from './puzzle-text-parser';
+import { PuzzleDifficulty } from '../models/puzzle-difficulty.enum';
+import { PuzzleInfo } from '../models/puzzle-info';
+import { PuzzleData } from '../models/puzzle-data';
+import { PuzzleTextParser } from '../puzzle-text-parser';
 
 @Injectable()
 export class PuzzleDataService {

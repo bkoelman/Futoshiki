@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
 import { ChangePuzzleComponent } from './change-puzzle.component';
-import { EnumNamesToArrayPipe } from '../enum-names-to-array.pipe';
+import { EnumNamesToArrayPipe } from '../../enum-names-to-array.pipe';
 
 describe('ChangePuzzleComponent', () => {
   let component: ChangePuzzleComponent;

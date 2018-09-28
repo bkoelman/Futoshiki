@@ -4,19 +4,19 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { GameComponent } from './game/game.component';
-import { BoardComponent } from './board/board.component';
-import { DigitCellComponent } from './digit-cell/digit-cell.component';
-import { OperatorCellComponent } from './operator-cell/operator-cell.component';
-import { SpacerCellComponent } from './spacer-cell/spacer-cell.component';
-import { ButtonBarComponent } from './button-bar/button-bar.component';
-import { ChangePuzzleComponent } from './change-puzzle/change-puzzle.component';
+import { GameComponent } from './components/game/game.component';
+import { BoardComponent } from './components/board/board.component';
+import { DigitCellComponent } from './components/digit-cell/digit-cell.component';
+import { OperatorCellComponent } from './components/operator-cell/operator-cell.component';
+import { SpacerCellComponent } from './components/spacer-cell/spacer-cell.component';
+import { ButtonBarComponent } from './components/button-bar/button-bar.component';
+import { ChangePuzzleComponent } from './components/change-puzzle/change-puzzle.component';
 import { EnumNamesToArrayPipe } from './enum-names-to-array.pipe';
-import { CacheInterceptor } from './cache-interceptor';
-import { HttpRequestController } from './http-request-controller';
-import { HttpCacheService } from './http-cache.service';
-import { PuzzleDataService } from './puzzle-data.service';
-import { DebugConsoleComponent } from './debug-console/debug-console.component';
+import { CacheInterceptor } from './services/cache-interceptor';
+import { HttpRequestController } from './services/http-request-controller';
+import { HttpCacheService } from './services/http-cache.service';
+import { PuzzleDataService } from './services/puzzle-data.service';
+import { DebugConsoleComponent } from './components/debug-console/debug-console.component';
 
 @NgModule({
   declarations: [

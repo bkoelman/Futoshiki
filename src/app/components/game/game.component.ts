@@ -1,22 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import * as Cookies from 'js-cookie';
 import { BoardComponent } from '../board/board.component';
-import { PuzzleDataService } from '../puzzle-data.service';
-import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
-import { PuzzleInfo } from '../puzzle-info';
-import { PuzzleData } from '../puzzle-data';
+import { PuzzleDataService } from '../../services/puzzle-data.service';
+import { PuzzleDifficulty } from '../../models/puzzle-difficulty.enum';
+import { PuzzleInfo } from '../../models/puzzle-info';
+import { PuzzleData } from '../../models/puzzle-data';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
-import { HttpRequestController } from '../http-request-controller';
-import { SingleUndoCommand } from '../single-undo-command';
-import { AggregateUndoCommand } from '../aggregate-undo-command';
-import { Coordinate } from '../coordinate';
-import { PuzzleSolver } from '../puzzle-solver';
-import { CellContentSnapshot } from '../cell-content-snapshot';
-import { GameSaveState } from '../game-save-state';
-import { SaveGameAdapter } from '../save-game-adapter';
+import { HttpRequestController } from '../../services/http-request-controller';
+import { SingleUndoCommand } from '../../models/single-undo-command';
+import { AggregateUndoCommand } from '../../models/aggregate-undo-command';
+import { Coordinate } from '../../models/coordinate';
+import { PuzzleSolver } from '../../puzzle-solver';
+import { CellContentSnapshot } from '../../models/cell-content-snapshot';
+import { GameSaveState } from '../../models/game-save-state';
+import { SaveGameAdapter } from '../../save-game-adapter';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
-import { DraftCleaner } from '../draft-cleaner';
-import { ObjectFacilities } from '../object-facilities';
+import { DraftCleaner } from '../../draft-cleaner';
+import { ObjectFacilities } from '../../object-facilities';
 
 @Component({
   selector: 'app-game',
@@ -130,7 +130,7 @@ export class GameComponent implements OnInit {
   undo() {
     const undoCommand = this.undoStack.pop();
     for (const nestedCommand of undoCommand.commands) {
-      const cell = this.boardComponent.getCellAtCoordinate(nestedCommand.targetCell);
+      const cell = this.boardComponent.getCell(nestedCommand.targetCell);
       if (cell) {
         cell.restoreContentSnapshot(nestedCommand.previousState);
         this.boardComponent.clearSelection();
@@ -180,7 +180,7 @@ export class GameComponent implements OnInit {
           if (cell.value !== data.value) {
             cell.setUserValue(data.value);
 
-            const coordinate = this.boardComponent.getCoordinateForCell(cell);
+            const coordinate = this.boardComponent.getCoordinate(cell);
             if (coordinate) {
               this._autoCleaner.reduceDraftValues(data.value, coordinate);
             }
@@ -223,7 +223,7 @@ export class GameComponent implements OnInit {
     this.captureUndoCommand(() => {
       const cell = this.boardComponent.getSelectedCell();
       if (cell && cell.value === undefined) {
-        const coordinate = this.boardComponent.getCoordinateForCell(cell);
+        const coordinate = this.boardComponent.getCoordinate(cell);
         if (coordinate) {
           const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
 
@@ -239,7 +239,7 @@ export class GameComponent implements OnInit {
       for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
         for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
           const coordinate = new Coordinate(row, column);
-          const cell = this.boardComponent.getCellAtCoordinate(coordinate);
+          const cell = this.boardComponent.getCell(coordinate);
           if (cell && cell.value === undefined) {
             const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
 
@@ -256,7 +256,7 @@ export class GameComponent implements OnInit {
       for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
         for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
           const coordinate = new Coordinate(row, column);
-          const cell = this.boardComponent.getCellAtCoordinate(coordinate);
+          const cell = this.boardComponent.getCell(coordinate);
           if (cell && cell.value === undefined) {
             const possibleValues = cell.getPossibleValues();
             if (possibleValues.length === 1) {

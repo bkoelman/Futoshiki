@@ -1,8 +1,8 @@
-import { GameSaveState } from './game-save-state';
-import { CellContentSnapshot } from './cell-content-snapshot';
-import { BoardComponent } from './board/board.component';
-import { PuzzleInfo } from './puzzle-info';
-import { Coordinate } from './coordinate';
+import { GameSaveState } from './models/game-save-state';
+import { CellContentSnapshot } from './models/cell-content-snapshot';
+import { BoardComponent } from './components/board/board.component';
+import { PuzzleInfo } from './models/puzzle-info';
+import { Coordinate } from './models/coordinate';
 
 export class SaveGameAdapter {
     private static readonly _separator = '-';
@@ -17,7 +17,7 @@ export class SaveGameAdapter {
             for (let row = 1; row <= info.boardSize; row++) {
                 for (let column = 1; column <= info.boardSize; column++) {
                     const coordinate = new Coordinate(row, column);
-                    const cell = board.getCellAtCoordinate(coordinate);
+                    const cell = board.getCell(coordinate);
                     if (cell) {
                         const snapshot = cell.getContentSnapshot();
                         const text = this.formatCellSnapshot(snapshot);

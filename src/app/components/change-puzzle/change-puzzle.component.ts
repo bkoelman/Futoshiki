@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, NgZone } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { PuzzleInfo } from '../puzzle-info';
-import { PuzzleDifficulty } from '../puzzle-difficulty.enum';
-import { ObjectFacilities } from '../object-facilities';
+import { PuzzleInfo } from '../../models/puzzle-info';
+import { PuzzleDifficulty } from '../../models/puzzle-difficulty.enum';
+import { ObjectFacilities } from '../../object-facilities';
 
 declare var $: any;
 

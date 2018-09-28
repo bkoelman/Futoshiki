@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ViewChildren, ElementRef } from '@angular/core';
 import { AfterViewChecked } from '@angular/core';
-import { ObjectFacilities } from '../object-facilities';
-import * as ft from '../../jquery.fittext.js';
+import { ObjectFacilities } from '../../object-facilities';
+import * as ft from '../../../jquery.fittext.js';
 
 declare var $: any;
 

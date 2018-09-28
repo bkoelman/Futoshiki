@@ -1,13 +1,14 @@
-import { BoardComponent } from './board/board.component';
-import { Coordinate } from './coordinate';
-import { ComparisonOperator, parseComparisonOperator, reverseOperator } from './comparison-operator.enum';
+import { Board } from './models/board';
+import { Coordinate } from './models/coordinate';
+import { ComparisonOperator } from './models/comparison-operator.enum';
 import { ObjectFacilities } from './object-facilities';
-import { DigitCellComponent } from './digit-cell/digit-cell.component';
+import { Cell } from './models/cell';
+import { MoveDirection } from './models/move-direction.enum';
 
 export class DraftCleaner {
     private _boardSizeCached: number;
 
-    constructor(private _board: BoardComponent) {
+    constructor(private _board: Board) {
     }
 
     reduceDraftValues(digit: number, coordinate: Coordinate): void {
@@ -18,8 +19,8 @@ export class DraftCleaner {
     }
 
     private ensureCache(): void {
-        if (this._boardSizeCached !== this._board.boardSize) {
-            this._boardSizeCached = this._board.boardSize;
+        if (this._boardSizeCached !== this._board.size) {
+            this._boardSizeCached = this._board.size;
         }
     }
 
@@ -57,7 +58,7 @@ export class DraftCleaner {
 
     private reduceInSequence(coordinatesInSequence: Coordinate[], digitToRemove: number): void {
         for (const coordinate of coordinatesInSequence) {
-            const cell = this._board.getCellAtCoordinate(coordinate);
+            const cell = this._board.getCell(coordinate);
             if (cell) {
                 cell.removeDraftValue(digitToRemove);
             }
@@ -65,81 +66,34 @@ export class DraftCleaner {
     }
 
     private reduceForOperators(coordinate: Coordinate, digit: number) {
-        const comparisonToLeft = this.getComparisonToLeftCell(coordinate);
+        const comparisonToLeft = this._board.getOperator(coordinate, MoveDirection.Left);
         if (comparisonToLeft !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToLeft === ComparisonOperator.LessThan;
-            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveLeft(), digit);
+            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Left), digit);
         }
 
-        const comparisonToRight = this.getComparisonToRightCell(coordinate);
+        const comparisonToRight = this._board.getOperator(coordinate, MoveDirection.Right);
         if (comparisonToRight !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToRight === ComparisonOperator.LessThan;
-            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveRight(), digit);
+            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Right), digit);
         }
 
-        const comparisonToAbove = this.getComparisonToAboveCell(coordinate);
+        const comparisonToAbove = this._board.getOperator(coordinate, MoveDirection.Up);
         if (comparisonToAbove !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToAbove === ComparisonOperator.LessThan;
-            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveUp(), digit);
+            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Up), digit);
         }
 
-        const comparisonToBelow = this.getComparisonToBelowCell(coordinate);
+        const comparisonToBelow = this._board.getOperator(coordinate, MoveDirection.Down);
         if (comparisonToBelow !== ComparisonOperator.None) {
             const isLessThanAdjacentCell = comparisonToBelow === ComparisonOperator.LessThan;
-            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveDown(), digit);
+            this.reduceForOperator(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Down), digit);
         }
-    }
-
-    private getComparisonToLeftCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.column > 1) {
-            const offset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[offset.line][offset.column - 1];
-            return reverseOperator(parseComparisonOperator(operatorChar));
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getComparisonToRightCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.column < this._boardSizeCached) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[lineSetOffset.line][lineSetOffset.column + 1];
-            return parseComparisonOperator(operatorChar);
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getComparisonToAboveCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.row > 1) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[lineSetOffset.line - 1][lineSetOffset.column];
-            return reverseOperator(parseComparisonOperator(operatorChar));
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getComparisonToBelowCell(coordinate: Coordinate): ComparisonOperator {
-        if (coordinate.row < this._boardSizeCached) {
-            const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-            const operatorChar = this._board.puzzleLines[lineSetOffset.line + 1][lineSetOffset.column];
-            return parseComparisonOperator(operatorChar);
-        }
-
-        return ComparisonOperator.None;
-    }
-
-    private getOffsetInLineArrayForCoordinate(coordinate: Coordinate): { line: number, column: number } {
-        return {
-            line: (coordinate.row * 2) - 2,
-            column: (coordinate.column * 2) - 2
-        };
     }
 
     private reduceForOperator(isLessThanAdjacentCell: boolean, adjacentCellCoordinate: Coordinate,
         currentDigit: number): void {
-        const adjacentCell = this._board.getCellAtCoordinate(adjacentCellCoordinate);
+        const adjacentCell = this._board.getCell(adjacentCellCoordinate);
 
         if (isLessThanAdjacentCell) {
             const adjacentMinValue = currentDigit + 1;
@@ -153,7 +107,7 @@ export class DraftCleaner {
         }
     }
 
-    private removeDraftDigits(cell: DigitCellComponent, digitsToRemove: number[]) {
+    private removeDraftDigits(cell: Cell, digitsToRemove: number[]) {
         for (const digitToRemove of digitsToRemove) {
             cell.removeDraftValue(digitToRemove);
         }

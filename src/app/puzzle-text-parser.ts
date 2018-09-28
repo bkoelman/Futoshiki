@@ -1,5 +1,5 @@
-import { PuzzleInfo } from './puzzle-info';
-import { PuzzleData } from './puzzle-data';
+import { PuzzleInfo } from './models/puzzle-info';
+import { PuzzleData } from './models/puzzle-data';
 
 export class PuzzleTextParser {
     static parseText(puzzleText: string, info: PuzzleInfo): PuzzleData {
