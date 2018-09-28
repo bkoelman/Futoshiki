@@ -76,6 +76,16 @@ export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
     }
   }
 
+  setDraftValues(digits: number[]) {
+    digits.sort();
+    if (JSON.stringify(digits) !== JSON.stringify(this._draftValues)) {
+      this.raiseChangeEventFor(() => {
+        this._userValue = undefined;
+        this._draftValues = digits.slice();
+      });
+    }
+  }
+
   toggleDraftValue(digit: number) {
     this.raiseChangeEventFor(() => {
       if (this._draftValues.indexOf(digit) >= 0) {

@@ -133,7 +133,7 @@ export class SaveGameAdapter {
     private parseCellSnapshot(text: string): CellContentSnapshot | undefined {
         if (text.startsWith('ff')) {
             const userValue = parseInt(text.substring(2), 16);
-            return new CellContentSnapshot(userValue, []);
+            return CellContentSnapshot.fromUserValue(userValue);
         } else if (text === '0000') {
             return CellContentSnapshot.empty();
         } else {
@@ -148,7 +148,7 @@ export class SaveGameAdapter {
                 }
             }
 
-            return new CellContentSnapshot(undefined, draftValues.sort());
+            return CellContentSnapshot.fromDraftValues(draftValues);
         }
     }
 }

@@ -226,9 +226,7 @@ export class GameComponent implements OnInit {
         const coordinate = this.boardComponent.getCoordinate(cell);
         if (coordinate) {
           const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-
-          const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
-          cell.restoreContentSnapshot(snapshotAfter);
+          cell.setDraftValues(possibleValues);
         }
       }
     });
@@ -242,9 +240,7 @@ export class GameComponent implements OnInit {
           const cell = this.boardComponent.getCell(coordinate);
           if (cell && cell.value === undefined) {
             const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-
-            const snapshotAfter = new CellContentSnapshot(undefined, possibleValues);
-            cell.restoreContentSnapshot(snapshotAfter);
+            cell.setDraftValues(possibleValues);
           }
         }
       }
@@ -260,9 +256,7 @@ export class GameComponent implements OnInit {
           if (cell && cell.value === undefined) {
             const possibleValues = cell.getPossibleValues();
             if (possibleValues.length === 1) {
-
-              const snapshotAfter = new CellContentSnapshot(possibleValues[0], []);
-              cell.restoreContentSnapshot(snapshotAfter);
+              cell.setUserValue(possibleValues[0]);
             }
           }
         }
