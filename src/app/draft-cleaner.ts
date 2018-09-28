@@ -4,6 +4,7 @@ import { ComparisonOperator } from './models/comparison-operator.enum';
 import { ObjectFacilities } from './object-facilities';
 import { Cell } from './models/cell';
 import { MoveDirection } from './models/move-direction.enum';
+import { CoordinateSystem } from './coordinate-system';
 
 export class DraftCleaner {
     private _boardSizeCached: number;
@@ -25,35 +26,11 @@ export class DraftCleaner {
     }
 
     private reduceForSequences(coordinate: Coordinate, digit: number) {
-        const coordinatesInRow = this.getCoordinatesInRow(coordinate.row, coordinate.column);
+        const coordinatesInRow = CoordinateSystem.getCoordinatesInRow(coordinate, true, this._boardSizeCached);
         this.reduceInSequence(coordinatesInRow, digit);
 
-        const coordinatesInColumn = this.getCoordinatesInColumn(coordinate.column, coordinate.row);
+        const coordinatesInColumn = CoordinateSystem.getCoordinatesInColumn(coordinate, true, this._boardSizeCached);
         this.reduceInSequence(coordinatesInColumn, digit);
-    }
-
-    private getCoordinatesInRow(row: number, columnToSkip: number): Coordinate[] {
-        const coordinates: Coordinate[] = [];
-
-        for (let column = 1; column <= this._boardSizeCached; column++) {
-            if (column !== columnToSkip) {
-                coordinates.push(new Coordinate(row, column));
-            }
-        }
-
-        return coordinates;
-    }
-
-    private getCoordinatesInColumn(column: number, rowToSkip: number): Coordinate[] {
-        const coordinates: Coordinate[] = [];
-
-        for (let row = 1; row <= this._boardSizeCached; row++) {
-            if (row !== rowToSkip) {
-                coordinates.push(new Coordinate(row, column));
-            }
-        }
-
-        return coordinates;
     }
 
     private reduceInSequence(coordinatesInSequence: Coordinate[], digitToRemove: number): void {

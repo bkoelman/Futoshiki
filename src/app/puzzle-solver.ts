@@ -3,6 +3,7 @@ import { Coordinate } from './models/coordinate';
 import { ObjectFacilities } from './object-facilities';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MoveDirection } from './models/move-direction.enum';
+import { CoordinateSystem } from './coordinate-system';
 
 export class PuzzleSolver {
     private _boardSizeCached: number;
@@ -150,35 +151,11 @@ export class PuzzleSolver {
     }
 
     private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]): void {
-        const coordinatesInRow = this.getCoordinatesInRow(coordinate.row, coordinate.column);
-        const coordinatesInColumn = this.getCoordinatesInColumn(coordinate.column, coordinate.row);
+        const coordinatesInRow = CoordinateSystem.getCoordinatesInRow(coordinate, true, this._boardSizeCached);
+        const coordinatesInColumn = CoordinateSystem.getCoordinatesInColumn(coordinate, true, this._boardSizeCached);
 
         this.applyDigitRulesInSequence(coordinate, coordinatesInRow, candidateValueSet, 'row');
         this.applyDigitRulesInSequence(coordinate, coordinatesInColumn, candidateValueSet, 'column');
-    }
-
-    private getCoordinatesInRow(row: number, columnToSkip: number): Coordinate[] {
-        const coordinates: Coordinate[] = [];
-
-        for (let column = 1; column <= this._boardSizeCached; column++) {
-            if (column !== columnToSkip) {
-                coordinates.push(new Coordinate(row, column));
-            }
-        }
-
-        return coordinates;
-    }
-
-    private getCoordinatesInColumn(column: number, rowToSkip: number): Coordinate[] {
-        const coordinates: Coordinate[] = [];
-
-        for (let row = 1; row <= this._boardSizeCached; row++) {
-            if (row !== rowToSkip) {
-                coordinates.push(new Coordinate(row, column));
-            }
-        }
-
-        return coordinates;
     }
 
     private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],

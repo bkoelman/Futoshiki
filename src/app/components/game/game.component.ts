@@ -17,6 +17,7 @@ import { SaveGameAdapter } from '../../save-game-adapter';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
 import { DraftCleaner } from '../../draft-cleaner';
 import { ObjectFacilities } from '../../object-facilities';
+import { MoveChecker } from '../../move-checker';
 
 @Component({
   selector: 'app-game',
@@ -36,6 +37,7 @@ export class GameComponent implements OnInit {
 
   private _solver: PuzzleSolver;
   private _autoCleaner: DraftCleaner;
+  private _moveChecker: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
   private _isTrackingChanges: boolean;
   private _changesTracked = {};
@@ -46,6 +48,7 @@ export class GameComponent implements OnInit {
   ngOnInit() {
     this._solver = new PuzzleSolver(this.boardComponent);
     this._autoCleaner = new DraftCleaner(this.boardComponent);
+    this._moveChecker = new MoveChecker(this.boardComponent);
 
     this.inDebugMode = location.search.indexOf('debug') >= 0;
 
@@ -178,11 +181,20 @@ export class GameComponent implements OnInit {
           cell.toggleDraftValue(data.value);
         } else {
           if (cell.value !== data.value) {
-            cell.setUserValue(data.value);
-
             const coordinate = this.boardComponent.getCoordinate(cell);
             if (coordinate) {
-              this._autoCleaner.reduceDraftValues(data.value, coordinate);
+              const result = this._moveChecker.checkIsMoveAllowed(coordinate, data.value);
+              if (!this.inDebugMode || /* TODO: Remove debug condition */ result.isAllowed) {
+                cell.setUserValue(data.value);
+                this._autoCleaner.reduceDraftValues(data.value, coordinate);
+              } else {
+                if (result.offendingCell !== undefined) {
+                  console.log(`Move not allowed due to cell ${result.offendingCell}.`);
+                } else {
+                  console.log(`Move not allowed due to operator at ` +
+                    `${result.offendingOperator.direction} of ${result.offendingOperator.coordinate}.`);
+                }
+              }
             }
           }
         }
