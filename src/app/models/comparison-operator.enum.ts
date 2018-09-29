@@ -1,7 +1,7 @@
 export enum ComparisonOperator {
     None,
-    GreaterThan,
-    LessThan
+    LessThan,
+    GreaterThan
 }
 
 export function parseComparisonOperator(text: string): ComparisonOperator {

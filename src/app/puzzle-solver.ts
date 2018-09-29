@@ -95,17 +95,19 @@ export class PuzzleSolver {
 
         const adjacentCell = this._board.getCell(adjacentCellCoordinate);
 
-        if (isLessThanAdjacentCell) {
-            const adjacentMaxValue = adjacentCell.getMaximum() || this._boardSizeCached;
-            const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
-            const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
-            this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
-                `Single Operator rule (this < ${direction})`);
-        } else {
-            const adjacentMinValue = adjacentCell.getMinimum() || 1;
-            const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
-            this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
-                `Single Operator rule (this > ${direction})`);
+        if (adjacentCell) {
+            if (isLessThanAdjacentCell) {
+                const adjacentMaxValue = adjacentCell.getMaximum() || this._boardSizeCached;
+                const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
+                const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
+                this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
+                    `Single Operator rule (this < ${direction})`);
+            } else {
+                const adjacentMinValue = adjacentCell.getMinimum() || 1;
+                const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
+                this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
+                    `Single Operator rule (this > ${direction})`);
+            }
         }
     }
 
@@ -126,26 +128,28 @@ export class PuzzleSolver {
         const adjacentCell1 = this._board.getCell(adjacentCellCoordinate1);
         const adjacentCell2 = this._board.getCell(adjacentCellCoordinate2);
 
-        if (isLessThanAdjacentCells) {
-            const adjacentMaxValue1 = adjacentCell1.getMaximum() || this._boardSizeCached;
-            const adjacentMaxValue2 = adjacentCell2.getMaximum() || this._boardSizeCached;
+        if (adjacentCell1 && adjacentCell2) {
+            if (isLessThanAdjacentCells) {
+                const adjacentMaxValue1 = adjacentCell1.getMaximum() || this._boardSizeCached;
+                const adjacentMaxValue2 = adjacentCell2.getMaximum() || this._boardSizeCached;
 
-            if (adjacentMaxValue1 === adjacentMaxValue2) {
-                const adjacentMaxValue = adjacentMaxValue1 - 1;
-                const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
-                const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
-                this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
-                    `Double Operator rule (${direction1} > this < ${direction2})`);
-            }
-        } else {
-            const adjacentMinValue1 = adjacentCell1.getMinimum() || 1;
-            const adjacentMinValue2 = adjacentCell2.getMinimum() || 1;
+                if (adjacentMaxValue1 === adjacentMaxValue2) {
+                    const adjacentMaxValue = adjacentMaxValue1 - 1;
+                    const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
+                    const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
+                    this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
+                        `Double Operator rule (${direction1} > this < ${direction2})`);
+                }
+            } else {
+                const adjacentMinValue1 = adjacentCell1.getMinimum() || 1;
+                const adjacentMinValue2 = adjacentCell2.getMinimum() || 1;
 
-            if (adjacentMinValue1 === adjacentMinValue2) {
-                const adjacentMinValue = adjacentMinValue1 + 1;
-                const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
-                this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
-                    `Double Operator rule (${direction1} < this > ${direction2})`);
+                if (adjacentMinValue1 === adjacentMinValue2) {
+                    const adjacentMinValue = adjacentMinValue1 + 1;
+                    const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
+                    this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
+                        `Double Operator rule (${direction1} < this > ${direction2})`);
+                }
             }
         }
     }

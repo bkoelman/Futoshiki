@@ -72,15 +72,17 @@ export class DraftCleaner {
         currentDigit: number): void {
         const adjacentCell = this._board.getCell(adjacentCellCoordinate);
 
-        if (isLessThanAdjacentCell) {
-            const adjacentMinValue = currentDigit + 1;
-            const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue - 1);
-            this.removeDraftDigits(adjacentCell, digitsToRemove);
-        } else {
-            const adjacentMaxValue = currentDigit - 1;
-            const generateCount = this._boardSizeCached - adjacentMaxValue;
-            const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue + 1);
-            this.removeDraftDigits(adjacentCell, digitsToRemove);
+        if (adjacentCell) {
+            if (isLessThanAdjacentCell) {
+                const adjacentMinValue = currentDigit + 1;
+                const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue - 1);
+                this.removeDraftDigits(adjacentCell, digitsToRemove);
+            } else {
+                const adjacentMaxValue = currentDigit - 1;
+                const generateCount = this._boardSizeCached - adjacentMaxValue;
+                const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue + 1);
+                this.removeDraftDigits(adjacentCell, digitsToRemove);
+            }
         }
     }
 

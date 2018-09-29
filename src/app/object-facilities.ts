@@ -52,4 +52,26 @@ export class ObjectFacilities {
             bitArray[index] = 1;
         }
     }
+
+    static removeArrayElement<T>(source: T[], itemToRemove: T, comparison: (self: T, other: T) => boolean): boolean {
+        let removeAtIndex;
+        source.find((item, index) => {
+            const found = comparison(itemToRemove, item);
+            if (found) {
+                removeAtIndex = index;
+            }
+            return found;
+        });
+
+        if (removeAtIndex !== undefined) {
+            source.splice(removeAtIndex, 1);
+            return true;
+        }
+
+        return false;
+    }
+
+    static getUniqueArrayElements<T>(source: T[]): T[] {
+        return source.filter((value, index, self) => self.indexOf(value) === index);
+    }
 }

@@ -35,4 +35,8 @@ export class Coordinate {
                 return new Coordinate(this.row + 1, this.column);
         }
     }
+
+    isEqualTo(other: Coordinate): boolean {
+        return other && this.row === other.row && this.column === other.column;
+    }
 }

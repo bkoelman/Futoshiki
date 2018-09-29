@@ -7,6 +7,6 @@ export interface Board {
     readonly size: number;
 
     getCell(coordinate: Coordinate): Cell | undefined;
-    getOperator(coordinate: Coordinate, direction: MoveDirection): ComparisonOperator;
     getCoordinate(cell: Cell): Coordinate | undefined;
+    getOperator(coordinate: Coordinate, direction: MoveDirection): ComparisonOperator;
 }
