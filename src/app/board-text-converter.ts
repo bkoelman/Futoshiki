@@ -144,7 +144,7 @@ export class BoardTextConverter {
         return char >= '1' && char <= '9';
     }
 
-    boardToText(board: Board, indent: string = ''): string[] {
+    boardToText(board: Board, indent: string = ''): string {
         const maxColumnWidths: number[] = [];
 
         for (let rowIndex = 0; rowIndex < board.size; rowIndex++) {
@@ -220,7 +220,7 @@ export class BoardTextConverter {
 
         lines.push(lines[0]);
 
-        return lines;
+        return lines.join('\n');
     }
 
     private centerText(text: string, width: number, spacer: string) {

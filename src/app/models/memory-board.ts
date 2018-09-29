@@ -17,7 +17,7 @@ export class MemoryBoard implements Board {
         this.size = size;
 
         for (let index = 0; index < size * size; index++) {
-            this._cells.push(new MemoryCell());
+            this._cells.push(new MemoryCell(this));
         }
     }
 
