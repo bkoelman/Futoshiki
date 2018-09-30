@@ -1,6 +1,5 @@
 import { Board } from './models/board';
 import { Coordinate } from './models/coordinate';
-import { CoordinateSystem } from './coordinate-system';
 import { MoveCheckResult } from './models/move-check-result';
 
 export class MoveChecker {
@@ -12,8 +11,8 @@ export class MoveChecker {
     checkIsMoveAllowed(coordinate: Coordinate, digit: number): MoveCheckResult {
         this.ensureCache();
 
-        const coordinatesInRow = CoordinateSystem.getCoordinatesInRow(coordinate, true, this._boardSizeCached);
-        const coordinatesInColumn = CoordinateSystem.getCoordinatesInColumn(coordinate, true, this._boardSizeCached);
+        const coordinatesInRow = coordinate.iterateRow(true);
+        const coordinatesInColumn = coordinate.iterateColumn(true);
         const coordinateSequence = coordinatesInRow.concat(coordinatesInColumn);
 
         const violatingCoordinate = this.getViolatingCoordinate(coordinateSequence, digit);

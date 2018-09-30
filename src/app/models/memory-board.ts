@@ -22,9 +22,8 @@ export class MemoryBoard implements Board {
     }
 
     getCell(coordinate: Coordinate): MemoryCell | undefined {
-        const arrayIndex = coordinate.toIndex(this.size);
+        const arrayIndex = coordinate.toIndex();
         return this._cells.find((item, index) => index === arrayIndex);
-
     }
 
     getCoordinate(cell: Cell): Coordinate | undefined {

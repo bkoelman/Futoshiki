@@ -31,13 +31,16 @@ export class BoardTextConverter {
         for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
             const line = lines[lineIndex];
             if (lineIndex % 2 === 1) {
-                let coordinate = new Coordinate((lineIndex - 1) / 2 + 1, 1);
+                const rowChar = String.fromCharCode((lineIndex - 1) / 2 + Coordinate.charCodeA);
+                let coordinate = Coordinate.fromText(rowChar + '1', size);
                 let columnIndex = this.skipWhitespace(line, 1);
 
                 while (columnIndex < line.length) {
                     const ch = line[columnIndex];
                     if (ch === '|') {
-                        coordinate = coordinate.moveOne(MoveDirection.Right);
+                        if (columnIndex < line.length - 1) {
+                            coordinate = coordinate.moveOne(MoveDirection.Right);
+                        }
                         columnIndex++;
                     } else if (ch === '<') {
                         coordinate = coordinate.moveOne(MoveDirection.Right);
@@ -80,7 +83,8 @@ export class BoardTextConverter {
                     columnIndex = this.skipWhitespace(line, columnIndex);
                 }
             } else {
-                let coordinate = new Coordinate((lineIndex - 2) / 2 + 1, 1);
+                const rowChar = String.fromCharCode((lineIndex - 2) / 2 + Coordinate.charCodeA);
+                let coordinate = Coordinate.fromText(rowChar + '1', size);
                 let columnIndex = 1;
 
                 while (columnIndex < line.length) {
@@ -88,7 +92,9 @@ export class BoardTextConverter {
 
                     const ch = line[columnIndex];
                     if (ch === '+') {
-                        coordinate = coordinate.moveOne(MoveDirection.Right);
+                        if (columnIndex < line.length - 1) {
+                            coordinate = coordinate.moveOne(MoveDirection.Right);
+                        }
                     } else if (ch === '^') {
                         board.setOperator(coordinate, MoveDirection.Down, ComparisonOperator.LessThan);
                     } else if (ch === 'v') {
@@ -145,32 +151,16 @@ export class BoardTextConverter {
     }
 
     boardToText(board: Board, indent: string = ''): string {
-        const maxColumnWidths: number[] = [];
-
-        for (let rowIndex = 0; rowIndex < board.size; rowIndex++) {
-            for (let columnIndex = 0; columnIndex < board.size; columnIndex++) {
-                const coordinate = new Coordinate(rowIndex + 1, columnIndex + 1);
-                const cell = board.getCell(coordinate);
-                if (cell) {
-                    let width = cell.getPossibleValues().length;
-                    if (cell.value !== undefined) {
-                        width++;
-                    }
-                    const lastWidth = maxColumnWidths[columnIndex];
-                    if (lastWidth === undefined || lastWidth < width) {
-                        maxColumnWidths[columnIndex] = width;
-                    }
-                }
-            }
-        }
-
+        const maxColumnWidths = this.calculateMaxColumnWidths(board);
         const lines: string[] = [];
 
-        for (let rowIndex = 0; rowIndex < board.size; rowIndex++) {
+        let offset = 0;
+        for (const rowCoordinate of Coordinate.fromIndex(0, board.size).iterateColumn(false)) {
             let line = '+';
-            for (let columnIndex = 0; columnIndex < board.size; columnIndex++) {
-                const coordinate = new Coordinate(rowIndex + 1, columnIndex + 1);
-                const operator = board.getOperator(coordinate, MoveDirection.Up);
+
+            for (const coordinate of rowCoordinate.iterateRow(false)) {
+                const isFirstRow = offset < board.size;
+                const operator = isFirstRow ? ComparisonOperator.None : board.getOperator(coordinate, MoveDirection.Up);
 
                 let value = '';
                 switch (operator) {
@@ -185,22 +175,28 @@ export class BoardTextConverter {
                         break;
                 }
 
+                const columnIndex = offset % board.size;
                 const width = maxColumnWidths[columnIndex];
                 line += this.centerText(value, width + 2, '-') + '+';
+
+                offset++;
             }
 
             lines.push(indent + line);
 
             line = '|';
-            for (let columnIndex = 0; columnIndex < board.size; columnIndex++) {
-                const coordinate = new Coordinate(rowIndex + 1, columnIndex + 1);
+            offset -= board.size;
+
+            for (const coordinate of rowCoordinate.iterateRow(false)) {
                 const cell = board.getCell(coordinate);
                 if (cell) {
                     const value = cell.value !== undefined ? '!' + cell.value : cell.getPossibleValues().join('');
+                    const columnIndex = offset % board.size;
                     const width = maxColumnWidths[columnIndex];
                     line += this.centerText(value, width + 2, ' ');
 
-                    const operator = board.getOperator(coordinate, MoveDirection.Right);
+                    const isLastColumn = columnIndex === board.size - 1;
+                    const operator = isLastColumn ? ComparisonOperator.None : board.getOperator(coordinate, MoveDirection.Right);
                     switch (operator) {
                         case ComparisonOperator.None:
                             line += '|';
@@ -213,6 +209,8 @@ export class BoardTextConverter {
                             break;
                     }
                 }
+
+                offset++;
             }
 
             lines.push(indent + line);
@@ -221,6 +219,32 @@ export class BoardTextConverter {
         lines.push(lines[0]);
 
         return lines.join('\n');
+    }
+
+    private calculateMaxColumnWidths(board: Board): number[] {
+        const maxColumnWidths: number[] = [];
+
+        let offset = 0;
+        for (const coordinate of Coordinate.iterateBoard(board.size)) {
+
+            const cell = board.getCell(coordinate);
+            if (cell) {
+                let width = cell.getPossibleValues().length;
+                if (cell.value !== undefined) {
+                    width++;
+                }
+
+                const columnIndex = offset % board.size;
+                const lastWidth = maxColumnWidths[columnIndex];
+                if (lastWidth === undefined || lastWidth < width) {
+                    maxColumnWidths[columnIndex] = width;
+                }
+            }
+
+            offset++;
+        }
+
+        return maxColumnWidths;
     }
 
     private centerText(text: string, width: number, spacer: string) {

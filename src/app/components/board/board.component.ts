@@ -91,7 +91,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   getCell(coordinate: Coordinate): DigitCellComponent | undefined {
-    const arrayIndex = coordinate.toIndex(this.size);
+    const arrayIndex = coordinate.toIndex();
     return this._cells.find((item, index) => index === arrayIndex);
   }
 
@@ -109,6 +109,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   getOperator(coordinate: Coordinate, direction: MoveDirection): ComparisonOperator {
+    // TODO: Optimize
     switch (direction) {
       case MoveDirection.Left:
         return this.getComparisonToLeftCell(coordinate);
@@ -122,7 +123,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   private getComparisonToLeftCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.column > 1) {
+    if (coordinate.canMoveOne(MoveDirection.Left)) {
       const offset = this.getOffsetInLineArrayForCoordinate(coordinate);
       const operatorChar = this.puzzleLines[offset.line][offset.column - 1];
       return reverseOperator(parseComparisonOperator(operatorChar));
@@ -132,7 +133,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   private getComparisonToRightCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.column < this.size) {
+    if (coordinate.canMoveOne(MoveDirection.Right)) {
       const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
       const operatorChar = this.puzzleLines[lineSetOffset.line][lineSetOffset.column + 1];
       return parseComparisonOperator(operatorChar);
@@ -142,7 +143,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   private getComparisonToAboveCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.row > 1) {
+    if (coordinate.canMoveOne(MoveDirection.Up)) {
       const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
       const operatorChar = this.puzzleLines[lineSetOffset.line - 1][lineSetOffset.column];
       return reverseOperator(parseComparisonOperator(operatorChar));
@@ -152,7 +153,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   private getComparisonToBelowCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.row < this.size) {
+    if (coordinate.canMoveOne(MoveDirection.Down)) {
       const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
       const operatorChar = this.puzzleLines[lineSetOffset.line + 1][lineSetOffset.column];
       return parseComparisonOperator(operatorChar);
@@ -162,11 +163,14 @@ export class BoardComponent implements Board, OnInit {
   }
 
   private getOffsetInLineArrayForCoordinate(coordinate: Coordinate): { line: number, column: number } {
+    const index = coordinate.toIndex();
+    const rowNumber = Math.floor(index / this.size) + 1;
+    const columnNumber = index % this.size + 1;
     return {
-        line: (coordinate.row * 2) - 2,
-        column: (coordinate.column * 2) - 2
+      line: (rowNumber * 2) - 2,
+      column: (columnNumber * 2) - 2
     };
-}
+  }
 
   loadGame(saveState: GameSaveState) {
     if (saveState.cellSnapshotMap !== undefined) {

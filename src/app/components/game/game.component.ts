@@ -246,14 +246,11 @@ export class GameComponent implements OnInit {
 
   calculateDraftValues() {
     this.captureUndoCommand(() => {
-      for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
-        for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
-          const coordinate = new Coordinate(row, column);
-          const cell = this.boardComponent.getCell(coordinate);
-          if (cell && cell.value === undefined) {
-            const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-            cell.setDraftValues(possibleValues);
-          }
+      for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
+        const cell = this.boardComponent.getCell(coordinate);
+        if (cell && cell.value === undefined) {
+          const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
+          cell.setDraftValues(possibleValues);
         }
       }
     });
@@ -261,15 +258,12 @@ export class GameComponent implements OnInit {
 
   promoteDraftValues() {
     this.captureUndoCommand(() => {
-      for (let row = 1; row <= this.puzzle.info.boardSize; row++) {
-        for (let column = 1; column <= this.puzzle.info.boardSize; column++) {
-          const coordinate = new Coordinate(row, column);
-          const cell = this.boardComponent.getCell(coordinate);
-          if (cell && cell.value === undefined) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length === 1) {
-              cell.setUserValue(possibleValues[0]);
-            }
+      for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
+        const cell = this.boardComponent.getCell(coordinate);
+        if (cell && cell.value === undefined) {
+          const possibleValues = cell.getPossibleValues();
+          if (possibleValues.length === 1) {
+            cell.setUserValue(possibleValues[0]);
           }
         }
       }
@@ -285,7 +279,7 @@ export class GameComponent implements OnInit {
 
   onBoardContentChanged(event: { cell: Coordinate, snapshotBefore: CellContentSnapshot }) {
     if (this._isTrackingChanges) {
-      const index = event.cell.toIndex(this.puzzle.info.boardSize);
+      const index = event.cell.toIndex();
       if (!this._changesTracked[index]) {
         this._changesTracked[index] = event.snapshotBefore;
       }

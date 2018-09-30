@@ -4,7 +4,6 @@ import { ComparisonOperator } from './models/comparison-operator.enum';
 import { ObjectFacilities } from './object-facilities';
 import { Cell } from './models/cell';
 import { MoveDirection } from './models/move-direction.enum';
-import { CoordinateSystem } from './coordinate-system';
 
 export class DraftCleaner {
     private _boardSizeCached: number;
@@ -26,10 +25,10 @@ export class DraftCleaner {
     }
 
     private reduceForSequences(coordinate: Coordinate, digit: number) {
-        const coordinatesInRow = CoordinateSystem.getCoordinatesInRow(coordinate, true, this._boardSizeCached);
+        const coordinatesInRow = coordinate.iterateRow(true);
         this.reduceInSequence(coordinatesInRow, digit);
 
-        const coordinatesInColumn = CoordinateSystem.getCoordinatesInColumn(coordinate, true, this._boardSizeCached);
+        const coordinatesInColumn = coordinate.iterateColumn(true);
         this.reduceInSequence(coordinatesInColumn, digit);
     }
 

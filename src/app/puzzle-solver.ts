@@ -3,7 +3,6 @@ import { Coordinate } from './models/coordinate';
 import { ObjectFacilities } from './object-facilities';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MoveDirection } from './models/move-direction.enum';
-import { CoordinateSystem } from './coordinate-system';
 
 export class PuzzleSolver {
     private _boardSizeCached: number;
@@ -155,8 +154,8 @@ export class PuzzleSolver {
     }
 
     private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]): void {
-        const coordinatesInRow = CoordinateSystem.getCoordinatesInRow(coordinate, true, this._boardSizeCached);
-        const coordinatesInColumn = CoordinateSystem.getCoordinatesInColumn(coordinate, true, this._boardSizeCached);
+        const coordinatesInRow = coordinate.iterateRow(true);
+        const coordinatesInColumn = coordinate.iterateColumn(true);
 
         this.applyDigitRulesInSequence(coordinate, coordinatesInRow, candidateValueSet, 'row');
         this.applyDigitRulesInSequence(coordinate, coordinatesInColumn, candidateValueSet, 'column');

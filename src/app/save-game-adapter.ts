@@ -14,18 +14,15 @@ export class SaveGameAdapter {
         let seenValues = false;
 
         if (!forceEmptyBoard) {
-            for (let row = 1; row <= info.boardSize; row++) {
-                for (let column = 1; column <= info.boardSize; column++) {
-                    const coordinate = new Coordinate(row, column);
-                    const cell = board.getCell(coordinate);
-                    if (cell) {
-                        const snapshot = cell.getContentSnapshot();
-                        const text = this.formatCellSnapshot(snapshot);
-                        cells += text;
+            for (const coordinate of Coordinate.iterateBoard(info.boardSize)) {
+                const cell = board.getCell(coordinate);
+                if (cell) {
+                    const snapshot = cell.getContentSnapshot();
+                    const text = this.formatCellSnapshot(snapshot);
+                    cells += text;
 
-                        if (text !== SaveGameAdapter.emptyCellText) {
-                            seenValues = true;
-                        }
+                    if (text !== SaveGameAdapter.emptyCellText) {
+                        seenValues = true;
                     }
                 }
             }

@@ -29,53 +29,53 @@ describe('BoardTextConverter', () => {
 
             expect(board.size).toBe(4);
 
-            expect(board.getCell(new Coordinate(1, 1)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(1, 1)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(new Coordinate(1, 2)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(1, 2)).getPossibleValues().length).toBe(1);
-            expect(board.getCell(new Coordinate(1, 3)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(1, 3)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(new Coordinate(1, 4)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(1, 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('A1', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('A1', 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('A2', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('A2', 4)).getPossibleValues().length).toBe(1);
+            expect(board.getCell(Coordinate.fromText('A3', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('A3', 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('A4', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('A4', 4)).getPossibleValues().length).toBe(0);
 
-            expect(board.getCell(new Coordinate(2, 1)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(2, 1)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(new Coordinate(2, 2)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(2, 2)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(new Coordinate(2, 3)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(2, 3)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(new Coordinate(2, 4)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(2, 4)).getPossibleValues().length).toBe(4);
+            expect(board.getCell(Coordinate.fromText('B1', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('B1', 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('B2', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('B2', 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('B3', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('B3', 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('B4', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('B4', 4)).getPossibleValues().length).toBe(4);
 
-            expect(board.getCell(new Coordinate(3, 1)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(3, 1)).getPossibleValues().length).toBe(2);
-            expect(board.getCell(new Coordinate(3, 2)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(3, 2)).getPossibleValues().length).toBe(2);
-            expect(board.getCell(new Coordinate(3, 3)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(3, 3)).getPossibleValues().length).toBe(3);
-            expect(board.getCell(new Coordinate(3, 4)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(3, 4)).getPossibleValues().length).toBe(0);
+            expect(board.getCell(Coordinate.fromText('C1', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('C1', 4)).getPossibleValues().length).toBe(2);
+            expect(board.getCell(Coordinate.fromText('C2', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('C2', 4)).getPossibleValues().length).toBe(2);
+            expect(board.getCell(Coordinate.fromText('C3', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('C3', 4)).getPossibleValues().length).toBe(3);
+            expect(board.getCell(Coordinate.fromText('C4', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('C4', 4)).getPossibleValues().length).toBe(0);
 
-            expect(board.getCell(new Coordinate(4, 1)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(4, 1)).getPossibleValues().length).toBe(2);
-            expect(board.getCell(new Coordinate(4, 2)).value).toBe(3);
-            expect(board.getCell(new Coordinate(4, 2)).getPossibleValues().length).toBe(1);
-            expect(board.getCell(new Coordinate(4, 3)).value).toBe(4);
-            expect(board.getCell(new Coordinate(4, 3)).getPossibleValues().length).toBe(1);
-            expect(board.getCell(new Coordinate(4, 4)).value).toBeUndefined();
-            expect(board.getCell(new Coordinate(4, 4)).getPossibleValues().length).toBe(2);
+            expect(board.getCell(Coordinate.fromText('D1', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('D1', 4)).getPossibleValues().length).toBe(2);
+            expect(board.getCell(Coordinate.fromText('D2', 4)).value).toBe(3);
+            expect(board.getCell(Coordinate.fromText('D2', 4)).getPossibleValues().length).toBe(1);
+            expect(board.getCell(Coordinate.fromText('D3', 4)).value).toBe(4);
+            expect(board.getCell(Coordinate.fromText('D3', 4)).getPossibleValues().length).toBe(1);
+            expect(board.getCell(Coordinate.fromText('D4', 4)).value).toBeUndefined();
+            expect(board.getCell(Coordinate.fromText('D4', 4)).getPossibleValues().length).toBe(2);
 
-            expect(board.getOperator(new Coordinate(1, 2), MoveDirection.Down)).toBe(ComparisonOperator.LessThan);
-            expect(board.getOperator(new Coordinate(2, 2), MoveDirection.Up)).toBe(ComparisonOperator.GreaterThan);
+            expect(board.getOperator(Coordinate.fromText('A2', 4), MoveDirection.Down)).toBe(ComparisonOperator.LessThan);
+            expect(board.getOperator(Coordinate.fromText('B2', 4), MoveDirection.Up)).toBe(ComparisonOperator.GreaterThan);
 
-            expect(board.getOperator(new Coordinate(2, 1), MoveDirection.Down)).toBe(ComparisonOperator.GreaterThan);
-            expect(board.getOperator(new Coordinate(3, 1), MoveDirection.Up)).toBe(ComparisonOperator.LessThan);
+            expect(board.getOperator(Coordinate.fromText('B1', 4), MoveDirection.Down)).toBe(ComparisonOperator.GreaterThan);
+            expect(board.getOperator(Coordinate.fromText('C1', 4), MoveDirection.Up)).toBe(ComparisonOperator.LessThan);
 
-            expect(board.getOperator(new Coordinate(3, 1), MoveDirection.Right)).toBe(ComparisonOperator.LessThan);
-            expect(board.getOperator(new Coordinate(3, 2), MoveDirection.Left)).toBe(ComparisonOperator.GreaterThan);
+            expect(board.getOperator(Coordinate.fromText('C1', 4), MoveDirection.Right)).toBe(ComparisonOperator.LessThan);
+            expect(board.getOperator(Coordinate.fromText('C2', 4), MoveDirection.Left)).toBe(ComparisonOperator.GreaterThan);
 
-            expect(board.getOperator(new Coordinate(4, 3), MoveDirection.Right)).toBe(ComparisonOperator.GreaterThan);
-            expect(board.getOperator(new Coordinate(4, 4), MoveDirection.Left)).toBe(ComparisonOperator.LessThan);
+            expect(board.getOperator(Coordinate.fromText('D3', 4), MoveDirection.Right)).toBe(ComparisonOperator.GreaterThan);
+            expect(board.getOperator(Coordinate.fromText('D4', 4), MoveDirection.Left)).toBe(ComparisonOperator.LessThan);
         });
     });
 
@@ -83,24 +83,24 @@ describe('BoardTextConverter', () => {
         it('should format board correctly', () => {
             const board = new MemoryBoard(4);
 
-            board.getCell(new Coordinate(1, 2)).setDraftValues([1]);
+            board.getCell(Coordinate.fromText('A2', 4)).setDraftValues([1]);
 
-            board.getCell(new Coordinate(2, 4)).setDraftValues([1, 2, 3, 4]);
+            board.getCell(Coordinate.fromText('B4', 4)).setDraftValues([1, 2, 3, 4]);
 
-            board.getCell(new Coordinate(3, 1)).setDraftValues([2, 3]);
-            board.getCell(new Coordinate(3, 2)).setDraftValues([2, 4]);
-            board.getCell(new Coordinate(3, 3)).setDraftValues([1, 2, 3]);
+            board.getCell(Coordinate.fromText('C1', 4)).setDraftValues([2, 3]);
+            board.getCell(Coordinate.fromText('C2', 4)).setDraftValues([2, 4]);
+            board.getCell(Coordinate.fromText('C3', 4)).setDraftValues([1, 2, 3]);
 
-            board.getCell(new Coordinate(4, 1)).setDraftValues([1, 2]);
-            board.getCell(new Coordinate(4, 2)).setUserValue(3);
-            board.getCell(new Coordinate(4, 3)).setUserValue(4);
-            board.getCell(new Coordinate(4, 4)).setDraftValues([1, 2]);
+            board.getCell(Coordinate.fromText('D1', 4)).setDraftValues([1, 2]);
+            board.getCell(Coordinate.fromText('D2', 4)).setUserValue(3);
+            board.getCell(Coordinate.fromText('D3', 4)).setUserValue(4);
+            board.getCell(Coordinate.fromText('D4', 4)).setDraftValues([1, 2]);
 
-            board.setOperator(new Coordinate(1, 2), MoveDirection.Down, ComparisonOperator.LessThan);
-            board.setOperator(new Coordinate(3, 1), MoveDirection.Up, ComparisonOperator.LessThan);
-            board.setOperator(new Coordinate(3, 1), MoveDirection.Right, ComparisonOperator.LessThan);
-            board.setOperator(new Coordinate(4, 2), MoveDirection.Left, ComparisonOperator.GreaterThan);
-            board.setOperator(new Coordinate(4, 3), MoveDirection.Right, ComparisonOperator.GreaterThan);
+            board.setOperator(Coordinate.fromText('A2', 4), MoveDirection.Down, ComparisonOperator.LessThan);
+            board.setOperator(Coordinate.fromText('C1', 4), MoveDirection.Up, ComparisonOperator.LessThan);
+            board.setOperator(Coordinate.fromText('C1', 4), MoveDirection.Right, ComparisonOperator.LessThan);
+            board.setOperator(Coordinate.fromText('D2', 4), MoveDirection.Left, ComparisonOperator.GreaterThan);
+            board.setOperator(Coordinate.fromText('D3', 4), MoveDirection.Right, ComparisonOperator.GreaterThan);
 
             const formatted = converter.boardToText(board, ' '.repeat(16));
 
