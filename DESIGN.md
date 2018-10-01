@@ -18,12 +18,23 @@
 - [x] undo last move(s)
 
 # Enhancements
-- [x] puzzle selection: enable selection of a random puzzle
+- [x] puzzle selection: pick a random puzzle
 - [x] save game progress in cookie
-- [ ] option to track elapsed time
+- [x] print puzzle
+- [x] add support for Internet Explorer
+- [x] replace favicon
 - [x] auto-cleanup draft digits on regular digit entry
+- [ ] nicer styling when puzzle solved (show button "new random game")
+- [ ] display coordinate rulers
 - [ ] block invalid (based on rules) digit entry; highlight related cells
 - [ ] block invalid (based on rules) draft digit entry; highlight related cells
+- [ ] code refactorings and cleanup
+  - [ ] validate inputs in class members
+  - [ ] split parsing and rendering of downloaded puzzle in BoardComponent
+  - [ ] move classes into subfolder 'logic' / maybe change into services?
+  - [ ] extract undo tracking into separate class
+  - [ ] review components and extract non-UI logic into separate classes
+  - [ ] switch to TypeScript strict mode
 - [ ] learn mode: auto-select all possible numbers in empty cells
 - [ ] automated solver (http://pzl.org.uk/futoshiki.html)
   - [x] Naked Set
@@ -34,18 +45,15 @@
   - [x] Relative Size (Double) (http://www.davdata.nl/futoshiki.html point 4)
   - [ ] X-Wing
   - .... see http://www.sudokuwiki.org
-- [x] print puzzle
+- [ ] option to track elapsed time
 - [ ] helptext: game rules and strategies
-- [ ] nicer styling when puzzle solved (show button "new random game")
-- [ ] nicer styling of button bar
-- [x] replace favicon
+- [ ] nicer styling of button bar (https://davidwalsh.name/orientation-change)
 - [ ] cleanup README.md
-- [ ] switch to TypeScript strict mode
 - [ ] consider to use "prettier" code-formatter
 - [ ] optimize performance
-  - type table layout instead of divs
-  - replace arrays with bitmasks
-- [ ] have some automated (unit) tests
+  - try table layout instead of divs for board
+  - replace storage of cell/draft values with bitmask
+- [ ] have some automated (unit) tests (using real puzzles)
 
 # Links for inspiration
 https://sudoku.game/
