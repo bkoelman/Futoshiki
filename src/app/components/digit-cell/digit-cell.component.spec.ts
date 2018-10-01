@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DigitCellComponent } from './digit-cell.component';
+import { RepeatPipe } from '../../repeat.pipe';
 
 describe('DigitCellComponent', () => {
   let component: DigitCellComponent;
@@ -8,7 +9,10 @@ describe('DigitCellComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DigitCellComponent]
+      declarations: [
+        DigitCellComponent,
+        RepeatPipe
+      ]
     })
       .compileComponents();
   }));

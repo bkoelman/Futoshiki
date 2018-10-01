@@ -13,6 +13,7 @@ import { EnumNamesToArrayPipe } from '../../enum-names-to-array.pipe';
 import { HttpRequestController } from '../../services/http-request-controller';
 import { PuzzleDataService } from '../../services/puzzle-data.service';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
+import { RepeatPipe } from '../../repeat.pipe';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -33,7 +34,8 @@ describe('GameComponent', () => {
         ButtonBarComponent,
         ChangePuzzleComponent,
         EnumNamesToArrayPipe,
-        DebugConsoleComponent
+        DebugConsoleComponent,
+        RepeatPipe
       ],
       providers: [
         HttpRequestController,

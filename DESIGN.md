@@ -31,7 +31,7 @@
 - [ ] move `Promote` button from debug mode into normal game
 - [ ] code refactorings and cleanup
   - [ ] validate inputs in class members
-  - [ ] split parsing and rendering of downloaded puzzle in BoardComponent
+  - [x] split parsing and rendering of downloaded puzzle in BoardComponent
   - [ ] move classes into subfolder 'logic' / maybe change into services?
   - [ ] extract undo tracking into separate class
   - [ ] review components and extract non-UI logic into separate classes

@@ -3,7 +3,7 @@ import { Coordinate } from './models/coordinate';
 import { MoveDirection } from './models/move-direction.enum';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MemoryBoard } from './models/memory-board';
-import { expectEmptyCell, expectSingleValue, expectDraftValues, expectOperator } from './test-expectations.spec';
+import { expectEmptyCell, expectSingleUserValue, expectDraftValues, expectOperator, expectFixedValue } from './test-expectations.spec';
 
 describe('BoardTextConverter', () => {
     let converter: BoardTextConverter;
@@ -20,11 +20,11 @@ describe('BoardTextConverter', () => {
                 +-v--+----+--^--+-----+-------+
                 |    |    | 345 |     |       |
                 +----+-v--+-----+-----+-------+
-                |    |    | !2  |     >  134  |
+                |    |    | #2  |     >  134  |
                 +-v--+----+-----+-----+-------+
                 | !3 > !2 >  1  |     |  45   |
                 +----+----+-----+-----+-------+
-                | !4 |    >     | 123 <       |
+                | #4 |    >     | 123 <       |
                 +----+----+-----+-----+-------+
                 `;
 
@@ -46,17 +46,17 @@ describe('BoardTextConverter', () => {
 
             expectEmptyCell('C1', board);
             expectEmptyCell('C2', board);
-            expectSingleValue('C3', 2, board);
+            expectFixedValue('C3', 2, board);
             expectEmptyCell('C4', board);
             expectDraftValues('C5', [1, 3, 4], board);
 
-            expectSingleValue('D1', 3, board);
-            expectSingleValue('D2', 2, board);
+            expectSingleUserValue('D1', 3, board);
+            expectSingleUserValue('D2', 2, board);
             expectDraftValues('D3', [1], board);
             expectEmptyCell('D4', board);
             expectDraftValues('D5', [4, 5], board);
 
-            expectSingleValue('E1', 4, board);
+            expectFixedValue('E1', 4, board);
             expectEmptyCell('E2', board);
             expectEmptyCell('E3', board);
             expectDraftValues('E4', [1, 2, 3], board);
@@ -87,7 +87,7 @@ describe('BoardTextConverter', () => {
 
             board.getCell(Coordinate.fromText('B3', board.size)).setDraftValues([3, 4, 5]);
 
-            board.getCell(Coordinate.fromText('C3', board.size)).setUserValue(2);
+            board.getCell(Coordinate.fromText('C3', board.size)).setFixedValue(2);
             board.getCell(Coordinate.fromText('C5', board.size)).setDraftValues([1, 3, 4]);
 
             board.getCell(Coordinate.fromText('D1', board.size)).setUserValue(3);
@@ -95,7 +95,7 @@ describe('BoardTextConverter', () => {
             board.getCell(Coordinate.fromText('D3', board.size)).setDraftValues([1]);
             board.getCell(Coordinate.fromText('D5', board.size)).setDraftValues([4, 5]);
 
-            board.getCell(Coordinate.fromText('E1', board.size)).setUserValue(4);
+            board.getCell(Coordinate.fromText('E1', board.size)).setFixedValue(4);
             board.getCell(Coordinate.fromText('E4', board.size)).setDraftValues([1, 2, 3]);
 
             board.setOperator(Coordinate.fromText('A1', board.size), MoveDirection.Down, ComparisonOperator.GreaterThan);
@@ -119,11 +119,11 @@ describe('BoardTextConverter', () => {
                 +-v--+----+--^--+-----+-------+
                 |    |    | 345 |     |       |
                 +----+-v--+-----+-----+-------+
-                |    |    | !2  |     >  134  |
+                |    |    | #2  |     >  134  |
                 +-v--+----+-----+-----+-------+
                 | !3 > !2 >  1  |     |  45   |
                 +----+----+-----+-----+-------+
-                | !4 |    >     | 123 <       |
+                | #4 |    >     | 123 <       |
                 +----+----+-----+-----+-------+`);
         });
     });

@@ -222,9 +222,11 @@ export class GameComponent implements OnInit {
     answerDigits.forEach((digit, index) => {
       const answerValue = parseInt(digit, 10);
       const coordinate = Coordinate.fromIndex(index, this.puzzle.info.boardSize);
-      const userValue = this.boardComponent.getCellValueAtCoordinate(coordinate);
-      if (userValue !== answerValue) {
-        isCorrect = false;
+      const cell = this.boardComponent.getCell(coordinate);
+      if (cell) {
+        if (cell.value !== answerValue) {
+          isCorrect = false;
+        }
       }
     });
 

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ButtonBarComponent } from './button-bar.component';
+import { RepeatPipe } from '../../repeat.pipe';
 
 describe('ButtonBarComponent', () => {
   let component: ButtonBarComponent;
@@ -8,7 +9,10 @@ describe('ButtonBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ButtonBarComponent]
+      declarations: [
+        ButtonBarComponent,
+        RepeatPipe
+      ]
     })
       .compileComponents();
   }));

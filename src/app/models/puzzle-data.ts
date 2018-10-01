@@ -1,7 +1,8 @@
 import { PuzzleInfo } from './puzzle-info';
+import { MemoryBoard } from './memory-board';
 
 export interface PuzzleData {
     info: PuzzleInfo;
-    puzzleLines: string[];
+    startBoard: MemoryBoard;
     answerLines: string[];
 }

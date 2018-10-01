@@ -2,14 +2,19 @@ import { Cell } from './cell';
 import { MemoryBoard } from './memory-board';
 
 export class MemoryCell implements Cell {
-    private _userValue: number;
+    private _fixedValue: number | undefined;
+    private _userValue: number | undefined;
     private _draftValues: number[] = [];
 
     constructor(private _owner: MemoryBoard) {
     }
 
     get value(): number | undefined {
-        return this._userValue;
+        return this.isFixed ? this._fixedValue : this._userValue;
+    }
+
+    get isFixed(): boolean {
+        return this._fixedValue !== undefined;
     }
 
     getPossibleValues(): number[] {
@@ -40,13 +45,28 @@ export class MemoryCell implements Cell {
         return result;
     }
 
+    setFixedValue(digit: number) {
+        if (this.isOutOfRange(digit)) {
+            throw new Error(`Invalid cell value '${digit}'.`);
+        }
+
+        if (digit !== undefined) {
+            this._userValue = undefined;
+            this._draftValues = [];
+        }
+
+        this._fixedValue = digit;
+    }
+
     setUserValue(digit: number) {
         if (this.isOutOfRange(digit)) {
             throw new Error(`Invalid cell value '${digit}'.`);
         }
 
-        this._userValue = digit;
-        this._draftValues = [];
+        if (!this.isFixed) {
+            this._userValue = digit;
+            this._draftValues = [];
+        }
     }
 
     setDraftValues(digits: number[]) {
@@ -55,8 +75,10 @@ export class MemoryCell implements Cell {
             throw new Error(`Invalid draft value '${firstOutOfRange}'.`);
         }
 
-        this._userValue = undefined;
-        this._draftValues = digits.slice().sort();
+        if (!this.isFixed) {
+            this._userValue = undefined;
+            this._draftValues = digits.slice().sort();
+        }
     }
 
     removeDraftValue(digit: number) {
@@ -70,6 +92,6 @@ export class MemoryCell implements Cell {
     }
 
     private isOutOfRange(digit: number) {
-        return digit < 1 || digit > this._owner.size;
+        return isNaN(digit) || Math.floor(digit) !== digit || digit < 1 || digit > this._owner.size;
     }
 }

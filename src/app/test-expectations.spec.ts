@@ -11,15 +11,25 @@ export function expectEmptyCell(coordinateText: string, board: Board) {
     expect(cell.value).toBeUndefined();
 }
 
-export function expectSingleValue(coordinateText: string, value: number, board: Board) {
+export function expectFixedValue(coordinateText: string, digit: number, board: Board) {
     const coordinate = Coordinate.fromText(coordinateText, board.size);
     const cell = board.getCell(coordinate);
 
     expect(cell).toBeDefined();
-    expect(cell.value).toBe(value);
+    expect(cell.isFixed).toBeTruthy();
+    expect(cell.value).toBe(digit);
 }
 
-export function expectDraftValues(coordinateText: string, draftValues: number[], board: Board) {
+export function expectSingleUserValue(coordinateText: string, digit: number, board: Board) {
+    const coordinate = Coordinate.fromText(coordinateText, board.size);
+    const cell = board.getCell(coordinate);
+
+    expect(cell).toBeDefined();
+    expect(cell.isFixed).toBeFalsy();
+    expect(cell.value).toBe(digit);
+}
+
+export function expectDraftValues(coordinateText: string, digits: number[], board: Board) {
     const coordinate = Coordinate.fromText(coordinateText, board.size);
     const cell = board.getCell(coordinate);
 
@@ -27,8 +37,8 @@ export function expectDraftValues(coordinateText: string, draftValues: number[],
     expect(cell.value).toBeUndefined();
     const possibleValues = cell.getPossibleValues();
 
-    expect(possibleValues.length).toBe(draftValues.length);
-    expect(possibleValues.join()).toBe(draftValues.join());
+    expect(possibleValues.length).toBe(digits.length);
+    expect(possibleValues.join()).toBe(digits.join());
 }
 
 export function expectOperator(coordinateText: string, direction: MoveDirection, operator: ComparisonOperator, board: Board) {

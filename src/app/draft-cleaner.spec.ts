@@ -1,12 +1,8 @@
 import { BoardTextConverter } from './board-text-converter';
 import { Coordinate } from './models/coordinate';
-import { MoveDirection } from './models/move-direction.enum';
-import { ComparisonOperator } from './models/comparison-operator.enum';
-import { MemoryBoard } from './models/memory-board';
 import { Board } from './models/board';
 import { DraftCleaner } from './draft-cleaner';
-import { expectEmptyCell, expectSingleValue, expectDraftValues, expectOperator } from './test-expectations.spec';
-import { BoundEvent } from '@angular/compiler/src/render3/r3_ast';
+import { expectEmptyCell, expectSingleUserValue, expectDraftValues, expectFixedValue } from './test-expectations.spec';
 
 describe('DraftCleaner', () => {
     let board: Board;
@@ -19,7 +15,7 @@ describe('DraftCleaner', () => {
             +--v---+--v---+-------+------+--^--+
             | 1234 |      | 12345 |      | 235 |
             +------+--^---+-------+------+-----+
-            |      | 235  |       |      |  !4 |
+            |      | 235  |       |      |  #4 |
             +------+------+-------+------+--^--+
             | 2345 | 1234 <       | 2345 |     |
             +--v---+------+-------+--v---+-----+
@@ -44,7 +40,7 @@ describe('DraftCleaner', () => {
 
             expectDraftValues('A5', [1, 2, 3], board);
             expectDraftValues('B5', [2, 3], board);
-            expectSingleValue('C5', 4, board);
+            expectFixedValue('C5', 4, board);
             expectDraftValues('E5', [2, 3], board);
         });
 

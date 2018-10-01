@@ -1,37 +1,19 @@
-<div *ngFor="let puzzleLine of puzzleLines || []">
-    <div *ngIf="lineStartsWithDotOrDigit(puzzleLine)">
-        <span *ngFor="let token of puzzleLine.split('')">
-            <span *ngIf="isDigitToken(token)">
-                <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
-                    (contentChanged)="onCellContentChanged($event)" [fixedValue]="+token"></app-digit-cell>
-            </span>
-            <span *ngIf="isDotToken(token)">
-                <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
-                    (contentChanged)="onCellContentChanged($event)"></app-digit-cell>
-            </span>
-            <span *ngIf="parseOperatorToken(token); let operatorValue">
-                <app-operator-cell [boardSize]="size" [operatorValue]="operatorValue"></app-operator-cell>
-            </span>
-            <span *ngIf="isUnderscoreToken(token)">
-                <app-operator-cell [boardSize]="size"></app-operator-cell>
-            </span>
-        </span>
+<ng-container *ngIf="startBoard">
+    <div *ngFor="let rowIndex of size | repeat">
+        <ng-container *ngFor="let columnIndex of size | repeat">
+            <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
+                (contentChanged)="onCellContentChanged($event)" [fixedValue]="getFixedValueAt(rowIndex, columnIndex)"></app-digit-cell>
+            <ng-container *ngIf="columnIndex < size - 1">
+                <app-operator-cell [boardSize]="size" [operatorValue]="getOperatorAtRight(rowIndex, columnIndex)"></app-operator-cell>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="rowIndex < size - 1">
+            <ng-container *ngFor="let columnIndex of size | repeat">
+                <app-operator-cell [boardSize]="size" isRotated="true" [operatorValue]="getOperatorBelow(rowIndex, columnIndex)"></app-operator-cell>
+                <ng-container *ngIf="columnIndex < size - 1">
+                    <app-spacer-cell [boardSize]="size"></app-spacer-cell>
+                </ng-container>
+            </ng-container>
+        </ng-container>
     </div>
-    <div *ngIf="lineStartsWithUnderscoreOrOperator(puzzleLine)">
-        <span *ngFor="let token of puzzleLine.split(''); let idx = index">
-            <span *ngIf="parseOperatorToken(token); else noneOperator; let operatorValue">
-                <app-operator-cell [boardSize]="size" isRotated="true" [operatorValue]="operatorValue"></app-operator-cell>
-            </span>
-            <ng-template #noneOperator>
-                <span *ngIf="isEvenNumber(idx); else notEvenNumber">
-                    <app-operator-cell [boardSize]="size" isRotated="true"></app-operator-cell>
-                </span>
-                <ng-template #notEvenNumber>
-                    <span>
-                        <app-spacer-cell [boardSize]="size"></app-spacer-cell>
-                    </span>
-                </ng-template>
-            </ng-template>
-        </span>
-    </div>
-</div>
+</ng-container>

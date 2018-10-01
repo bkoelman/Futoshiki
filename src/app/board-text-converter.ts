@@ -4,6 +4,7 @@ import { MoveDirection } from './models/move-direction.enum';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { ObjectFacilities } from './object-facilities';
 import { Board } from './models/board';
+import { Cell } from './models/cell';
 
 export class BoardTextConverter {
     /* Parses a board state to an in-memory object. For example:
@@ -50,7 +51,7 @@ export class BoardTextConverter {
                         coordinate = coordinate.moveOne(MoveDirection.Right);
                         board.setOperator(coordinate, MoveDirection.Left, ComparisonOperator.LessThan);
                         columnIndex++;
-                    } else if (ch === '!') {
+                    } else if (ch === '!' || ch === '#') {
                         columnIndex++;
                         const { newIndex, digits } = this.consumeDigits(line, columnIndex, size, coordinate);
                         if (digits.length === 0) {
@@ -63,7 +64,11 @@ export class BoardTextConverter {
                             throw new Error(`Cell ${coordinate} not found.`);
                         }
                         columnIndex = newIndex;
-                        cell.setUserValue(digits[0]);
+                        if (ch === '#') {
+                            cell.setFixedValue(digits[0]);
+                        } else {
+                            cell.setUserValue(digits[0]);
+                        }
                     } else if (this.charIsDigit(ch)) {
                         const { newIndex, digits } = this.consumeDigits(line, columnIndex, size, coordinate);
                         const uniqueDigits = ObjectFacilities.getUniqueArrayElements(digits);
@@ -190,7 +195,7 @@ export class BoardTextConverter {
             for (const coordinate of rowCoordinate.iterateRow(false)) {
                 const cell = board.getCell(coordinate);
                 if (cell) {
-                    const value = cell.value !== undefined ? '!' + cell.value : cell.getPossibleValues().join('');
+                    const value = this.formatCellValue(cell);
                     const columnIndex = offset % board.size;
                     const width = maxColumnWidths[columnIndex];
                     line += this.centerText(value, width + 2, ' ');
@@ -245,6 +250,16 @@ export class BoardTextConverter {
         }
 
         return maxColumnWidths;
+    }
+
+    private formatCellValue(cell: Cell): string {
+        if (cell.isFixed) {
+            return '#' + cell.value;
+        }
+        if (cell.value !== undefined) {
+            return '!' + cell.value;
+        }
+        return cell.getPossibleValues().join('');
     }
 
     private centerText(text: string, width: number, spacer: string) {

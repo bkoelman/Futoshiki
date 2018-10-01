@@ -4,7 +4,7 @@ import { Coordinate } from '../../models/coordinate';
 import { GameSaveState } from '../../models/game-save-state';
 import { ObjectFacilities } from '../../object-facilities';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot';
-import { ComparisonOperator, parseComparisonOperator, reverseOperator } from '../../models/comparison-operator.enum';
+import { ComparisonOperator } from '../../models/comparison-operator.enum';
 import { Board } from '../../models/board';
 import { MoveDirection } from '../../models/move-direction.enum';
 
@@ -13,7 +13,7 @@ import { MoveDirection } from '../../models/move-direction.enum';
   templateUrl: './board.component.html'
 })
 export class BoardComponent implements Board, OnInit {
-  @Input() puzzleLines: string[] | undefined;
+  @Input() startBoard: Board | undefined;
   @Input() size: number | undefined;
   @Output() contentChanged = new EventEmitter<{ cell: Coordinate, snapshotBefore: CellContentSnapshot }>();
 
@@ -33,38 +33,25 @@ export class BoardComponent implements Board, OnInit {
   ngOnInit() {
   }
 
-  lineStartsWithDotOrDigit(line: string): boolean {
-    if (line.length > 0) {
-      return this.isDotToken(line[0]) || this.isDigitToken(line[0]);
-    }
-    return false;
+  getFixedValueAt(rowIndex: number, columnIndex: number): number | undefined {
+    const coordinate = this.createCoordinate(rowIndex, columnIndex);
+    const cell = this.startBoard.getCell(coordinate);
+    return cell && cell.isFixed ? cell.value : undefined;
   }
 
-  lineStartsWithUnderscoreOrOperator(line: string): boolean {
-    if (line.length > 0) {
-      return this.isUnderscoreToken(line[0]) || this.parseOperatorToken(line[0]) !== ComparisonOperator.None;
-    }
-    return false;
+  getOperatorAtRight(rowIndex: number, columnIndex: number): ComparisonOperator {
+    const coordinate = this.createCoordinate(rowIndex, columnIndex);
+    return this.startBoard.getOperator(coordinate, MoveDirection.Right);
   }
 
-  isDotToken(token: string): boolean {
-    return token === '.';
+  getOperatorBelow(rowIndex: number, columnIndex: number): ComparisonOperator {
+    const coordinate = this.createCoordinate(rowIndex, columnIndex);
+    return this.startBoard.getOperator(coordinate, MoveDirection.Down);
   }
 
-  isDigitToken(token: string): boolean {
-    return /^\d$/.test(token);
-  }
-
-  isUnderscoreToken(token: string): boolean {
-    return token === '_';
-  }
-
-  parseOperatorToken(token: string): ComparisonOperator {
-    return parseComparisonOperator(token);
-  }
-
-  isEvenNumber(index: number): boolean {
-    return index % 2 === 0;
+  private createCoordinate(rowIndex: number, columnIndex: number): Coordinate {
+    const index = rowIndex * this.size + columnIndex;
+    return Coordinate.fromIndex(index, this.size);
   }
 
   reset() {
@@ -83,11 +70,6 @@ export class BoardComponent implements Board, OnInit {
 
   hasIncompleteCells() {
     return this._cells.some(cell => cell.value === undefined);
-  }
-
-  getCellValueAtCoordinate(coordinate: Coordinate): number | undefined {
-    const cell = this.getCell(coordinate);
-    return cell === undefined ? undefined : cell.value;
   }
 
   getCell(coordinate: Coordinate): DigitCellComponent | undefined {
@@ -109,67 +91,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   getOperator(coordinate: Coordinate, direction: MoveDirection): ComparisonOperator {
-    // TODO: Optimize
-    switch (direction) {
-      case MoveDirection.Left:
-        return this.getComparisonToLeftCell(coordinate);
-      case MoveDirection.Right:
-        return this.getComparisonToRightCell(coordinate);
-      case MoveDirection.Up:
-        return this.getComparisonToAboveCell(coordinate);
-      case MoveDirection.Down:
-        return this.getComparisonToBelowCell(coordinate);
-    }
-  }
-
-  private getComparisonToLeftCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.canMoveOne(MoveDirection.Left)) {
-      const offset = this.getOffsetInLineArrayForCoordinate(coordinate);
-      const operatorChar = this.puzzleLines[offset.line][offset.column - 1];
-      return reverseOperator(parseComparisonOperator(operatorChar));
-    }
-
-    return ComparisonOperator.None;
-  }
-
-  private getComparisonToRightCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.canMoveOne(MoveDirection.Right)) {
-      const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-      const operatorChar = this.puzzleLines[lineSetOffset.line][lineSetOffset.column + 1];
-      return parseComparisonOperator(operatorChar);
-    }
-
-    return ComparisonOperator.None;
-  }
-
-  private getComparisonToAboveCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.canMoveOne(MoveDirection.Up)) {
-      const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-      const operatorChar = this.puzzleLines[lineSetOffset.line - 1][lineSetOffset.column];
-      return reverseOperator(parseComparisonOperator(operatorChar));
-    }
-
-    return ComparisonOperator.None;
-  }
-
-  private getComparisonToBelowCell(coordinate: Coordinate): ComparisonOperator {
-    if (coordinate.canMoveOne(MoveDirection.Down)) {
-      const lineSetOffset = this.getOffsetInLineArrayForCoordinate(coordinate);
-      const operatorChar = this.puzzleLines[lineSetOffset.line + 1][lineSetOffset.column];
-      return parseComparisonOperator(operatorChar);
-    }
-
-    return ComparisonOperator.None;
-  }
-
-  private getOffsetInLineArrayForCoordinate(coordinate: Coordinate): { line: number, column: number } {
-    const index = coordinate.toIndex();
-    const rowNumber = Math.floor(index / this.size) + 1;
-    const columnNumber = index % this.size + 1;
-    return {
-      line: (rowNumber * 2) - 2,
-      column: (columnNumber * 2) - 2
-    };
+    return this.startBoard.getOperator(coordinate, direction);
   }
 
   loadGame(saveState: GameSaveState) {

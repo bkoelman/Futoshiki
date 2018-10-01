@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ViewChildren, ElementRef } from '@angular/core';
 import { AfterViewChecked } from '@angular/core';
-import { ObjectFacilities } from '../../object-facilities';
 import * as ft from '../../../jquery.fittext.js';
 
 declare var $: any;
@@ -32,10 +31,6 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
       const autoSizeTextTarget = $(textRef.nativeElement);
       autoSizeTextTarget.fitText(0.15);
     });
-  }
-
-  createNumberSequence(count: number) {
-    return ObjectFacilities.createNumberSequence(count);
   }
 
   onDigitButtonClicked(event: Event, isDraft: boolean) {

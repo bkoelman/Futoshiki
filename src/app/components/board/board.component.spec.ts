@@ -4,6 +4,7 @@ import { BoardComponent } from './board.component';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { OperatorCellComponent } from '../operator-cell/operator-cell.component';
 import { SpacerCellComponent } from '../spacer-cell/spacer-cell.component';
+import { RepeatPipe } from '../../repeat.pipe';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
@@ -15,7 +16,8 @@ describe('BoardComponent', () => {
         BoardComponent,
         DigitCellComponent,
         OperatorCellComponent,
-        SpacerCellComponent
+        SpacerCellComponent,
+        RepeatPipe
       ]
     })
       .compileComponents();

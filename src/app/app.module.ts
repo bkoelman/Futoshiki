@@ -17,6 +17,7 @@ import { HttpRequestController } from './services/http-request-controller';
 import { HttpCacheService } from './services/http-cache.service';
 import { PuzzleDataService } from './services/puzzle-data.service';
 import { DebugConsoleComponent } from './components/debug-console/debug-console.component';
+import { RepeatPipe } from './repeat.pipe';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { DebugConsoleComponent } from './components/debug-console/debug-console.
     ButtonBarComponent,
     ChangePuzzleComponent,
     EnumNamesToArrayPipe,
-    DebugConsoleComponent
+    DebugConsoleComponent,
+    RepeatPipe
   ],
   imports: [
     BrowserModule,

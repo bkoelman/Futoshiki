@@ -38,50 +38,27 @@ export class PuzzleSolver {
     }
 
     private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]): void {
-        const comparisonToLeft = this._board.getOperator(coordinate, MoveDirection.Left);
-        if (comparisonToLeft !== ComparisonOperator.None) {
-            const isLessThanAdjacentCell = comparisonToLeft === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Left),
-                coordinate, candidateValueSet, 'left');
-        }
+        this.outerApplySingleOperatorRule(coordinate, MoveDirection.Left, candidateValueSet);
+        this.outerApplySingleOperatorRule(coordinate, MoveDirection.Right, candidateValueSet);
+        this.outerApplyDoubleOperatorRule(coordinate, MoveDirection.Left, MoveDirection.Right, candidateValueSet);
 
-        const comparisonToRight = this._board.getOperator(coordinate, MoveDirection.Right);
-        if (comparisonToRight !== ComparisonOperator.None) {
-            const isLessThanAdjacentCell = comparisonToRight === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Right),
-                coordinate, candidateValueSet, 'right');
-        }
+        this.outerApplySingleOperatorRule(coordinate, MoveDirection.Up, candidateValueSet);
+        this.outerApplySingleOperatorRule(coordinate, MoveDirection.Down, candidateValueSet);
+        this.outerApplyDoubleOperatorRule(coordinate, MoveDirection.Up, MoveDirection.Down, candidateValueSet);
+    }
 
-        if (comparisonToLeft !== ComparisonOperator.None && comparisonToLeft === comparisonToRight) {
-            const isLessThanAdjacentCells = comparisonToLeft === ComparisonOperator.LessThan;
-            this.applyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveOne(MoveDirection.Left),
-                coordinate.moveOne(MoveDirection.Right), coordinate,
-                candidateValueSet, 'left', 'right');
-        }
-
-        const comparisonToAbove = this._board.getOperator(coordinate, MoveDirection.Up);
-        if (comparisonToAbove !== ComparisonOperator.None) {
-            const isLessThanAdjacentCell = comparisonToAbove === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Up),
-                coordinate, candidateValueSet, 'above');
-        }
-
-        const comparisonToBelow = this._board.getOperator(coordinate, MoveDirection.Down);
-        if (comparisonToBelow !== ComparisonOperator.None) {
-            const isLessThanAdjacentCell = comparisonToBelow === ComparisonOperator.LessThan;
-            this.applySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(MoveDirection.Down),
-                coordinate, candidateValueSet, 'below');
-        }
-
-        if (comparisonToAbove !== ComparisonOperator.None && comparisonToAbove === comparisonToBelow) {
-            const isLessThanAdjacentCells = comparisonToAbove === ComparisonOperator.LessThan;
-            this.applyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveOne(MoveDirection.Up),
-                coordinate.moveOne(MoveDirection.Down), coordinate,
-                candidateValueSet, 'above', 'below');
+    private outerApplySingleOperatorRule(coordinate: Coordinate, direction: MoveDirection, candidateValueSet: number[]): void {
+        if (coordinate.canMoveOne(direction)) {
+            const operator = this._board.getOperator(coordinate, direction);
+            if (operator !== ComparisonOperator.None) {
+                const isLessThanAdjacentCell = operator === ComparisonOperator.LessThan;
+                this.innerApplySingleOperatorRule(isLessThanAdjacentCell, coordinate.moveOne(direction),
+                    coordinate, candidateValueSet, MoveDirection[direction]);
+            }
         }
     }
 
-    private applySingleOperatorRule(isLessThanAdjacentCell: boolean, adjacentCellCoordinate: Coordinate,
+    private innerApplySingleOperatorRule(isLessThanAdjacentCell: boolean, adjacentCellCoordinate: Coordinate,
         currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string): void {
         // Rule: When a cell is greater than its adjacent cell, then it cannot contain digit 1 and
         // its minimum value must be higher than the minimum draft value in the adjacent cell.
@@ -110,7 +87,21 @@ export class PuzzleSolver {
         }
     }
 
-    private applyDoubleOperatorRule(isLessThanAdjacentCells: boolean, adjacentCellCoordinate1: Coordinate,
+    private outerApplyDoubleOperatorRule(coordinate: Coordinate, direction1: MoveDirection, direction2: MoveDirection,
+        candidateValueSet: number[]): void {
+        if (coordinate.canMoveOne(direction1) && coordinate.canMoveOne(direction2)) {
+            const operator1 = this._board.getOperator(coordinate, direction1);
+            const operator2 = this._board.getOperator(coordinate, direction2);
+
+            if (operator1 !== ComparisonOperator.None && operator1 === operator2) {
+                const isLessThanAdjacentCells = operator1 === ComparisonOperator.LessThan;
+                this.innerApplyDoubleOperatorRule(isLessThanAdjacentCells, coordinate.moveOne(direction1), coordinate.moveOne(direction2),
+                    coordinate, candidateValueSet, MoveDirection[direction1], MoveDirection[direction2]);
+            }
+        }
+    }
+
+    private innerApplyDoubleOperatorRule(isLessThanAdjacentCells: boolean, adjacentCellCoordinate1: Coordinate,
         adjacentCellCoordinate2: Coordinate, currentCellCoordinate: Coordinate, candidateValueSet: number[],
         direction1: string, direction2: string): void {
         // Rule: When a cell is greater than both of its adjacent cells in the same sequence (row or column)

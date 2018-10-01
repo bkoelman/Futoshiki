@@ -7,7 +7,7 @@
   </div>
 </div>
 <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
-<app-board [puzzleLines]="puzzle?.puzzleLines" [size]="puzzle?.info?.boardSize" (contentChanged)="onBoardContentChanged($event)"></app-board>
+<app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" (contentChanged)="onBoardContentChanged($event)"></app-board>
 
 <div class="clearfix"></div>
 <p></p>

@@ -115,6 +115,18 @@ export class Coordinate {
         }
     }
 
+    canIncrement(): boolean {
+        return this._offset + 1 < this._boardSize * this._boardSize;
+    }
+
+    increment(): Coordinate {
+        if (!this.canIncrement()) {
+            throw new Error('Cannot move past the end of the board.');
+        }
+
+        return new Coordinate(this._offset + 1, this._boardSize);
+    }
+
     private getRowNumber(): number {
         return Math.floor(this._offset / this._boardSize);
     }

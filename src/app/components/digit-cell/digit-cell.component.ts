@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ElementRef, AfterViewChecked } from '@angular/core';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
-import * as ft from '../../../jquery.fittext.js';
-import { ObjectFacilities } from '../../object-facilities.js';
 import { Cell } from '../../models/cell.js';
+import * as ft from '../../../jquery.fittext.js';
 
 declare var $: any;
 
@@ -18,8 +17,7 @@ export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
   @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 
-  @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
-
+  @ViewChildren('autoSizeText') private _autoSizeTextRefs: ElementRef[];
   private _userValue: number | undefined;
   private _draftValues: number[] = [];
 
@@ -48,19 +46,25 @@ export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
   }
 
   registerAutoSizeText() {
-    this.autoSizeTextRefs.forEach(textRef => {
+    this._autoSizeTextRefs.forEach(textRef => {
       const autoSizeTextTarget = $(textRef.nativeElement);
       autoSizeTextTarget.fitText(0.15);
     });
   }
 
-  createNumberSequence(count: number) {
-    return ObjectFacilities.createNumberSequence(count);
-  }
-
   clear() {
     if (this._userValue !== undefined || this._draftValues.length > 0) {
       this.raiseChangeEventFor(() => {
+        this._userValue = undefined;
+        this._draftValues = [];
+      });
+    }
+  }
+
+  setFixedValue(digit: number) {
+    if (this.fixedValue !== digit) {
+      this.raiseChangeEventFor(() => {
+        this.fixedValue = digit;
         this._userValue = undefined;
         this._draftValues = [];
       });
