@@ -3,6 +3,7 @@ import { Coordinate } from './models/coordinate';
 import { MoveDirection } from './models/move-direction.enum';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MemoryBoard } from './models/memory-board';
+import { Board } from './models/board';
 
 describe('BoardTextConverter', () => {
     let converter: BoardTextConverter;
@@ -14,106 +15,150 @@ describe('BoardTextConverter', () => {
     describe('textToBoard', () => {
         it('should parse board correctly', () => {
             const text = `
-                +----+----+-----+------+
-                |    | 1  |     |      |
-                +----+-^--+-----+------+
-                |    |    |     | 1234 |
-                +-v--+----+-----+------+
-                | 23 < 24 | 123 |      |
-                +----+----+-----+------+
-                | 12 < !3 | !4  >  12  |
-                +----+----+-----+------+
+                +----+----+-----+-----+-------+
+                | 25 |    |     |     | 12345 |
+                +-v--+----+--^--+-----+-------+
+                |    |    | 345 |     |       |
+                +----+-v--+-----+-----+-------+
+                |    |    | !2  |     >  134  |
+                +-v--+----+-----+-----+-------+
+                | !3 > !2 >  1  |     |  45   |
+                +----+----+-----+-----+-------+
+                | !4 |    >     | 123 <       |
+                +----+----+-----+-----+-------+
                 `;
 
             const board = converter.textToBoard(text);
 
-            expect(board.size).toBe(4);
+            expect(board.size).toBe(5);
 
-            expect(board.getCell(Coordinate.fromText('A1', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('A1', 4)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(Coordinate.fromText('A2', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('A2', 4)).getPossibleValues().length).toBe(1);
-            expect(board.getCell(Coordinate.fromText('A3', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('A3', 4)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(Coordinate.fromText('A4', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('A4', 4)).getPossibleValues().length).toBe(0);
+            expectDraftValues('A1', [2, 5], board);
+            expectEmptyCell('A2', board);
+            expectEmptyCell('A3', board);
+            expectEmptyCell('A4', board);
+            expectDraftValues('A5', [1, 2, 3, 4, 5], board);
 
-            expect(board.getCell(Coordinate.fromText('B1', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('B1', 4)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(Coordinate.fromText('B2', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('B2', 4)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(Coordinate.fromText('B3', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('B3', 4)).getPossibleValues().length).toBe(0);
-            expect(board.getCell(Coordinate.fromText('B4', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('B4', 4)).getPossibleValues().length).toBe(4);
+            expectEmptyCell('B1', board);
+            expectEmptyCell('B2', board);
+            expectDraftValues('B3', [3, 4, 5], board);
+            expectEmptyCell('B4', board);
+            expectEmptyCell('B5', board);
 
-            expect(board.getCell(Coordinate.fromText('C1', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('C1', 4)).getPossibleValues().length).toBe(2);
-            expect(board.getCell(Coordinate.fromText('C2', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('C2', 4)).getPossibleValues().length).toBe(2);
-            expect(board.getCell(Coordinate.fromText('C3', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('C3', 4)).getPossibleValues().length).toBe(3);
-            expect(board.getCell(Coordinate.fromText('C4', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('C4', 4)).getPossibleValues().length).toBe(0);
+            expectEmptyCell('C1', board);
+            expectEmptyCell('C2', board);
+            expectSingleValue('C3', 2, board);
+            expectEmptyCell('C4', board);
+            expectDraftValues('C5', [1, 3, 4], board);
 
-            expect(board.getCell(Coordinate.fromText('D1', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('D1', 4)).getPossibleValues().length).toBe(2);
-            expect(board.getCell(Coordinate.fromText('D2', 4)).value).toBe(3);
-            expect(board.getCell(Coordinate.fromText('D2', 4)).getPossibleValues().length).toBe(1);
-            expect(board.getCell(Coordinate.fromText('D3', 4)).value).toBe(4);
-            expect(board.getCell(Coordinate.fromText('D3', 4)).getPossibleValues().length).toBe(1);
-            expect(board.getCell(Coordinate.fromText('D4', 4)).value).toBeUndefined();
-            expect(board.getCell(Coordinate.fromText('D4', 4)).getPossibleValues().length).toBe(2);
+            expectSingleValue('D1', 3, board);
+            expectSingleValue('D2', 2, board);
+            expectDraftValues('D3', [1], board);
+            expectEmptyCell('D4', board);
+            expectDraftValues('D5', [4, 5], board);
 
-            expect(board.getOperator(Coordinate.fromText('A2', 4), MoveDirection.Down)).toBe(ComparisonOperator.LessThan);
-            expect(board.getOperator(Coordinate.fromText('B2', 4), MoveDirection.Up)).toBe(ComparisonOperator.GreaterThan);
+            expectSingleValue('E1', 4, board);
+            expectEmptyCell('E2', board);
+            expectEmptyCell('E3', board);
+            expectDraftValues('E4', [1, 2, 3], board);
+            expectEmptyCell('E5', board);
 
-            expect(board.getOperator(Coordinate.fromText('B1', 4), MoveDirection.Down)).toBe(ComparisonOperator.GreaterThan);
-            expect(board.getOperator(Coordinate.fromText('C1', 4), MoveDirection.Up)).toBe(ComparisonOperator.LessThan);
+            expectOperator('A1', MoveDirection.Right, ComparisonOperator.None, board);
+            expectOperator('A1', MoveDirection.Down, ComparisonOperator.GreaterThan, board);
+            expectOperator('A3', MoveDirection.Down, ComparisonOperator.LessThan, board);
 
-            expect(board.getOperator(Coordinate.fromText('C1', 4), MoveDirection.Right)).toBe(ComparisonOperator.LessThan);
-            expect(board.getOperator(Coordinate.fromText('C2', 4), MoveDirection.Left)).toBe(ComparisonOperator.GreaterThan);
+            expectOperator('C2', MoveDirection.Up, ComparisonOperator.LessThan, board);
+            expectOperator('C4', MoveDirection.Right, ComparisonOperator.GreaterThan, board);
 
-            expect(board.getOperator(Coordinate.fromText('D3', 4), MoveDirection.Right)).toBe(ComparisonOperator.GreaterThan);
-            expect(board.getOperator(Coordinate.fromText('D4', 4), MoveDirection.Left)).toBe(ComparisonOperator.LessThan);
+            expectOperator('D1', MoveDirection.Up, ComparisonOperator.LessThan, board);
+            expectOperator('D1', MoveDirection.Right, ComparisonOperator.GreaterThan, board);
+            expectOperator('D3', MoveDirection.Left, ComparisonOperator.LessThan, board);
+
+            expectOperator('E3', MoveDirection.Left, ComparisonOperator.LessThan, board);
+            expectOperator('E4', MoveDirection.Right, ComparisonOperator.LessThan, board);
         });
     });
 
+    function expectEmptyCell(coordinateText: string, board: Board) {
+        const coordinate = Coordinate.fromText(coordinateText, board.size);
+        const cell = board.getCell(coordinate);
+
+        expect(cell).toBeDefined();
+        expect(cell.value).toBeUndefined();
+    }
+
+    function expectSingleValue(coordinateText: string, value: number, board: Board) {
+        const coordinate = Coordinate.fromText(coordinateText, board.size);
+        const cell = board.getCell(coordinate);
+
+        expect(cell).toBeDefined();
+        expect(cell.value).toBe(value);
+    }
+
+    function expectDraftValues(coordinateText: string, draftValues: number[], board: Board) {
+        const coordinate = Coordinate.fromText(coordinateText, board.size);
+        const cell = board.getCell(coordinate);
+
+        expect(cell).toBeDefined();
+        expect(cell.value).toBeUndefined();
+        const possibleValues = cell.getPossibleValues();
+
+        expect(possibleValues.length).toBe(draftValues.length);
+        expect(possibleValues.join()).toBe(draftValues.join());
+    }
+
+    function expectOperator(coordinateText: string, direction: MoveDirection, operator: ComparisonOperator, board: Board) {
+        const coordinate = Coordinate.fromText(coordinateText, board.size);
+        const operatorValue = board.getOperator(coordinate, direction);
+        expect(operatorValue).toBe(operator);
+    }
+
     describe('boardToText', () => {
         it('should format board correctly', () => {
-            const board = new MemoryBoard(4);
+            const board = new MemoryBoard(5);
 
-            board.getCell(Coordinate.fromText('A2', 4)).setDraftValues([1]);
+            board.getCell(Coordinate.fromText('A1', board.size)).setDraftValues([2, 5]);
+            board.getCell(Coordinate.fromText('A5', board.size)).setDraftValues([1, 2, 3, 4, 5]);
 
-            board.getCell(Coordinate.fromText('B4', 4)).setDraftValues([1, 2, 3, 4]);
+            board.getCell(Coordinate.fromText('B3', board.size)).setDraftValues([3, 4, 5]);
 
-            board.getCell(Coordinate.fromText('C1', 4)).setDraftValues([2, 3]);
-            board.getCell(Coordinate.fromText('C2', 4)).setDraftValues([2, 4]);
-            board.getCell(Coordinate.fromText('C3', 4)).setDraftValues([1, 2, 3]);
+            board.getCell(Coordinate.fromText('C3', board.size)).setUserValue(2);
+            board.getCell(Coordinate.fromText('C5', board.size)).setDraftValues([1, 3, 4]);
 
-            board.getCell(Coordinate.fromText('D1', 4)).setDraftValues([1, 2]);
-            board.getCell(Coordinate.fromText('D2', 4)).setUserValue(3);
-            board.getCell(Coordinate.fromText('D3', 4)).setUserValue(4);
-            board.getCell(Coordinate.fromText('D4', 4)).setDraftValues([1, 2]);
+            board.getCell(Coordinate.fromText('D1', board.size)).setUserValue(3);
+            board.getCell(Coordinate.fromText('D2', board.size)).setUserValue(2);
+            board.getCell(Coordinate.fromText('D3', board.size)).setDraftValues([1]);
+            board.getCell(Coordinate.fromText('D5', board.size)).setDraftValues([4, 5]);
 
-            board.setOperator(Coordinate.fromText('A2', 4), MoveDirection.Down, ComparisonOperator.LessThan);
-            board.setOperator(Coordinate.fromText('C1', 4), MoveDirection.Up, ComparisonOperator.LessThan);
-            board.setOperator(Coordinate.fromText('C1', 4), MoveDirection.Right, ComparisonOperator.LessThan);
-            board.setOperator(Coordinate.fromText('D2', 4), MoveDirection.Left, ComparisonOperator.GreaterThan);
-            board.setOperator(Coordinate.fromText('D3', 4), MoveDirection.Right, ComparisonOperator.GreaterThan);
+            board.getCell(Coordinate.fromText('E1', board.size)).setUserValue(4);
+            board.getCell(Coordinate.fromText('E4', board.size)).setDraftValues([1, 2, 3]);
+
+            board.setOperator(Coordinate.fromText('A1', board.size), MoveDirection.Down, ComparisonOperator.GreaterThan);
+            board.setOperator(Coordinate.fromText('A3', board.size), MoveDirection.Down, ComparisonOperator.LessThan);
+
+            board.setOperator(Coordinate.fromText('C2', board.size), MoveDirection.Up, ComparisonOperator.LessThan);
+            board.setOperator(Coordinate.fromText('C4', board.size), MoveDirection.Right, ComparisonOperator.GreaterThan);
+
+            board.setOperator(Coordinate.fromText('D1', board.size), MoveDirection.Up, ComparisonOperator.LessThan);
+            board.setOperator(Coordinate.fromText('D1', board.size), MoveDirection.Right, ComparisonOperator.GreaterThan);
+            board.setOperator(Coordinate.fromText('D3', board.size), MoveDirection.Left, ComparisonOperator.LessThan);
+
+            board.setOperator(Coordinate.fromText('E3', board.size), MoveDirection.Left, ComparisonOperator.LessThan);
+            board.setOperator(Coordinate.fromText('E4', board.size), MoveDirection.Right, ComparisonOperator.LessThan);
 
             const formatted = converter.boardToText(board, ' '.repeat(16));
 
             expect('\n' + formatted).toBe(`
-                +----+----+-----+------+
-                |    | 1  |     |      |
-                +----+-^--+-----+------+
-                |    |    |     | 1234 |
-                +-v--+----+-----+------+
-                | 23 < 24 | 123 |      |
-                +----+----+-----+------+
-                | 12 < !3 | !4  >  12  |
-                +----+----+-----+------+`);
+                +----+----+-----+-----+-------+
+                | 25 |    |     |     | 12345 |
+                +-v--+----+--^--+-----+-------+
+                |    |    | 345 |     |       |
+                +----+-v--+-----+-----+-------+
+                |    |    | !2  |     >  134  |
+                +-v--+----+-----+-----+-------+
+                | !3 > !2 >  1  |     |  45   |
+                +----+----+-----+-----+-------+
+                | !4 |    >     | 123 <       |
+                +----+----+-----+-----+-------+`);
         });
     });
 });
