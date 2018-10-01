@@ -156,110 +156,104 @@ export class BoardTextConverter {
     }
 
     boardToText(board: Board, indent: string = ''): string {
-        const maxColumnWidths = this.calculateMaxColumnWidths(board);
+        const formatter = new BoardTextFormatter(board);
+        return formatter.format(indent);
+    }
+}
+
+class BoardTextFormatter {
+    private _board: Board;
+    private _indent = '';
+    private _maxColumnWidths: number[];
+    private _cellOffset = 0;
+
+    constructor(board: Board) {
+        this._board = board;
+    }
+
+    format(indent: string): string {
+        this._indent = indent;
+        this._maxColumnWidths = this.calculateMaxColumnWidths();
+        this._cellOffset = 0;
+
         const lines: string[] = [];
 
-        let offset = 0;
-        for (const rowCoordinate of Coordinate.fromIndex(0, board.size).iterateColumn(false)) {
-            let line = '+';
+        for (const rowCoordinate of Coordinate.fromIndex(0, this._board.size).iterateColumn(false)) {
+            const separatorLine = this.formatSeparatorLine(rowCoordinate);
+            lines.push(separatorLine);
 
-            for (const coordinate of rowCoordinate.iterateRow(false)) {
-                const isFirstRow = offset < board.size;
-                const operator = isFirstRow ? ComparisonOperator.None : board.getOperator(coordinate, MoveDirection.Up);
+            this.rewindToFirstCellInCurrentRow();
 
-                let value = '';
-                switch (operator) {
-                    case ComparisonOperator.None:
-                        value += '-';
-                        break;
-                    case ComparisonOperator.LessThan:
-                        value += 'v';
-                        break;
-                    case ComparisonOperator.GreaterThan:
-                        value += '^';
-                        break;
-                }
-
-                const columnIndex = offset % board.size;
-                const width = maxColumnWidths[columnIndex];
-                line += this.centerText(value, width + 2, '-') + '+';
-
-                offset++;
-            }
-
-            lines.push(indent + line);
-
-            line = '|';
-            offset -= board.size;
-
-            for (const coordinate of rowCoordinate.iterateRow(false)) {
-                const cell = board.getCell(coordinate);
-                if (cell) {
-                    const value = this.formatCellValue(cell);
-                    const columnIndex = offset % board.size;
-                    const width = maxColumnWidths[columnIndex];
-                    line += this.centerText(value, width + 2, ' ');
-
-                    const isLastColumn = columnIndex === board.size - 1;
-                    const operator = isLastColumn ? ComparisonOperator.None : board.getOperator(coordinate, MoveDirection.Right);
-                    switch (operator) {
-                        case ComparisonOperator.None:
-                            line += '|';
-                            break;
-                        case ComparisonOperator.LessThan:
-                            line += '<';
-                            break;
-                        case ComparisonOperator.GreaterThan:
-                            line += '>';
-                            break;
-                    }
-                }
-
-                offset++;
-            }
-
-            lines.push(indent + line);
+            const digitLine = this.formatDigitLine(rowCoordinate);
+            lines.push(digitLine);
         }
 
         lines.push(lines[0]);
-
         return lines.join('\n');
     }
 
-    private calculateMaxColumnWidths(board: Board): number[] {
+    private calculateMaxColumnWidths(): number[] {
+        this._cellOffset = 0;
         const maxColumnWidths: number[] = [];
 
-        let offset = 0;
-        for (const coordinate of Coordinate.iterateBoard(board.size)) {
-
-            const cell = board.getCell(coordinate);
+        for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
+            const cell = this._board.getCell(coordinate);
             if (cell) {
                 let width = cell.getPossibleValues().length;
                 if (cell.value !== undefined) {
                     width++;
                 }
 
-                const columnIndex = offset % board.size;
-                const lastWidth = maxColumnWidths[columnIndex];
-                if (lastWidth === undefined || lastWidth < width) {
+                const columnIndex = this.getColumnIndex();
+                const previousWidth = maxColumnWidths[columnIndex];
+                if (previousWidth === undefined || previousWidth < width) {
                     maxColumnWidths[columnIndex] = width;
                 }
             }
 
-            offset++;
+            this.moveToNextCell();
         }
 
         return maxColumnWidths;
     }
 
-    private formatCellValue(cell: Cell): string {
-        if (cell.isFixed) {
-            return '#' + cell.value;
+    private getColumnIndex(): number {
+        return this._cellOffset % this._board.size;
+    }
+
+    private formatSeparatorLine(rowCoordinate: Coordinate): string {
+        let line = this._indent + '+';
+
+        for (const coordinate of rowCoordinate.iterateRow(false)) {
+            const isFirstRow = this._cellOffset < this._board.size;
+            const operatorValue = isFirstRow ? ComparisonOperator.None : this._board.getOperator(coordinate, MoveDirection.Up);
+            const operatorText = this.formatOperatorInSeparatorLine(operatorValue);
+
+            const width = this.getCurrentColumnWidth();
+            line += this.centerText(operatorText, width + 2, '-') + '+';
+
+            this.moveToNextCell();
         }
-        if (cell.value !== undefined) {
-            return '!' + cell.value;
+
+        return line;
+    }
+
+    private formatOperatorInSeparatorLine(operator: ComparisonOperator): string {
+        switch (operator) {
+            case ComparisonOperator.None:
+                return '-';
+            case ComparisonOperator.LessThan:
+                return 'v';
+            case ComparisonOperator.GreaterThan:
+                return '^';
+            default:
+                return '';
         }
-        return cell.getPossibleValues().join('');
+    }
+
+    private getCurrentColumnWidth(): number {
+        const columnIndex = this.getColumnIndex();
+        return this._maxColumnWidths[columnIndex];
     }
 
     private centerText(text: string, width: number, spacer: string) {
@@ -272,5 +266,59 @@ export class BoardTextConverter {
         }
 
         return text;
+    }
+
+    private moveToNextCell() {
+        this._cellOffset++;
+    }
+
+    private rewindToFirstCellInCurrentRow() {
+        this._cellOffset -= this._board.size;
+    }
+
+    private formatDigitLine(rowCoordinate: Coordinate): string {
+        let line = this._indent + '|';
+
+        for (const coordinate of rowCoordinate.iterateRow(false)) {
+            const cell = this._board.getCell(coordinate);
+            if (cell) {
+                const value = this.formatCellValue(cell);
+                const width = this.getCurrentColumnWidth();
+                line += this.centerText(value, width + 2, ' ');
+
+                const columnIndex = this.getColumnIndex();
+                const isLastColumn = columnIndex === this._board.size - 1;
+                const operator = isLastColumn ? ComparisonOperator.None : this._board.getOperator(coordinate, MoveDirection.Right);
+
+                line += this.formatOperatorInDigitLine(operator);
+            }
+
+            this.moveToNextCell();
+        }
+
+        return line;
+    }
+
+    private formatCellValue(cell: Cell): string {
+        if (cell.isFixed) {
+            return '#' + cell.value;
+        }
+        if (cell.value !== undefined) {
+            return '!' + cell.value;
+        }
+        return cell.getPossibleValues().join('');
+    }
+
+    private formatOperatorInDigitLine(operator: ComparisonOperator): string {
+        switch (operator) {
+            case ComparisonOperator.None:
+                return '|';
+            case ComparisonOperator.LessThan:
+                return '<';
+            case ComparisonOperator.GreaterThan:
+                return '>';
+            default:
+                return '';
+        }
     }
 }
