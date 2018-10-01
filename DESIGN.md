@@ -47,6 +47,7 @@
   - .... see http://www.sudokuwiki.org
 - [ ] option to track elapsed time
 - [ ] helptext: game rules and strategies
+- [ ] move Undo into button bar and enable Ctrl+Z shortcut
 - [ ] nicer styling of button bar (https://davidwalsh.name/orientation-change)
 - [ ] cleanup README.md
 - [ ] consider to use "prettier" code-formatter
