@@ -7,9 +7,11 @@ export enum ComparisonOperator {
 export function parseComparisonOperator(text: string): ComparisonOperator {
     switch (text) {
         case ')':
+        case '>':
         case 'v':
             return ComparisonOperator.GreaterThan;
         case '(':
+        case '<':
         case '^':
             return ComparisonOperator.LessThan;
         default:

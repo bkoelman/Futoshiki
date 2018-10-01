@@ -44,5 +44,5 @@ export function expectDraftValues(coordinateText: string, digits: number[], boar
 export function expectOperator(coordinateText: string, direction: MoveDirection, operator: ComparisonOperator, board: Board) {
     const coordinate = Coordinate.fromText(coordinateText, board.size);
     const operatorValue = board.getOperator(coordinate, direction);
-    expect(operatorValue).toBe(operator);
+    expect(ComparisonOperator[operatorValue]).toBe(ComparisonOperator[operator]);
 }

@@ -1,163 +1,221 @@
 import { MemoryBoard } from './models/memory-board';
 import { Coordinate } from './models/coordinate';
 import { MoveDirection } from './models/move-direction.enum';
-import { ComparisonOperator } from './models/comparison-operator.enum';
+import { ComparisonOperator, parseComparisonOperator, reverseOperator } from './models/comparison-operator.enum';
 import { ObjectFacilities } from './object-facilities';
 import { Board } from './models/board';
 import { Cell } from './models/cell';
 
 export class BoardTextConverter {
-    /* Parses a board state to an in-memory object. For example:
-
-        +----+----+-----+------+
-        |    | 12 |     |      |
-        +----+-^--+-----+------+
-        |    |    |     | 1234 |
-        +-^--+----+-----+------+
-        | 23 < 24 | 123 |      |
-        +----+----+-----+------+
-        | 12 < !3 | !4  >  12  |
-        +----+----+-----+------+
-    */
     textToBoard(text: string): MemoryBoard {
-        const lines = text.split(/[\r\n]+/).map(line => line.trim()).filter(line => line.length > 0);
-        const size = (lines.length - 1) / 2;
+        const parser = new BoardTextParser(text);
+        return parser.parse();
+    }
 
+    boardToText(board: Board, indent: string = ''): string {
+        const formatter = new BoardTextFormatter(board);
+        return formatter.format(indent);
+    }
+}
+
+class BoardTextParser {
+    private _lines: string[];
+    private _size: number;
+    private _board: MemoryBoard;
+    private _lineIndex: number;
+    private _offsetInLine: number;
+    private _coordinate: Coordinate;
+
+    constructor(text: string) {
+        this._lines = text.split(/[\r\n]+/).map(line => line.trim()).filter(line => line.length > 0);
+        const size = (this._lines.length - 1) / 2;
+
+        this.assertBoardSizeIsValid(size);
+        this._size = size;
+    }
+
+    assertBoardSizeIsValid(size: number): void {
         if (size < 4 || size > 9 || Math.floor(size) !== size) {
             throw new Error(`Invalid board size '${size}'.`);
         }
+    }
 
-        const board = new MemoryBoard(size);
+    parse(): MemoryBoard {
+        this._board = new MemoryBoard(this._size);
 
-        for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
-            const line = lines[lineIndex];
-            if (lineIndex % 2 === 1) {
-                const rowChar = String.fromCharCode((lineIndex - 1) / 2 + Coordinate.charCodeA);
-                let coordinate = Coordinate.fromText(rowChar + '1', size);
-                let columnIndex = this.skipWhitespace(line, 1);
-
-                while (columnIndex < line.length) {
-                    const ch = line[columnIndex];
-                    if (ch === '|') {
-                        if (columnIndex < line.length - 1) {
-                            coordinate = coordinate.moveOne(MoveDirection.Right);
-                        }
-                        columnIndex++;
-                    } else if (ch === '<') {
-                        coordinate = coordinate.moveOne(MoveDirection.Right);
-                        board.setOperator(coordinate, MoveDirection.Left, ComparisonOperator.GreaterThan);
-                        columnIndex++;
-                    } else if (ch === '>') {
-                        coordinate = coordinate.moveOne(MoveDirection.Right);
-                        board.setOperator(coordinate, MoveDirection.Left, ComparisonOperator.LessThan);
-                        columnIndex++;
-                    } else if (ch === '!' || ch === '#') {
-                        columnIndex++;
-                        const { newIndex, digits } = this.consumeDigits(line, columnIndex, size, coordinate);
-                        if (digits.length === 0) {
-                            throw new Error(`Invalid character '${ch}' in cell ${coordinate}.`);
-                        } else if (digits.length > 1) {
-                            throw new Error(`Multiple digits found in cell ${coordinate}.`);
-                        }
-                        const cell = board.getCell(coordinate);
-                        if (!cell) {
-                            throw new Error(`Cell ${coordinate} not found.`);
-                        }
-                        columnIndex = newIndex;
-                        if (ch === '#') {
-                            cell.setFixedValue(digits[0]);
-                        } else {
-                            cell.setUserValue(digits[0]);
-                        }
-                    } else if (this.charIsDigit(ch)) {
-                        const { newIndex, digits } = this.consumeDigits(line, columnIndex, size, coordinate);
-                        const uniqueDigits = ObjectFacilities.getUniqueArrayElements(digits);
-                        if (uniqueDigits.length !== digits.length) {
-                            throw new Error(`Duplicate digits found in cell ${coordinate}.`);
-                        }
-                        const cell = board.getCell(coordinate);
-                        if (!cell) {
-                            throw new Error(`Cell ${coordinate} not found.`);
-                        }
-                        columnIndex = newIndex;
-                        cell.setDraftValues(digits);
-                    } else {
-                        throw new Error(`Invalid character '${ch}' in cell ${coordinate}.`);
-                    }
-
-                    columnIndex = this.skipWhitespace(line, columnIndex);
-                }
+        for (this._lineIndex = 1; this._lineIndex < this._lines.length; this._lineIndex++) {
+            if (this._lineIndex % 2 === 1) {
+                this.parseDigitLine();
             } else {
-                const rowChar = String.fromCharCode((lineIndex - 2) / 2 + Coordinate.charCodeA);
-                let coordinate = Coordinate.fromText(rowChar + '1', size);
-                let columnIndex = 1;
-
-                while (columnIndex < line.length) {
-                    columnIndex = this.skipDashes(line, columnIndex);
-
-                    const ch = line[columnIndex];
-                    if (ch === '+') {
-                        if (columnIndex < line.length - 1) {
-                            coordinate = coordinate.moveOne(MoveDirection.Right);
-                        }
-                    } else if (ch === '^') {
-                        board.setOperator(coordinate, MoveDirection.Down, ComparisonOperator.LessThan);
-                    } else if (ch === 'v') {
-                        board.setOperator(coordinate, MoveDirection.Down, ComparisonOperator.GreaterThan);
-                    } else {
-                        throw new Error(`Invalid character '${ch}' near cell ${coordinate}.`);
-                    }
-
-                    columnIndex++;
-                }
+                this.parseSeparatorLine();
             }
         }
 
-        return board;
+        return this._board;
     }
 
-    private skipWhitespace(text: string, start: number): number {
-        let index = start;
-        while (index < text.length && /\s/.test(text[index])) {
-            index++;
+    private parseDigitLine(): void {
+        this._offsetInLine = 1;
+        this._coordinate = this.getFirstCoordinateForCurrentLine(0);
+
+        this.skipWhitespace();
+
+        while (!this.isAtEndOfLine()) {
+            const token = this.getCurrentToken();
+
+            if (token === '|' || token === '<' || token === '>') {
+                this.parseOperatorInDigitLine(token);
+            } else if (token === '!' || token === '#') {
+                this.parseSingleValueInDigitLine(token);
+            } else if (this.charIsDigit(token)) {
+                this.parseDraftValuesInDigitLine(token);
+            } else {
+                throw new Error(`Invalid character '${token}' in cell ${this._coordinate}.`);
+            }
+
+            this.skipWhitespace();
         }
-        return index;
     }
 
-    private skipDashes(text: string, start: number): number {
-        let index = start;
-        while (index < text.length && text[index] === '-') {
-            index++;
+    private getFirstCoordinateForCurrentLine(extraOffset: number) {
+        const rowChar = String.fromCharCode((this._lineIndex - 1 - extraOffset) / 2 + Coordinate.charCodeA);
+        return Coordinate.fromText(rowChar + '1', this._size);
+    }
+
+    private skipWhitespace(): void {
+        const line = this._lines[this._lineIndex];
+
+        while (this._offsetInLine < line.length && /\s/.test(line[this._offsetInLine])) {
+            this.incrementOffsetInLine();
         }
-        return index;
     }
 
-    private consumeDigits(text: string, start: number, maxDigit: number, coordinate: Coordinate): { newIndex: number, digits: number[] } {
+    private incrementOffsetInLine(): void {
+        this._offsetInLine++;
+    }
+
+    private isAtEndOfLine(): boolean {
+        const line = this._lines[this._lineIndex];
+        return this._offsetInLine >= line.length;
+    }
+
+    private getCurrentToken(): string {
+        return this._lines[this._lineIndex][this._offsetInLine];
+    }
+
+    private parseOperatorInDigitLine(token: string): void {
+        this.moveCoordinateToRight();
+
+        const operator = parseComparisonOperator(token);
+        if (operator !== ComparisonOperator.None) {
+            this._board.setOperator(this._coordinate, MoveDirection.Left, reverseOperator(operator));
+        }
+
+        this.incrementOffsetInLine();
+    }
+
+    private moveCoordinateToRight(): void {
+        const lineLength = this._lines[this._lineIndex].length;
+        if (this._offsetInLine < lineLength - 1) {
+            this._coordinate = this._coordinate.moveOne(MoveDirection.Right);
+        }
+    }
+
+    private parseSingleValueInDigitLine(token: string): void {
+        this.incrementOffsetInLine();
+
+        const digits = this.consumeDigits();
+        if (digits.length === 0) {
+            throw new Error(`Expect digit after '${token}' in cell ${this._coordinate}.`);
+        } else if (digits.length > 1) {
+            throw new Error(`Multiple digits found in cell ${this._coordinate}.`);
+        }
+
+        const cell = this._board.getCell(this._coordinate);
+        if (!cell) {
+            throw new Error(`Cell ${this._coordinate} not found.`);
+        }
+
+        if (token === '#') {
+            cell.setFixedValue(digits[0]);
+        } else {
+            cell.setUserValue(digits[0]);
+        }
+    }
+
+    private consumeDigits(): number[] {
         const digits: number[] = [];
-        let index = start;
 
-        while (index < text.length && this.charIsDigit(text[index])) {
-            const digit = parseInt(text[index], 10);
+        const line = this._lines[this._lineIndex];
+        const maxDigit = this._size;
+
+        while (this._offsetInLine < line.length && this.charIsDigit(line[this._offsetInLine])) {
+            const digit = parseInt(line[this._offsetInLine], 10);
             if (digit > maxDigit) {
-                throw new Error(`Digit '${digit}' exceeds maximum of ${maxDigit} in cell ${coordinate}.`);
+                throw new Error(`Digit '${digit}' exceeds maximum of ${maxDigit} in cell ${this._coordinate}.`);
             }
             digits.push(digit);
-            index++;
+
+            this.incrementOffsetInLine();
         }
 
-        return {
-            newIndex: index,
-            digits: digits
-        };
+        return digits;
     }
 
     private charIsDigit(char: string): boolean {
         return char >= '1' && char <= '9';
     }
 
-    boardToText(board: Board, indent: string = ''): string {
-        const formatter = new BoardTextFormatter(board);
-        return formatter.format(indent);
+    private parseDraftValuesInDigitLine(token: string): void {
+        const digits = this.consumeDigits();
+
+        const uniqueDigits = ObjectFacilities.getUniqueArrayElements(digits);
+        if (uniqueDigits.length !== digits.length) {
+            throw new Error(`Duplicate digits found in cell ${this._coordinate}.`);
+        }
+
+        const cell = this._board.getCell(this._coordinate);
+        if (!cell) {
+            throw new Error(`Cell ${this._coordinate} not found.`);
+        }
+
+        cell.setDraftValues(digits);
+    }
+
+    private parseSeparatorLine(): void {
+        this._offsetInLine = 1;
+        this._coordinate = this.getFirstCoordinateForCurrentLine(1);
+
+        while (!this.isAtEndOfLine()) {
+            this.skipDashes();
+
+            const token = this.getCurrentToken();
+
+            if (token === '+') {
+                this.moveCoordinateToRight();
+            } else if (token === '^' || token === 'v') {
+                this.parseOperatorInSeparatorLine(token);
+            } else {
+                throw new Error(`Invalid character '${token}' near cell ${this._coordinate}.`);
+            }
+
+            this.incrementOffsetInLine();
+        }
+    }
+
+    private skipDashes(): void {
+        const line = this._lines[this._lineIndex];
+
+        while (this._offsetInLine < line.length && line[this._offsetInLine] === '-') {
+            this.incrementOffsetInLine();
+        }
+    }
+
+    private parseOperatorInSeparatorLine(token: string): void {
+        const operator = parseComparisonOperator(token);
+        if (operator !== ComparisonOperator.None) {
+            this._board.setOperator(this._coordinate, MoveDirection.Down, operator);
+        }
     }
 }
 
@@ -268,11 +326,11 @@ class BoardTextFormatter {
         return text;
     }
 
-    private moveToNextCell() {
+    private moveToNextCell(): void {
         this._cellOffset++;
     }
 
-    private rewindToFirstCellInCurrentRow() {
+    private rewindToFirstCellInCurrentRow(): void {
         this._cellOffset -= this._board.size;
     }
 
