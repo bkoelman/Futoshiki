@@ -28,6 +28,7 @@
 - [ ] display coordinate rulers
 - [ ] block invalid (based on rules) digit entry; highlight related cells
 - [ ] block invalid (based on rules) draft digit entry; highlight related cells
+- [ ] move `Promote` button from debug mode into normal game
 - [ ] code refactorings and cleanup
   - [ ] validate inputs in class members
   - [ ] split parsing and rendering of downloaded puzzle in BoardComponent
@@ -48,12 +49,14 @@
 - [ ] option to track elapsed time
 - [ ] helptext: game rules and strategies
 - [ ] move Undo into button bar and enable Ctrl+Z shortcut
-- [ ] nicer styling of button bar (https://davidwalsh.name/orientation-change)
+- [ ] nicer styling of button bar
+  - [ ] move `Restart`, `Change puzzle`, `Settings` behind hamburger menu
+  - [ ] move to side, depending on screen size (https://davidwalsh.name/orientation-change)
 - [ ] cleanup README.md
 - [ ] consider to use "prettier" code-formatter
 - [ ] optimize performance
-  - try table layout instead of divs for board
-  - replace storage of cell/draft values with bitmask
+  - [ ] try table layout instead of divs for board
+  - [ ] replace storage of cell/draft values with bitmask
 - [ ] have some automated (unit) tests (using real puzzles)
 
 # Links for inspiration
