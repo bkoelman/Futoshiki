@@ -6,6 +6,7 @@ import { Cell } from './cell';
 import { MemoryCell } from './memory-cell';
 import { SingleCoordinateStep } from './single-coordinate-step';
 import { ObjectFacilities } from '../object-facilities';
+import { assertBoardSizeIsValid } from '../assertions';
 
 export class MemoryBoard implements Board {
     private readonly _cells: MemoryCell[] = [];
@@ -14,6 +15,7 @@ export class MemoryBoard implements Board {
     readonly size: number;
 
     constructor(size: number) {
+        assertBoardSizeIsValid(size);
         this.size = size;
 
         for (let index = 0; index < size * size; index++) {

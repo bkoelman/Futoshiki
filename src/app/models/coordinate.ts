@@ -1,4 +1,5 @@
 import { MoveDirection } from './move-direction.enum';
+import { assertBoardSizeIsValid } from '../assertions';
 
 export class Coordinate {
     static readonly charCodeA = 'A'.charCodeAt(0);
@@ -12,7 +13,7 @@ export class Coordinate {
     }
 
     static fromIndex(index: number, boardSize: number): Coordinate {
-        Coordinate.assertBoardSizeIsValid(boardSize);
+        assertBoardSizeIsValid(boardSize);
 
         if (Coordinate.isIntegerInRange(index, boardSize * boardSize)) {
             return new Coordinate(index, boardSize);
@@ -22,7 +23,7 @@ export class Coordinate {
     }
 
     static fromText(text: string, boardSize: number): Coordinate {
-        Coordinate.assertBoardSizeIsValid(boardSize);
+        assertBoardSizeIsValid(boardSize);
 
         if (text && text.length === 2) {
             const rowNumber = text.charCodeAt(0) - Coordinate.charCodeA;
@@ -35,12 +36,6 @@ export class Coordinate {
         throw new Error(`Invalid coordinate '${text}' on ${boardSize}x${boardSize} board.`);
     }
 
-    private static assertBoardSizeIsValid(boardSize: number) {
-        if (Math.floor(boardSize) !== boardSize || boardSize < 1 || boardSize > 9) {
-            throw new Error(`Invalid board size '${boardSize}x${boardSize}'.`);
-        }
-    }
-
     private static isIntegerInRange(value: number, maxValue: number) {
         return !isNaN(value) && Math.floor(value) === value && value >= 0 && value < maxValue;
     }
@@ -51,7 +46,7 @@ export class Coordinate {
     }
 
     static iterateBoard(boardSize: number): Coordinate[] {
-        Coordinate.assertBoardSizeIsValid(boardSize);
+        assertBoardSizeIsValid(boardSize);
 
         const coordinates: Coordinate[] = [];
 

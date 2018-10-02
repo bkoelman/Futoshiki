@@ -5,6 +5,7 @@ import { ComparisonOperator, parseComparisonOperator, reverseOperator } from './
 import { ObjectFacilities } from './object-facilities';
 import { Board } from './models/board';
 import { Cell } from './models/cell';
+import { assertBoardSizeIsValid } from './assertions';
 
 export class BoardTextConverter {
     textToBoard(text: string): MemoryBoard {
@@ -30,14 +31,8 @@ class BoardTextParser {
         this._lines = text.split(/[\r\n]+/).map(line => line.trim()).filter(line => line.length > 0);
         const size = (this._lines.length - 1) / 2;
 
-        this.assertBoardSizeIsValid(size);
+        assertBoardSizeIsValid(size);
         this._size = size;
-    }
-
-    assertBoardSizeIsValid(size: number): void {
-        if (size < 4 || size > 9 || Math.floor(size) !== size) {
-            throw new Error(`Invalid board size '${size}'.`);
-        }
     }
 
     parse(): MemoryBoard {
