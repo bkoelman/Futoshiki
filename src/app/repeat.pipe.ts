@@ -5,13 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class RepeatPipe implements PipeTransform {
   transform(value: number): any {
-    const iterable = {};
-    iterable[Symbol.iterator] = function* () {
-      let index = 0;
-      while (index < value) {
-        yield index++;
+    return {
+      [Symbol.iterator]: function* () {
+        let index = 0;
+        while (index < value) {
+          yield index++;
+        }
       }
     };
-    return iterable;
   }
 }
