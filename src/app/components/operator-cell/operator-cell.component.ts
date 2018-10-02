@@ -9,17 +9,18 @@ declare var $: any;
   templateUrl: './operator-cell.component.html'
 })
 export class OperatorCellComponent implements OnInit, AfterViewInit {
+  @ViewChild('autoSizeText') private _autoSizeTextRef!: ElementRef;
+
   ComparisonOperatorAlias = ComparisonOperator;
-  @Input() boardSize = 4;
-  @Input() operatorValue = ComparisonOperator.None;
+  @Input() boardSize!: number;
+  @Input() value = ComparisonOperator.None;
   @Input() isRotated = false;
-  @ViewChild('autoSizeText') autoSizeTextRef: ElementRef;
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    const autoSizeTextTarget = $(this.autoSizeTextRef.nativeElement);
+    const autoSizeTextTarget = $(this._autoSizeTextRef.nativeElement);
     if (this.isRotated) {
       autoSizeTextTarget.fitText(0.5);
     } else {

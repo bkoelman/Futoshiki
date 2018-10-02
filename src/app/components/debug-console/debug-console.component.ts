@@ -5,13 +5,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   templateUrl: './debug-console.component.html'
 })
 export class DebugConsoleComponent implements OnInit {
-  @Input() isEnabled: boolean;
+  private _saveText = '';
+
+  @Input() isEnabled!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();
   @Output() promoteClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
-
-  private _saveText = '';
 
   ngOnInit() {
   }

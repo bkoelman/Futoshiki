@@ -12,7 +12,7 @@
 <div class="clearfix"></div>
 <p></p>
 
-<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" [areKeysEnabled]="!changePuzzleComponent.isModalVisible && !isTypingText"
+<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" [areKeysEnabled]="areKeysEnabled()"
   (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
 
 <p></p>

@@ -13,12 +13,12 @@ import { MoveDirection } from '../../models/move-direction.enum';
   templateUrl: './board.component.html'
 })
 export class BoardComponent implements Board, OnInit {
+  @ViewChildren(DigitCellComponent) private _cells!: QueryList<DigitCellComponent>;
+  private _canSelect = true;
+
   @Input() startBoard: Board | undefined;
   @Input() size: number | undefined;
   @Output() contentChanged = new EventEmitter<{ cell: Coordinate, snapshotBefore: CellContentSnapshot }>();
-
-  @ViewChildren(DigitCellComponent) private _cells: QueryList<DigitCellComponent>;
-  private _canSelect = true;
 
   get canSelect(): boolean {
     return this._canSelect;

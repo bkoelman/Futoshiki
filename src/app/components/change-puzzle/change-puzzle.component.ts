@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked, NgZone } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
 import { PuzzleInfo } from '../../models/puzzle-info';
 import { PuzzleDifficulty } from '../../models/puzzle-difficulty.enum';
 import { ObjectFacilities } from '../../object-facilities';
@@ -11,16 +10,15 @@ declare var $: any;
   templateUrl: './change-puzzle.component.html'
 })
 export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
+  private _bootstrapHooksRegistered = false;
+  private _lastChangeEventData: string | undefined;
+
   readonly maxPuzzleId = 9999;
   PuzzleDifficultyAlias = PuzzleDifficulty;
   info: PuzzleInfo | undefined;
   isModalVisible = false;
-  @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
-  @Input() isLoaderVisible: boolean;
+  isLoaderVisible = false;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
-
-  private _bootstrapHooksRegistered = false;
-  private _lastChangeEventData: string | undefined;
 
   constructor(private _zone: NgZone) {
   }

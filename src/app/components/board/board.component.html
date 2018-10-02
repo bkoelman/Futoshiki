@@ -4,12 +4,12 @@
             <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
                 (contentChanged)="onCellContentChanged($event)" [fixedValue]="getFixedValueAt(rowIndex, columnIndex)"></app-digit-cell>
             <ng-container *ngIf="columnIndex < size - 1">
-                <app-operator-cell [boardSize]="size" [operatorValue]="getOperatorAtRight(rowIndex, columnIndex)"></app-operator-cell>
+                <app-operator-cell [boardSize]="size" [value]="getOperatorAtRight(rowIndex, columnIndex)"></app-operator-cell>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="rowIndex < size - 1">
             <ng-container *ngFor="let columnIndex of size | repeat">
-                <app-operator-cell [boardSize]="size" isRotated="true" [operatorValue]="getOperatorBelow(rowIndex, columnIndex)"></app-operator-cell>
+                <app-operator-cell [boardSize]="size" [isRotated]="true" [value]="getOperatorBelow(rowIndex, columnIndex)"></app-operator-cell>
                 <ng-container *ngIf="columnIndex < size - 1">
                     <app-spacer-cell [boardSize]="size"></app-spacer-cell>
                 </ng-container>

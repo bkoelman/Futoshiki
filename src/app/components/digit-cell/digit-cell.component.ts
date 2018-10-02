@@ -10,16 +10,16 @@ declare var $: any;
   templateUrl: './digit-cell.component.html'
 })
 export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
-  @Input() boardSize = 4;
-  @Input() fixedValue: number | undefined;
-  @Input() isSelected: boolean;
-  @Input() canSelect: boolean;
-  @Output() cellClicked = new EventEmitter<DigitCellComponent>();
-  @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
-
-  @ViewChildren('autoSizeText') private _autoSizeTextRefs: ElementRef[];
+  @ViewChildren('autoSizeText') private _autoSizeTextRefs!: ElementRef[];
   private _userValue: number | undefined;
   private _draftValues: number[] = [];
+
+  isSelected = false;
+  @Input() boardSize!: number;
+  @Input() fixedValue: number | undefined;
+  @Input() canSelect!: boolean;
+  @Output() cellClicked = new EventEmitter<DigitCellComponent>();
+  @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 
   get value(): number | undefined {
     return this.fixedValue !== undefined ? this.fixedValue : this._userValue;

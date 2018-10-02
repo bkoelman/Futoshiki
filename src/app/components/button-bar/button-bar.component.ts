@@ -9,14 +9,14 @@ declare var $: any;
   templateUrl: './button-bar.component.html'
 })
 export class ButtonBarComponent implements OnInit, AfterViewChecked {
+  @ViewChildren('autoSizeText') private _autoSizeTextRefs!: ElementRef[];
+
   @Input() boardSize: number | undefined;
-  @Input() isEnabled: boolean;
-  @Input() areKeysEnabled = true;
+  @Input() isEnabled!: boolean;
+  @Input() areKeysEnabled!: boolean;
   @Output() digitClicked = new EventEmitter<{ value: number, isDraft: boolean }>();
   @Output() clearClicked = new EventEmitter();
   @Output() hintClicked = new EventEmitter();
-
-  @ViewChildren('autoSizeText') autoSizeTextRefs: ElementRef[];
 
   ngOnInit() {
   }
@@ -27,7 +27,7 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   }
 
   registerAutoSizeText() {
-    this.autoSizeTextRefs.forEach(textRef => {
+    this._autoSizeTextRefs.forEach(textRef => {
       const autoSizeTextTarget = $(textRef.nativeElement);
       autoSizeTextTarget.fitText(0.15);
     });
