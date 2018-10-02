@@ -23,8 +23,8 @@ class BoardTextParser {
     private _lines: string[];
     private _size: number;
     private _board: MemoryBoard;
-    private _lineIndex: number;
-    private _offsetInLine: number;
+    private _lineIndex = 0;
+    private _offsetInLine = 0;
     private _coordinate: Coordinate;
 
     constructor(text: string) {

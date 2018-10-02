@@ -63,7 +63,7 @@ export class SaveGameAdapter {
         let difficulty;
         let boardSize;
         let puzzleId;
-        let cellSnapshotMap;
+        let cellSnapshotMap: { [index: number]: CellContentSnapshot } | undefined;
 
         for (const setting of text.split(SaveGameAdapter._separator)) {
             if (setting.length >= 2) {
@@ -106,8 +106,8 @@ export class SaveGameAdapter {
         return undefined;
     }
 
-    private parseSnapshotMap(setting: string): object | undefined {
-        let cellSnapshotMap;
+    private parseSnapshotMap(setting: string): { [index: number]: CellContentSnapshot } | undefined {
+        let cellSnapshotMap: { [index: number]: CellContentSnapshot } | undefined;
         let index = 0;
         let textOffset = 1;
 
@@ -127,7 +127,7 @@ export class SaveGameAdapter {
         return cellSnapshotMap;
     }
 
-    private parseCellSnapshot(text: string): CellContentSnapshot | undefined {
+    private parseCellSnapshot(text: string): CellContentSnapshot {
         if (text.startsWith('ff')) {
             const userValue = parseInt(text.substring(2), 16);
             return CellContentSnapshot.fromUserValue(userValue);

@@ -11,7 +11,7 @@ export class DebugConsoleComponent implements OnInit {
   @Output() promoteClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
 
-  private _saveText: string;
+  private _saveText = '';
 
   ngOnInit() {
   }

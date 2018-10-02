@@ -13,7 +13,7 @@ export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
   @Input() boardSize = 4;
   @Input() fixedValue: number | undefined;
   @Input() isSelected: boolean;
-  @Input() canSelect;
+  @Input() canSelect: boolean;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
   @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 

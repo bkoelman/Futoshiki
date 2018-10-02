@@ -14,13 +14,13 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
   readonly maxPuzzleId = 9999;
   PuzzleDifficultyAlias = PuzzleDifficulty;
   info: PuzzleInfo | undefined;
-  isModalVisible: boolean;
+  isModalVisible = false;
   @ViewChild('puzzleChangeForm') puzzleChangeForm: NgForm;
   @Input() isLoaderVisible: boolean;
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
   private _bootstrapHooksRegistered = false;
-  private _lastChangeEventData: string;
+  private _lastChangeEventData: string | undefined;
 
   constructor(private _zone: NgZone) {
   }

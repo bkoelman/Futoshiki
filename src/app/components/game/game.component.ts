@@ -28,9 +28,9 @@ export class GameComponent implements OnInit {
   @ViewChild(ChangePuzzleComponent) changePuzzleComponent: ChangePuzzleComponent;
   @ViewChild(DebugConsoleComponent) debugConsoleComponent: DebugConsoleComponent;
   puzzle: PuzzleData | undefined;
-  hasError: boolean;
-  isBoardCompleted: boolean;
-  isGameSolved: boolean;
+  hasError = false;
+  isBoardCompleted = false;
+  isGameSolved = false;
   undoStack: AggregateUndoCommand[] = [];
   inDebugMode = false;
   isTypingText = false;
@@ -39,8 +39,8 @@ export class GameComponent implements OnInit {
   private _autoCleaner: DraftCleaner;
   private _moveChecker: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
-  private _isTrackingChanges: boolean;
-  private _changesTracked = {};
+  private _isTrackingChanges = false;
+  private _changesTracked: { [index: number]: CellContentSnapshot } = {};
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
@@ -217,20 +217,22 @@ export class GameComponent implements OnInit {
   }
 
   boardContainsSolution(): boolean {
+    let isCorrect = true;
+
     const answerText = this.puzzle.answerLines.reduce((left, right) => left.concat(right));
     const answerDigits = answerText.match(/\d+/g);
-
-    let isCorrect = true;
-    answerDigits.forEach((digit, index) => {
-      const answerValue = parseInt(digit, 10);
-      const coordinate = Coordinate.fromIndex(index, this.puzzle.info.boardSize);
-      const cell = this.boardComponent.getCell(coordinate);
-      if (cell) {
-        if (cell.value !== answerValue) {
-          isCorrect = false;
+    if (answerDigits) {
+      answerDigits.forEach((digit, index) => {
+        const answerValue = parseInt(digit, 10);
+        const coordinate = Coordinate.fromIndex(index, this.puzzle.info.boardSize);
+        const cell = this.boardComponent.getCell(coordinate);
+        if (cell) {
+          if (cell.value !== answerValue) {
+            isCorrect = false;
+          }
         }
-      }
-    });
+      });
+    }
 
     return isCorrect;
   }
