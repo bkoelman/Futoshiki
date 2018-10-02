@@ -44,13 +44,17 @@ describe('DraftCleaner', () => {
             expectDraftValues('E5', [2, 3], board);
         });
 
-        it('should reduce values for operators', () => {
+        it('should reduce values for greater-than operators', () => {
             cleaner.reduceDraftValues(3, Coordinate.fromText('B2', board.size));
 
             expectDraftValues('A2', [4, 5], board);
-            expectDraftValues('B1', [1, 2, 4], board);
-            expectDraftValues('B3', [1, 2, 4, 5], board);
             expectDraftValues('C2', [5], board);
+        });
+
+        it('should reduce values for less-than operators', () => {
+            cleaner.reduceDraftValues(2, Coordinate.fromText('D3', board.size));
+
+            expectDraftValues('D2', [1], board);
         });
     });
 });
