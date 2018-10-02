@@ -14,8 +14,8 @@ export class BoardTextConverter {
     }
 
     boardToText(board: Board, indent: string = ''): string {
-        const formatter = new BoardTextFormatter(board);
-        return formatter.format(indent);
+        const formatter = new BoardTextFormatter(board, indent);
+        return formatter.format();
     }
 }
 
@@ -33,11 +33,11 @@ class BoardTextParser {
 
         assertBoardSizeIsValid(size);
         this._size = size;
+        this._board = new MemoryBoard(this._size);
+        this._coordinate = Coordinate.fromIndex(0, this._size);
     }
 
     parse(): MemoryBoard {
-        this._board = new MemoryBoard(this._size);
-
         for (this._lineIndex = 1; this._lineIndex < this._lines.length; this._lineIndex++) {
             if (this._lineIndex % 2 === 1) {
                 this.parseDigitLine();
@@ -216,16 +216,16 @@ class BoardTextParser {
 
 class BoardTextFormatter {
     private _board: Board;
-    private _indent = '';
-    private _maxColumnWidths: number[];
+    private _indent: string;
+    private _maxColumnWidths: number[] = [];
     private _cellOffset = 0;
 
-    constructor(board: Board) {
+    constructor(board: Board, indent: string) {
         this._board = board;
+        this._indent = indent;
     }
 
-    format(indent: string): string {
-        this._indent = indent;
+    format(): string {
         this._maxColumnWidths = this.calculateMaxColumnWidths();
         this._cellOffset = 0;
 

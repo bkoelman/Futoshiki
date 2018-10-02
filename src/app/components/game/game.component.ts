@@ -27,9 +27,9 @@ export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) private _boardComponent!: BoardComponent;
   @ViewChild(ChangePuzzleComponent) private _changePuzzleComponent!: ChangePuzzleComponent;
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
-  private _solver: PuzzleSolver;
-  private _autoCleaner: DraftCleaner;
-  private _moveChecker: MoveChecker;
+  private _solver!: PuzzleSolver;
+  private _autoCleaner!: DraftCleaner;
+  private _moveChecker!: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
   private _isTrackingChanges = false;
   private _changesTracked: { [index: number]: CellContentSnapshot } = {};
@@ -127,7 +127,9 @@ export class GameComponent implements OnInit {
   }
 
   showChangePuzzleModal() {
-    this._changePuzzleComponent.setDefaults(this.puzzle.info);
+    if (this.puzzle) {
+      this._changePuzzleComponent.setDefaults(this.puzzle.info);
+    }
   }
 
   areKeysEnabled(): boolean {
@@ -169,8 +171,10 @@ export class GameComponent implements OnInit {
 
     const commands: SingleUndoCommand[] = [];
     ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._changesTracked, (index, snapshotBefore) => {
-      const coordinate = Coordinate.fromIndex(parseInt(index, 10), this.puzzle.info.boardSize);
-      commands.push(new SingleUndoCommand(coordinate, snapshotBefore));
+      if (this.puzzle) {
+        const coordinate = Coordinate.fromIndex(parseInt(index, 10), this.puzzle.info.boardSize);
+        commands.push(new SingleUndoCommand(coordinate, snapshotBefore));
+      }
     });
 
     if (commands.length > 0) {
@@ -223,19 +227,22 @@ export class GameComponent implements OnInit {
   boardContainsSolution(): boolean {
     let isCorrect = true;
 
-    const answerText = this.puzzle.answerLines.reduce((left, right) => left.concat(right));
-    const answerDigits = answerText.match(/\d+/g);
-    if (answerDigits) {
-      answerDigits.forEach((digit, index) => {
-        const answerValue = parseInt(digit, 10);
-        const coordinate = Coordinate.fromIndex(index, this.puzzle.info.boardSize);
-        const cell = this._boardComponent.getCell(coordinate);
-        if (cell) {
-          if (cell.value !== answerValue) {
-            isCorrect = false;
+    const puzzle = this.puzzle;
+    if (puzzle) {
+      const answerText = puzzle.answerLines.reduce((left, right) => left.concat(right));
+      const answerDigits = answerText.match(/\d+/g);
+      if (answerDigits) {
+        answerDigits.forEach((digit, index) => {
+          const answerValue = parseInt(digit, 10);
+          const coordinate = Coordinate.fromIndex(index, puzzle.info.boardSize);
+          const cell = this._boardComponent.getCell(coordinate);
+          if (cell) {
+            if (cell.value !== answerValue) {
+              isCorrect = false;
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     return isCorrect;
@@ -256,11 +263,13 @@ export class GameComponent implements OnInit {
 
   calculateDraftValues() {
     this.captureUndoCommand(() => {
-      for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
-        const cell = this._boardComponent.getCell(coordinate);
-        if (cell && cell.value === undefined) {
-          const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-          cell.setDraftValues(possibleValues);
+      if (this.puzzle) {
+        for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
+          const cell = this._boardComponent.getCell(coordinate);
+          if (cell && cell.value === undefined) {
+            const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
+            cell.setDraftValues(possibleValues);
+          }
         }
       }
     });
@@ -268,17 +277,19 @@ export class GameComponent implements OnInit {
 
   promoteDraftValues() {
     this.captureUndoCommand(() => {
-      for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
-        const cell = this._boardComponent.getCell(coordinate);
-        if (cell && cell.value === undefined) {
-          const possibleValues = cell.getPossibleValues();
-          if (possibleValues.length === 1) {
-            cell.setUserValue(possibleValues[0]);
+      if (this.puzzle) {
+        for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
+          const cell = this._boardComponent.getCell(coordinate);
+          if (cell && cell.value === undefined) {
+            const possibleValues = cell.getPossibleValues();
+            if (possibleValues.length === 1) {
+              cell.setUserValue(possibleValues[0]);
+            }
           }
         }
-      }
 
-      this.verifyBoardSolved();
+        this.verifyBoardSolved();
+      }
     });
   }
 
@@ -297,30 +308,34 @@ export class GameComponent implements OnInit {
   }
 
   private storeGameSaveStateInCookie() {
-    const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent, this.isGameSolved);
-    Cookies.set('save', gameStateText, {
-      expires: 30
-    });
+    if (this.puzzle) {
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent, this.isGameSolved);
+      Cookies.set('save', gameStateText, {
+        expires: 30
+      });
 
-    console.log('Save cookie updated.');
+      console.log('Save cookie updated.');
 
-    if (this.inDebugMode) {
-      this._debugConsoleComponent.updateSaveGameText(gameStateText);
+      if (this.inDebugMode) {
+        this._debugConsoleComponent.updateSaveGameText(gameStateText);
+      }
     }
   }
 
   loadGame(gameStateText: string) {
-    const saveState = this._saveGameAdapter.parseText(gameStateText);
-    if (saveState) {
-      if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
-        this.restart(false);
-        this._boardComponent.loadGame(saveState);
-        this.storeGameSaveStateInCookie();
-      } else {
-        this.puzzle = undefined;
-        this.retrievePuzzle(saveState.info, () => {
+    if (this.puzzle) {
+      const saveState = this._saveGameAdapter.parseText(gameStateText);
+      if (saveState) {
+        if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
+          this.restart(false);
           this._boardComponent.loadGame(saveState);
-        });
+          this.storeGameSaveStateInCookie();
+        } else {
+          this.puzzle = undefined;
+          this.retrievePuzzle(saveState.info, () => {
+            this._boardComponent.loadGame(saveState);
+          });
+        }
       }
     }
   }

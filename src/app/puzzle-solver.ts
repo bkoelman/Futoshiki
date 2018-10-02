@@ -5,9 +5,9 @@ import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MoveDirection } from './models/move-direction.enum';
 
 export class PuzzleSolver {
-    private _boardSizeCached: number;
-    private _allCellValuesCached: number[];
-    private _powerSetForAllCellValuesCached: number[][];
+    private _boardSizeCached: number | undefined;
+    private _allCellValuesCached: number[] = [];
+    private _powerSetForAllCellValuesCached: number[][] = [[]];
 
     constructor(private _board: Board) {
     }

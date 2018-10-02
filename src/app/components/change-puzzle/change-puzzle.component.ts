@@ -59,18 +59,24 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
   }
 
   onPreviousButtonClicked(event: Event) {
-    this.info.id--;
-    this.onPuzzleChanged();
+    if (this.info) {
+      this.info.id--;
+      this.onPuzzleChanged();
+    }
   }
 
   onNextButtonClicked(event: Event) {
-    this.info.id++;
-    this.onPuzzleChanged();
+    if (this.info) {
+      this.info.id++;
+      this.onPuzzleChanged();
+    }
   }
 
   onRandomButtonClicked() {
-    this.info.id = ObjectFacilities.getRandomIntegerInRange(1, this.maxPuzzleId);
-    this.onPuzzleChanged();
+    if (this.info) {
+      this.info.id = ObjectFacilities.getRandomIntegerInRange(1, this.maxPuzzleId);
+      this.onPuzzleChanged();
+    }
   }
 
   onApplyButtonClicked(event: Event) {
@@ -78,15 +84,23 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
   }
 
   onPuzzleChanged() {
-    const infoData = JSON.stringify(this.info);
-
-    if (this._lastChangeEventData !== infoData) {
-      this._lastChangeEventData = infoData;
+    if (this.info && !this.isDuplicateEvent()) {
       this.puzzleChanged.emit({
         difficulty: this.info.difficulty,
         boardSize: this.info.boardSize,
         id: this.info.id
       });
     }
+  }
+
+  private isDuplicateEvent(): boolean {
+    const eventData = JSON.stringify(this.info);
+
+    if (this._lastChangeEventData !== eventData) {
+      this._lastChangeEventData = eventData;
+      return false;
+    }
+
+    return true;
   }
 }

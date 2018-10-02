@@ -17,7 +17,7 @@ export class BoardComponent implements Board, OnInit {
   private _canSelect = true;
 
   @Input() startBoard: Board | undefined;
-  @Input() size: number | undefined;
+  @Input() size = -1;
   @Output() contentChanged = new EventEmitter<{ cell: Coordinate, snapshotBefore: CellContentSnapshot }>();
 
   get canSelect(): boolean {
@@ -34,19 +34,24 @@ export class BoardComponent implements Board, OnInit {
   }
 
   getFixedValueAt(rowIndex: number, columnIndex: number): number | undefined {
-    const coordinate = this.createCoordinate(rowIndex, columnIndex);
-    const cell = this.startBoard.getCell(coordinate);
-    return cell && cell.isFixed ? cell.value : undefined;
+    if (this.startBoard) {
+      const coordinate = this.createCoordinate(rowIndex, columnIndex);
+      const cell = this.startBoard.getCell(coordinate);
+      if (cell && cell.isFixed) {
+        return cell.value;
+      }
+    }
+    return undefined;
   }
 
   getOperatorAtRight(rowIndex: number, columnIndex: number): ComparisonOperator {
     const coordinate = this.createCoordinate(rowIndex, columnIndex);
-    return this.startBoard.getOperator(coordinate, MoveDirection.Right);
+    return this.startBoard ? this.startBoard.getOperator(coordinate, MoveDirection.Right) : ComparisonOperator.None;
   }
 
   getOperatorBelow(rowIndex: number, columnIndex: number): ComparisonOperator {
     const coordinate = this.createCoordinate(rowIndex, columnIndex);
-    return this.startBoard.getOperator(coordinate, MoveDirection.Down);
+    return this.startBoard ? this.startBoard.getOperator(coordinate, MoveDirection.Down) : ComparisonOperator.None;
   }
 
   private createCoordinate(rowIndex: number, columnIndex: number): Coordinate {
@@ -92,7 +97,7 @@ export class BoardComponent implements Board, OnInit {
   }
 
   getOperator(coordinate: Coordinate, direction: MoveDirection): ComparisonOperator {
-    return this.startBoard.getOperator(coordinate, direction);
+    return this.startBoard ? this.startBoard.getOperator(coordinate, direction) : ComparisonOperator.None;
   }
 
   loadGame(saveState: GameSaveState) {

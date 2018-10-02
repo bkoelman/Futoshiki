@@ -57,7 +57,7 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   }
 
   @HostListener('window:keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
-    if (this.isEnabled && this.areKeysEnabled) {
+    if (this.isEnabled && this.areKeysEnabled && this.boardSize) {
       if (event.code === 'Delete' || event.key === 'Del' || event.code === 'Backspace' || event.key === 'Backspace') {
         event.preventDefault();
         this.clearClicked.emit();
