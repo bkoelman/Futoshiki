@@ -1,6 +1,6 @@
 export class ObjectFacilities {
     static createNumberSequence(count: number, startAt: number = 1): number[] {
-        return Array.apply(undefined, Array(count)).map((item, index) => index + startAt);
+        return Array.apply(undefined, Array(count)).map((item, index: number) => index + startAt);
     }
 
     static iterateObjectProperties<TValue>(obj: Object, callback: (name: string, value: TValue) => void) {
@@ -42,7 +42,7 @@ export class ObjectFacilities {
         return answer;
     }
 
-    private static incrementBitArray(bitArray: number[], index): void {
+    private static incrementBitArray(bitArray: number[], index: number) {
         if (bitArray.length <= index) {
             bitArray.push(1);
         } else if (bitArray[index] === 1) {
@@ -75,7 +75,7 @@ export class ObjectFacilities {
         return source.filter((value, index, self) => self.indexOf(value) === index);
     }
 
-    static repeat(count: number, action: () => void): void {
+    static repeat(count: number, action: () => void) {
         for (let index = 0; index < count; index++) {
             action();
         }

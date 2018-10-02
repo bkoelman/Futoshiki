@@ -3,14 +3,10 @@ import { Coordinate } from './models/coordinate';
 import { MoveCheckResult } from './models/move-check-result';
 
 export class MoveChecker {
-    private _boardSizeCached: number;
-
     constructor(private _board: Board) {
     }
 
     checkIsMoveAllowed(coordinate: Coordinate, digit: number): MoveCheckResult {
-        this.ensureCache();
-
         const coordinatesInRow = coordinate.iterateRow(true);
         const coordinatesInColumn = coordinate.iterateColumn(true);
         const coordinateSequence = coordinatesInRow.concat(coordinatesInColumn);
@@ -24,12 +20,6 @@ export class MoveChecker {
         // TODO: Verify operators
 
         return MoveCheckResult.moveIsAllowed;
-    }
-
-    private ensureCache(): void {
-        if (this._boardSizeCached !== this._board.size) {
-            this._boardSizeCached = this._board.size;
-        }
     }
 
     private getViolatingCoordinate(sequence: Coordinate[], digit: number): Coordinate | undefined {

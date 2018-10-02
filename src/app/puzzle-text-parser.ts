@@ -44,14 +44,12 @@ export class PuzzleTextParser {
 class InnerPuzzleTextParser {
     private readonly _source: string;
     private readonly _board: MemoryBoard;
-    private readonly _lineLength;
     private _position: number;
     private _coordinate: Coordinate;
 
     constructor(source: string, board: MemoryBoard) {
         this._source = source;
         this._board = board;
-        this._lineLength = this._board.size * 2 - 1;
         this._position = 0;
         this._coordinate = Coordinate.fromIndex(0, board.size);
     }

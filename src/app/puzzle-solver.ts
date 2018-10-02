@@ -5,16 +5,15 @@ import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MoveDirection } from './models/move-direction.enum';
 
 export class PuzzleSolver {
-    private _boardSizeCached: number;
     private _allCellValuesCached: number[];
     private _powerSetForAllCellValuesCached: number[][];
 
     constructor(private _board: Board) {
-    }
+        this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.size);
+        this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached);
+}
 
     getPossibleValuesAtCoordinate(coordinate: Coordinate): number[] {
-        this.ensureCache();
-
         const candidateValueSet = this._allCellValuesCached.slice();
 
         // Rules described at: http://pzl.org.uk/futoshiki.html
@@ -22,22 +21,14 @@ export class PuzzleSolver {
         this.applyOperatorRules(coordinate, candidateValueSet);
         this.applyDigitRules(coordinate, candidateValueSet);
 
-        if (candidateValueSet.length < this._boardSizeCached) {
+        if (candidateValueSet.length < this._board.size) {
             console.log(`Final possible values for ${coordinate}: ${candidateValueSet}`);
         }
 
         return candidateValueSet;
     }
 
-    private ensureCache(): void {
-        if (this._boardSizeCached !== this._board.size) {
-            this._boardSizeCached = this._board.size;
-            this._allCellValuesCached = ObjectFacilities.createNumberSequence(this._board.size);
-            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached);
-        }
-    }
-
-    private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]): void {
+    private applyOperatorRules(coordinate: Coordinate, candidateValueSet: number[]) {
         this.outerApplySingleOperatorRule(coordinate, MoveDirection.Left, candidateValueSet);
         this.outerApplySingleOperatorRule(coordinate, MoveDirection.Right, candidateValueSet);
         this.outerApplyDoubleOperatorRule(coordinate, MoveDirection.Left, MoveDirection.Right, candidateValueSet);
@@ -47,7 +38,7 @@ export class PuzzleSolver {
         this.outerApplyDoubleOperatorRule(coordinate, MoveDirection.Up, MoveDirection.Down, candidateValueSet);
     }
 
-    private outerApplySingleOperatorRule(coordinate: Coordinate, direction: MoveDirection, candidateValueSet: number[]): void {
+    private outerApplySingleOperatorRule(coordinate: Coordinate, direction: MoveDirection, candidateValueSet: number[]) {
         if (coordinate.canMoveOne(direction)) {
             const operator = this._board.getOperator(coordinate, direction);
             if (operator !== ComparisonOperator.None) {
@@ -59,7 +50,7 @@ export class PuzzleSolver {
     }
 
     private innerApplySingleOperatorRule(isLessThanAdjacentCell: boolean, adjacentCellCoordinate: Coordinate,
-        currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string): void {
+        currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string) {
         // Rule: When a cell is greater than its adjacent cell, then it cannot contain digit 1 and
         // its minimum value must be higher than the minimum draft value in the adjacent cell.
         // Likewise, when a cell is less than its adjacent cell, then it cannot contain the highest digit on the board and
@@ -73,8 +64,8 @@ export class PuzzleSolver {
 
         if (adjacentCell) {
             if (isLessThanAdjacentCell) {
-                const adjacentMaxValue = adjacentCell.getMaximum() || this._boardSizeCached;
-                const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
+                const adjacentMaxValue = adjacentCell.getMaximum() || this._board.size;
+                const generateCount = this._board.size - adjacentMaxValue + 1;
                 const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
                 this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
                     `Single Operator rule (this < ${direction})`);
@@ -88,7 +79,7 @@ export class PuzzleSolver {
     }
 
     private outerApplyDoubleOperatorRule(coordinate: Coordinate, direction1: MoveDirection, direction2: MoveDirection,
-        candidateValueSet: number[]): void {
+        candidateValueSet: number[]) {
         if (coordinate.canMoveOne(direction1) && coordinate.canMoveOne(direction2)) {
             const operator1 = this._board.getOperator(coordinate, direction1);
             const operator2 = this._board.getOperator(coordinate, direction2);
@@ -103,7 +94,7 @@ export class PuzzleSolver {
 
     private innerApplyDoubleOperatorRule(isLessThanAdjacentCells: boolean, adjacentCellCoordinate1: Coordinate,
         adjacentCellCoordinate2: Coordinate, currentCellCoordinate: Coordinate, candidateValueSet: number[],
-        direction1: string, direction2: string): void {
+        direction1: string, direction2: string) {
         // Rule: When a cell is greater than both of its adjacent cells in the same sequence (row or column)
         // and the adjacent cells have the same minimum value, then the cell value must be higher than their
         // minimum draft value plus one (because the adjacent cells cannot both contain that minimum value).
@@ -120,12 +111,12 @@ export class PuzzleSolver {
 
         if (adjacentCell1 && adjacentCell2) {
             if (isLessThanAdjacentCells) {
-                const adjacentMaxValue1 = adjacentCell1.getMaximum() || this._boardSizeCached;
-                const adjacentMaxValue2 = adjacentCell2.getMaximum() || this._boardSizeCached;
+                const adjacentMaxValue1 = adjacentCell1.getMaximum() || this._board.size;
+                const adjacentMaxValue2 = adjacentCell2.getMaximum() || this._board.size;
 
                 if (adjacentMaxValue1 === adjacentMaxValue2) {
                     const adjacentMaxValue = adjacentMaxValue1 - 1;
-                    const generateCount = this._boardSizeCached - adjacentMaxValue + 1;
+                    const generateCount = this._board.size - adjacentMaxValue + 1;
                     const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
                     this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, currentCellCoordinate,
                         `Double Operator rule (${direction1} > this < ${direction2})`);
@@ -144,7 +135,7 @@ export class PuzzleSolver {
         }
     }
 
-    private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]): void {
+    private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]) {
         const coordinatesInRow = coordinate.iterateRow(true);
         const coordinatesInColumn = coordinate.iterateColumn(true);
 
@@ -153,7 +144,7 @@ export class PuzzleSolver {
     }
 
     private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],
-        sequenceName: string): void {
+        sequenceName: string) {
         const possibleValuesInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
 
         this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
@@ -184,7 +175,7 @@ export class PuzzleSolver {
     }
 
     private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
-        sequenceName: string): void {
+        sequenceName: string) {
         // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells each contain only the same N digits,
         // then those digits must be the answers for the N cells, and any occurrences of those digits in other cells in the sequence
         // can be deleted.
@@ -195,7 +186,7 @@ export class PuzzleSolver {
         //  =>  12 | 12 |   3 |  45 |  35
 
         for (const digitSet of this._powerSetForAllCellValuesCached) {
-            if (digitSet.length > 0 && digitSet.length < this._boardSizeCached) {
+            if (digitSet.length > 0 && digitSet.length < this._board.size) {
                 const frequency = this.getNakedSetFrequency(digitSet, possibleValuesPerCell);
                 if (frequency >= digitSet.length) {
                     const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) > -1);
@@ -223,7 +214,7 @@ export class PuzzleSolver {
     }
 
     private applyHiddenSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
-        sequenceName: string): void {
+        sequenceName: string) {
         // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells contain the only copies of N digits
         // in a sequence, then those digits must be the answers for the N cells, and any other digits in those cells can be deleted.
         // N ranges from 1 to the size of the board (exclusive).
@@ -235,7 +226,7 @@ export class PuzzleSolver {
         const powerSet = ObjectFacilities.createPowerSet(candidateValueSet);
 
         for (const digitSet of powerSet) {
-            if (digitSet.length > 0 && digitSet.length < this._boardSizeCached) {
+            if (digitSet.length > 0 && digitSet.length < this._board.size) {
                 const frequency = this.getHiddenSetFrequency(digitSet, possibleValuesPerCell);
                 if (frequency === digitSet.length - 1) {
                     const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) <= -1);
@@ -267,7 +258,7 @@ export class PuzzleSolver {
         return setFoundCount;
     }
 
-    private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string): void {
+    private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string) {
         const beforeText = candidateValueSet.join(',');
         this.removeNumbersFromArray(candidateValueSet, digitsToRemove);
         const afterText = candidateValueSet.join(',');
@@ -277,7 +268,7 @@ export class PuzzleSolver {
         }
     }
 
-    private removeNumbersFromArray(targetArray: number[], numbersToRemove: number[]): void {
+    private removeNumbersFromArray(targetArray: number[], numbersToRemove: number[]) {
         for (const numberToRemove of numbersToRemove) {
             const indexToRemove = targetArray.indexOf(numberToRemove);
             if (indexToRemove > -1) {

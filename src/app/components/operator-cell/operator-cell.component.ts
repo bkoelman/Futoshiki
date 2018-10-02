@@ -18,7 +18,7 @@ export class OperatorCellComponent implements OnInit, AfterViewInit {
   ngOnInit() {
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     const autoSizeTextTarget = $(this.autoSizeTextRef.nativeElement);
     if (this.isRotated) {
       autoSizeTextTarget.fitText(0.5);

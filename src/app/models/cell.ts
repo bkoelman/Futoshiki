@@ -6,7 +6,7 @@ export interface Cell {
     getMinimum(): number | undefined;
     getMaximum(): number | undefined;
 
-    setFixedValue(digit: number);
-    setUserValue(digit: number);
-    removeDraftValue(digit: number);
+    setFixedValue(digit: number): void;
+    setUserValue(digit: number): void;
+    removeDraftValue(digit: number): void;
 }

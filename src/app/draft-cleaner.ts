@@ -9,7 +9,7 @@ export class DraftCleaner {
     constructor(private _board: Board) {
     }
 
-    reduceDraftValues(digit: number, coordinate: Coordinate): void {
+    reduceDraftValues(digit: number, coordinate: Coordinate) {
         this.reduceForSequences(coordinate, digit);
         this.reduceForOperators(coordinate, digit);
     }
@@ -22,7 +22,7 @@ export class DraftCleaner {
         this.reduceInSequence(coordinatesInColumn, digit);
     }
 
-    private reduceInSequence(coordinatesInSequence: Coordinate[], digitToRemove: number): void {
+    private reduceInSequence(coordinatesInSequence: Coordinate[], digitToRemove: number) {
         for (const coordinate of coordinatesInSequence) {
             const cell = this._board.getCell(coordinate);
             if (cell) {

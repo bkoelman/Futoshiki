@@ -21,7 +21,7 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewChecked() {
     // TODO: Verify we are not binding too often
     this.registerAutoSizeText();
   }

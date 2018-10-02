@@ -40,7 +40,7 @@ export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
   ngOnInit() {
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewChecked() {
     // TODO: Verify we are not binding too often
     this.registerAutoSizeText();
   }

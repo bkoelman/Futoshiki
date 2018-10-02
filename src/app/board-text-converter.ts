@@ -49,7 +49,7 @@ class BoardTextParser {
         return this._board;
     }
 
-    private parseDigitLine(): void {
+    private parseDigitLine() {
         this._offsetInLine = 1;
         this._coordinate = this.getFirstCoordinateForCurrentLine(0);
 
@@ -63,7 +63,7 @@ class BoardTextParser {
             } else if (token === '!' || token === '#') {
                 this.parseSingleValueInDigitLine(token);
             } else if (this.charIsDigit(token)) {
-                this.parseDraftValuesInDigitLine(token);
+                this.parseDraftValuesInDigitLine();
             } else {
                 throw new Error(`Invalid character '${token}' in cell ${this._coordinate}.`);
             }
@@ -77,7 +77,7 @@ class BoardTextParser {
         return Coordinate.fromText(rowChar + '1', this._size);
     }
 
-    private skipWhitespace(): void {
+    private skipWhitespace() {
         const line = this._lines[this._lineIndex];
 
         while (this._offsetInLine < line.length && /\s/.test(line[this._offsetInLine])) {
@@ -85,7 +85,7 @@ class BoardTextParser {
         }
     }
 
-    private incrementOffsetInLine(): void {
+    private incrementOffsetInLine() {
         this._offsetInLine++;
     }
 
@@ -98,7 +98,7 @@ class BoardTextParser {
         return this._lines[this._lineIndex][this._offsetInLine];
     }
 
-    private parseOperatorInDigitLine(token: string): void {
+    private parseOperatorInDigitLine(token: string) {
         this.moveCoordinateToRight();
 
         const operator = parseComparisonOperator(token);
@@ -109,14 +109,14 @@ class BoardTextParser {
         this.incrementOffsetInLine();
     }
 
-    private moveCoordinateToRight(): void {
+    private moveCoordinateToRight() {
         const lineLength = this._lines[this._lineIndex].length;
         if (this._offsetInLine < lineLength - 1) {
             this._coordinate = this._coordinate.moveOne(MoveDirection.Right);
         }
     }
 
-    private parseSingleValueInDigitLine(token: string): void {
+    private parseSingleValueInDigitLine(token: string) {
         this.incrementOffsetInLine();
 
         const digits = this.consumeDigits();
@@ -161,7 +161,7 @@ class BoardTextParser {
         return char >= '1' && char <= '9';
     }
 
-    private parseDraftValuesInDigitLine(token: string): void {
+    private parseDraftValuesInDigitLine() {
         const digits = this.consumeDigits();
 
         const uniqueDigits = ObjectFacilities.getUniqueArrayElements(digits);
@@ -177,7 +177,7 @@ class BoardTextParser {
         cell.setDraftValues(digits);
     }
 
-    private parseSeparatorLine(): void {
+    private parseSeparatorLine() {
         this._offsetInLine = 1;
         this._coordinate = this.getFirstCoordinateForCurrentLine(1);
 
@@ -198,7 +198,7 @@ class BoardTextParser {
         }
     }
 
-    private skipDashes(): void {
+    private skipDashes() {
         const line = this._lines[this._lineIndex];
 
         while (this._offsetInLine < line.length && line[this._offsetInLine] === '-') {
@@ -206,7 +206,7 @@ class BoardTextParser {
         }
     }
 
-    private parseOperatorInSeparatorLine(token: string): void {
+    private parseOperatorInSeparatorLine(token: string) {
         const operator = parseComparisonOperator(token);
         if (operator !== ComparisonOperator.None) {
             this._board.setOperator(this._coordinate, MoveDirection.Down, operator);
@@ -321,11 +321,11 @@ class BoardTextFormatter {
         return text;
     }
 
-    private moveToNextCell(): void {
+    private moveToNextCell() {
         this._cellOffset++;
     }
 
-    private rewindToFirstCellInCurrentRow(): void {
+    private rewindToFirstCellInCurrentRow() {
         this._cellOffset -= this._board.size;
     }
 

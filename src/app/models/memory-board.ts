@@ -36,6 +36,7 @@ export class MemoryBoard implements Board {
                 arrayIndex = index;
                 return true;
             }
+            return false;
         });
 
         return arrayIndex > -1 ? Coordinate.fromIndex(arrayIndex, this.size) : undefined;

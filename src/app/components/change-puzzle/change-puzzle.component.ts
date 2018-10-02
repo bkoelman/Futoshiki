@@ -28,7 +28,7 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewChecked() {
     this.registerBootstrapHooks();
   }
 

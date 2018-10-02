@@ -1,6 +1,6 @@
 import { PuzzleInfo } from './puzzle-info';
 
-export class GameSaveState {
+export interface GameSaveState {
     info: PuzzleInfo;
-    cellSnapshotMap: object;
+    cellSnapshotMap: object | undefined;
 }

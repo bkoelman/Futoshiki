@@ -132,15 +132,17 @@ export class GameComponent implements OnInit {
 
   undo() {
     const undoCommand = this.undoStack.pop();
-    for (const nestedCommand of undoCommand.commands) {
-      const cell = this.boardComponent.getCell(nestedCommand.targetCell);
-      if (cell) {
-        cell.restoreContentSnapshot(nestedCommand.previousState);
-        this.boardComponent.clearSelection();
+    if (undoCommand) {
+      for (const nestedCommand of undoCommand.commands) {
+        const cell = this.boardComponent.getCell(nestedCommand.targetCell);
+        if (cell) {
+          cell.restoreContentSnapshot(nestedCommand.previousState);
+          this.boardComponent.clearSelection();
+        }
       }
-    }
 
-    this.storeGameSaveStateInCookie();
+      this.storeGameSaveStateInCookie();
+    }
   }
 
   onClearClicked() {
@@ -190,7 +192,7 @@ export class GameComponent implements OnInit {
               } else {
                 if (result.offendingCell !== undefined) {
                   console.log(`Move not allowed due to cell ${result.offendingCell}.`);
-                } else {
+                } else if (result.offendingOperator !== undefined) {
                   console.log(`Move not allowed due to operator at ` +
                     `${result.offendingOperator.direction} of ${result.offendingOperator.coordinate}.`);
                 }
@@ -301,7 +303,7 @@ export class GameComponent implements OnInit {
     }
   }
 
-  loadGame(gameStateText) {
+  loadGame(gameStateText: string) {
     const saveState = this._saveGameAdapter.parseText(gameStateText);
     if (saveState) {
       if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {

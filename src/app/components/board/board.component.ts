@@ -85,6 +85,7 @@ export class BoardComponent implements Board, OnInit {
         arrayIndex = index;
         return true;
       }
+      return false;
     });
 
     return arrayIndex > -1 ? Coordinate.fromIndex(arrayIndex, this.size) : undefined;

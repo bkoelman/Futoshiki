@@ -3,8 +3,8 @@ import { Subscription, Observable } from 'rxjs';
 
 @Injectable()
 export class HttpRequestController<TRequest, TResponse> {
-    private _pendingRequestExecution: Subscription;
-    private _pendingRequestJson: string;
+    private _pendingRequestExecution: Subscription | undefined;
+    private _pendingRequestJson: string | undefined;
 
     startRequest(request: TRequest,
         executeRequestCallback: () => Observable<TResponse>,

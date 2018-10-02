@@ -7,7 +7,7 @@ export class HttpCacheService {
 
   constructor() { }
 
-  put(url: string, response: HttpResponse<any>): void {
+  put(url: string, response: HttpResponse<any>) {
     this.requests[url] = response;
   }
 

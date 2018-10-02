@@ -16,7 +16,7 @@ export class DebugConsoleComponent implements OnInit {
   ngOnInit() {
   }
 
-  updateSaveGameText(saveText: string): void {
+  updateSaveGameText(saveText: string) {
     this._saveText = saveText;
   }
 
