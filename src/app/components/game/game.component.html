@@ -24,7 +24,7 @@
 </div>
 
 <div *ngIf="puzzle !== undefined">
-  <button type="button" class="btn btn-secondary" [disabled]="undoStack.length === 0 || isGameSolved" (click)="undo()">Undo</button>
+  <button type="button" class="btn btn-secondary" [disabled]="!canUndo()" (click)="undo()">Undo</button>
   <button type="button" class="btn btn-secondary ml-2" (click)="restart(true)">Restart</button>
   <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">
     Change puzzle

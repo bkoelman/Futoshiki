@@ -7,6 +7,7 @@ import { CellContentSnapshot } from '../../models/cell-content-snapshot';
 import { ComparisonOperator } from '../../models/comparison-operator.enum';
 import { Board } from '../../models/board';
 import { MoveDirection } from '../../models/move-direction.enum';
+import { CellSnapshot } from '../../models/cell-snapshot';
 
 @Component({
   selector: 'app-board',
@@ -18,7 +19,7 @@ export class BoardComponent implements Board, OnInit {
 
   @Input() startBoard: Board | undefined;
   @Input() size = -1;
-  @Output() contentChanged = new EventEmitter<{ cell: Coordinate, snapshotBefore: CellContentSnapshot }>();
+  @Output() contentChanged = new EventEmitter<CellSnapshot>();
 
   get canSelect(): boolean {
     return this._canSelect;
@@ -128,8 +129,8 @@ export class BoardComponent implements Board, OnInit {
     const coordinate = this.getCoordinate(event.sender);
     if (coordinate) {
       this.contentChanged.emit({
-        cell: coordinate,
-        snapshotBefore: event.snapshotBefore
+        coordinate: coordinate,
+        content: event.snapshotBefore
       });
     }
   }

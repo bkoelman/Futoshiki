@@ -1,7 +1,7 @@
 export class CellContentSnapshot {
     private static _emptySnapshot = new CellContentSnapshot(undefined, []);
 
-    constructor(public userValue: number | undefined, public draftValues: number[]) {
+    constructor(public readonly userValue: number | undefined, public readonly draftValues: number[]) {
     }
 
     static empty(): CellContentSnapshot {

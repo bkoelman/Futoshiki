@@ -33,7 +33,7 @@
   - [ ] validate inputs in class members
   - [x] split parsing and rendering of downloaded puzzle in BoardComponent
   - [ ] move classes into subfolder 'logic' / maybe change into services?
-  - [ ] extract undo tracking into separate class
+  - [x] extract undo tracking into separate class
   - [ ] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
 - [ ] learn mode: auto-select all possible numbers in empty cells

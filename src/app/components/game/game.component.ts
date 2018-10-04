@@ -7,17 +7,15 @@ import { PuzzleInfo } from '../../models/puzzle-info';
 import { PuzzleData } from '../../models/puzzle-data';
 import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
 import { HttpRequestController } from '../../services/http-request-controller';
-import { SingleUndoCommand } from '../../models/single-undo-command';
-import { AggregateUndoCommand } from '../../models/aggregate-undo-command';
+import { CellSnapshot } from '../../models/cell-snapshot';
 import { Coordinate } from '../../models/coordinate';
 import { PuzzleSolver } from '../../puzzle-solver';
-import { CellContentSnapshot } from '../../models/cell-content-snapshot';
 import { GameSaveState } from '../../models/game-save-state';
 import { SaveGameAdapter } from '../../save-game-adapter';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
 import { DraftCleaner } from '../../draft-cleaner';
-import { ObjectFacilities } from '../../object-facilities';
 import { MoveChecker } from '../../move-checker';
+import { UndoTracker } from '../../undo-tracker';
 
 declare var $: any;
 
@@ -29,18 +27,16 @@ export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) private _boardComponent!: BoardComponent;
   @ViewChild(ChangePuzzleComponent) private _changePuzzleComponent!: ChangePuzzleComponent;
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
+  private _undoTracker!: UndoTracker;
   private _solver!: PuzzleSolver;
   private _autoCleaner!: DraftCleaner;
   private _moveChecker!: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
-  private _isTrackingChanges = false;
-  private _changesTracked: { [index: number]: CellContentSnapshot } = {};
 
   puzzle: PuzzleData | undefined;
   hasError = false;
   isBoardCompleted = false;
   isGameSolved = false;
-  undoStack: AggregateUndoCommand[] = [];
   inDebugMode = false;
   isTypingText = false;
 
@@ -48,6 +44,7 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._undoTracker = new UndoTracker(this._boardComponent);
     this._solver = new PuzzleSolver(this._boardComponent);
     this._autoCleaner = new DraftCleaner(this._boardComponent);
     this._moveChecker = new MoveChecker(this._boardComponent);
@@ -130,8 +127,8 @@ export class GameComponent implements OnInit {
   restart(updateGameSaveState: boolean) {
     this.isBoardCompleted = false;
     this.isGameSolved = false;
-    this.undoStack = [];
 
+    this._undoTracker.reset();
     this._boardComponent.reset();
 
     if (updateGameSaveState) {
@@ -149,17 +146,13 @@ export class GameComponent implements OnInit {
     return !this._changePuzzleComponent.isModalVisible && !this.isTypingText;
   }
 
-  undo() {
-    const undoCommand = this.undoStack.pop();
-    if (undoCommand) {
-      for (const nestedCommand of undoCommand.commands) {
-        const cell = this._boardComponent.getCell(nestedCommand.targetCell);
-        if (cell) {
-          cell.restoreContentSnapshot(nestedCommand.previousState);
-          this._boardComponent.clearSelection();
-        }
-      }
+  canUndo() {
+    return this._undoTracker.canUndo() && !this.isGameSolved;
+  }
 
+  undo() {
+    if (this._undoTracker.undo()) {
+      this._boardComponent.clearSelection();
       this.storeGameSaveStateInCookie();
     }
   }
@@ -168,36 +161,20 @@ export class GameComponent implements OnInit {
     const cell = this._boardComponent.getSelectedCell();
     if (cell && !cell.isEmpty) {
 
-      this.captureUndoCommand(() => {
+      this.captureUndoFrame(() => {
         cell.clear();
       });
     }
   }
 
-  private captureUndoCommand(action: () => void) {
-    this._changesTracked = {};
-    this._isTrackingChanges = true;
-
-    action();
-
-    this._isTrackingChanges = false;
-
-    const commands: SingleUndoCommand[] = [];
-    ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._changesTracked, (index, snapshotBefore) => {
-      if (this.puzzle) {
-        const coordinate = Coordinate.fromIndex(parseInt(index, 10), this.puzzle.info.boardSize);
-        commands.push(new SingleUndoCommand(coordinate, snapshotBefore));
-      }
-    });
-
-    if (commands.length > 0) {
-      this.undoStack.push(new AggregateUndoCommand(commands));
+  private captureUndoFrame(action: () => void) {
+    if (this._undoTracker.captureUndoFrame(action)) {
       this.storeGameSaveStateInCookie();
     }
   }
 
   onDigitClicked(data: { value: number, isDraft: boolean }) {
-    this.captureUndoCommand(() => {
+    this.captureUndoFrame(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell) {
         if (data.isDraft) {
@@ -262,7 +239,7 @@ export class GameComponent implements OnInit {
   }
 
   onHintClicked() {
-    this.captureUndoCommand(() => {
+    this.captureUndoFrame(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell && cell.value === undefined) {
         const coordinate = this._boardComponent.getCoordinate(cell);
@@ -275,7 +252,7 @@ export class GameComponent implements OnInit {
   }
 
   calculateDraftValues() {
-    this.captureUndoCommand(() => {
+    this.captureUndoFrame(() => {
       if (this.puzzle) {
         for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
           const cell = this._boardComponent.getCell(coordinate);
@@ -289,7 +266,7 @@ export class GameComponent implements OnInit {
   }
 
   promoteDraftValues() {
-    this.captureUndoCommand(() => {
+    this.captureUndoFrame(() => {
       if (this.puzzle) {
         for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
           const cell = this._boardComponent.getCell(coordinate);
@@ -311,13 +288,8 @@ export class GameComponent implements OnInit {
     this.retrievePuzzle(value);
   }
 
-  onBoardContentChanged(event: { cell: Coordinate, snapshotBefore: CellContentSnapshot }) {
-    if (this._isTrackingChanges) {
-      const index = event.cell.toIndex();
-      if (!this._changesTracked[index]) {
-        this._changesTracked[index] = event.snapshotBefore;
-      }
-    }
+  onBoardContentChanged(event: CellSnapshot) {
+    this._undoTracker.registerCellChange(event);
   }
 
   private storeGameSaveStateInCookie() {
