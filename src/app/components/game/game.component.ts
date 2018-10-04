@@ -19,6 +19,8 @@ import { DraftCleaner } from '../../draft-cleaner';
 import { ObjectFacilities } from '../../object-facilities';
 import { MoveChecker } from '../../move-checker';
 
+declare var $: any;
+
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html'
@@ -103,10 +105,21 @@ export class GameComponent implements OnInit {
     } else {
       this.afterPuzzleDownloadSucceeded();
     }
+
+    setTimeout(this.rebindAutoResizeTexts);
   }
 
   private afterPuzzleDownloadSucceeded() {
     this.storeGameSaveStateInCookie();
+    this.rebindAutoResizeTexts();
+  }
+
+  private rebindAutoResizeTexts() {
+    $(window).off('debouncedresize.fittext orientationchange.fittext');
+
+    $('.auto-resize-text').fitText(0.15);
+    $('.auto-resize-large-text').fitText(0.5);
+    $('.auto-resize-small-text').fitText(0.125);
   }
 
   private onPuzzleDownloadFailed(err: any) {

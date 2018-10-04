@@ -1,16 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ViewChildren, ElementRef } from '@angular/core';
-import { AfterViewChecked } from '@angular/core';
-import * as ft from '../../../jquery.fittext.js';
-
-declare var $: any;
+import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-button-bar',
   templateUrl: './button-bar.component.html'
 })
-export class ButtonBarComponent implements OnInit, AfterViewChecked {
-  @ViewChildren('autoSizeText') private _autoSizeTextRefs!: ElementRef[];
-
+export class ButtonBarComponent implements OnInit {
   @Input() boardSize: number | undefined;
   @Input() isEnabled!: boolean;
   @Input() areKeysEnabled!: boolean;
@@ -19,18 +13,6 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
   @Output() hintClicked = new EventEmitter();
 
   ngOnInit() {
-  }
-
-  ngAfterViewChecked() {
-    // TODO: Verify we are not binding too often
-    this.registerAutoSizeText();
-  }
-
-  registerAutoSizeText() {
-    this._autoSizeTextRefs.forEach(textRef => {
-      const autoSizeTextTarget = $(textRef.nativeElement);
-      autoSizeTextTarget.fitText(0.15);
-    });
   }
 
   onDigitButtonClicked(event: Event, isDraft: boolean) {

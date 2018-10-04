@@ -1,16 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
 import { Cell } from '../../models/cell.js';
-import * as ft from '../../../jquery.fittext.js';
-
-declare var $: any;
 
 @Component({
   selector: 'app-digit-cell',
   templateUrl: './digit-cell.component.html'
 })
-export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
-  @ViewChildren('autoSizeText') private _autoSizeTextRefs!: ElementRef[];
+export class DigitCellComponent implements Cell, OnInit {
   private _userValue: number | undefined;
   private _draftValues: number[] = [];
 
@@ -38,18 +34,6 @@ export class DigitCellComponent implements Cell, OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
-  }
-
-  ngAfterViewChecked() {
-    // TODO: Verify we are not binding too often
-    this.registerAutoSizeText();
-  }
-
-  registerAutoSizeText() {
-    this._autoSizeTextRefs.forEach(textRef => {
-      const autoSizeTextTarget = $(textRef.nativeElement);
-      autoSizeTextTarget.fitText(0.15);
-    });
   }
 
   clear() {

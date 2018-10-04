@@ -2,12 +2,12 @@
   <div class="row">
     <div class="col-12">
       <div class="rounded-button-group">
-        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, false)"
-          class="box-container rounded-button" [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled"
-          [class.inactive]="!isEnabled" [class.green]="isEnabled" [ngClass]="'button-' + boardSize">
+        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, false)" class="box-container rounded-button"
+          [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.green]="isEnabled"
+          [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
-              <div #autoSizeText class="container-content-table-cell">
+              <div class="container-content-table-cell auto-resize-text">
                 {{number + 1}}
               </div>
             </div>
@@ -17,7 +17,7 @@
           [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.gray]="isEnabled" [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
-              <div #autoSizeText class="container-content-table-cell">
+              <div class="container-content-table-cell auto-resize-text">
                 &times;
               </div>
             </div>
@@ -30,12 +30,12 @@
     <div class="col-1"></div>
     <div class="col-10">
       <div class="rounded-button-group mt-1">
-        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, true)"
-          class="box-container rounded-button" [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled"
-          [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'button-' + boardSize">
+        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, true)" class="box-container rounded-button"
+          [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled"
+          [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
-              <div #autoSizeText class="container-content-table-cell">
+              <div class="container-content-table-cell auto-resize-text">
                 {{number + 1}}
               </div>
             </div>
@@ -45,7 +45,7 @@
           [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
-              <div #autoSizeText class="container-content-table-cell">
+              <div class="container-content-table-cell auto-resize-text">
                 ?
               </div>
             </div>

@@ -1,7 +1,8 @@
 <div class="box-container non-clickable" [ngClass]="(isRotated ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
   <div class="container-content">
     <div class="container-content-table">
-      <div #autoSizeText class="container-content-table-cell" [class.rotated-right]="isRotated">
+      <div class="container-content-table-cell" [class.rotated-right]="isRotated" [class.auto-resize-large-text]="isRotated"
+        [class.auto-resize-small-text]="!isRotated">
         <span *ngIf="value === ComparisonOperatorAlias.GreaterThan">&gt;</span>
         <span *ngIf="value === ComparisonOperatorAlias.LessThan">&lt;</span>
       </div>
