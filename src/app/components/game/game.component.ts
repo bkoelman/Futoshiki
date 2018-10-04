@@ -16,6 +16,7 @@ import { DebugConsoleComponent } from '../debug-console/debug-console.component'
 import { DraftCleaner } from '../../draft-cleaner';
 import { MoveChecker } from '../../move-checker';
 import { UndoTracker } from '../../undo-tracker';
+import { MoveDirection } from '../../models/move-direction.enum';
 
 declare var $: any;
 
@@ -185,15 +186,16 @@ export class GameComponent implements OnInit {
             const coordinate = this._boardComponent.getCoordinate(cell);
             if (coordinate) {
               const result = this._moveChecker.checkIsMoveAllowed(coordinate, data.value);
-              if (!this.inDebugMode || /* TODO: Remove debug condition */ result.isAllowed) {
+              if (!this.inDebugMode || /* TODO: Remove debug condition */ result.isValid) {
                 cell.setUserValue(data.value);
                 this._autoCleaner.reduceDraftValues(data.value, coordinate);
               } else {
-                if (result.offendingCell !== undefined) {
-                  console.log(`Move not allowed due to cell ${result.offendingCell}.`);
-                } else if (result.offendingOperator !== undefined) {
+                for (const offendingCoordinate of result.offendingCells) {
+                  console.log(`Move not allowed due to cell ${offendingCoordinate}.`);
+                }
+                for (const offendingOperator of result.offendingOperators) {
                   console.log(`Move not allowed due to operator at ` +
-                    `${result.offendingOperator.direction} of ${result.offendingOperator.coordinate}.`);
+                    `${MoveDirection[offendingOperator.direction]} of ${offendingOperator.coordinate}.`);
                 }
               }
             }

@@ -32,10 +32,9 @@ export class DraftCleaner {
     }
 
     private reduceForOperators(coordinate: Coordinate, digit: number) {
-        this.reduceForOperator(coordinate, MoveDirection.Left, digit);
-        this.reduceForOperator(coordinate, MoveDirection.Right, digit);
-        this.reduceForOperator(coordinate, MoveDirection.Up, digit);
-        this.reduceForOperator(coordinate, MoveDirection.Down, digit);
+        for (const direction of [MoveDirection.Left, MoveDirection.Right, MoveDirection.Up, MoveDirection.Down]) {
+            this.reduceForOperator(coordinate, direction, digit);
+        }
     }
 
     private reduceForOperator(coordinate: Coordinate, direction: MoveDirection, digit: number) {

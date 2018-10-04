@@ -2,9 +2,11 @@ import { Coordinate } from './coordinate';
 import { MoveDirection } from './move-direction.enum';
 
 export class MoveCheckResult {
-    static readonly moveIsAllowed: MoveCheckResult = new MoveCheckResult(true, undefined, undefined);
+    get isValid() {
+        return this.offendingCells.length === 0 && this.offendingOperators.length === 0;
+    }
 
-    constructor(public isAllowed: boolean, public offendingCell: Coordinate | undefined,
-        public offendingOperator: { coordinate: Coordinate, direction: MoveDirection } | undefined) {
+    constructor(public offendingCells: Coordinate[],
+        public offendingOperators: { coordinate: Coordinate, direction: MoveDirection }[]) {
     }
 }
