@@ -161,20 +161,21 @@ export class GameComponent implements OnInit {
     const cell = this._boardComponent.getSelectedCell();
     if (cell && !cell.isEmpty) {
 
-      this.captureUndoFrame(() => {
+      this.captureCellChanges(() => {
         cell.clear();
       });
     }
   }
 
-  private captureUndoFrame(action: () => void) {
+  private captureCellChanges(action: () => void) {
     if (this._undoTracker.captureUndoFrame(action)) {
       this.storeGameSaveStateInCookie();
+      setTimeout(() => this.rebindAutoResizeTexts());
     }
   }
 
   onDigitClicked(data: { value: number, isDraft: boolean }) {
-    this.captureUndoFrame(() => {
+    this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell) {
         if (data.isDraft) {
@@ -239,7 +240,7 @@ export class GameComponent implements OnInit {
   }
 
   onHintClicked() {
-    this.captureUndoFrame(() => {
+    this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell && cell.value === undefined) {
         const coordinate = this._boardComponent.getCoordinate(cell);
@@ -252,7 +253,7 @@ export class GameComponent implements OnInit {
   }
 
   calculateDraftValues() {
-    this.captureUndoFrame(() => {
+    this.captureCellChanges(() => {
       if (this.puzzle) {
         for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
           const cell = this._boardComponent.getCell(coordinate);
@@ -266,7 +267,7 @@ export class GameComponent implements OnInit {
   }
 
   promoteDraftValues() {
-    this.captureUndoFrame(() => {
+    this.captureCellChanges(() => {
       if (this.puzzle) {
         for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
           const cell = this._boardComponent.getCell(coordinate);
