@@ -35,7 +35,7 @@
   - [ ] move classes into subfolder 'logic' / maybe change into services?
   - [ ] extract undo tracking into separate class
   - [ ] review components and extract non-UI logic into separate classes
-  - [ ] switch to TypeScript strict mode
+  - [x] switch to TypeScript strict mode
 - [ ] learn mode: auto-select all possible numbers in empty cells
 - [ ] automated solver (http://pzl.org.uk/futoshiki.html)
   - [x] Naked Set
