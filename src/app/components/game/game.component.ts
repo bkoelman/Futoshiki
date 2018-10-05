@@ -19,6 +19,7 @@ import { UndoTracker } from '../../undo-tracker';
 import { MoveCheckResult } from '../../models/move-check-result';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot';
+import { GameSettings } from '../../game-settings';
 
 declare var $: any;
 
@@ -43,6 +44,10 @@ export class GameComponent implements OnInit {
   isGameSolved = false;
   inDebugMode = false;
   isTypingText = false;
+  settings: GameSettings = {
+    autoCleanDraftValues: true,
+    notifyOnWrongMoves: false
+  };
 
   private get canAcceptInput() {
     return !this._isAnimating && !this.hasRetrieveError && !this.isGameSolved;
@@ -192,19 +197,22 @@ export class GameComponent implements OnInit {
           if (cell.value !== data.value) {
             const coordinate = this._boardComponent.getCoordinate(cell);
             if (coordinate) {
-              const result = this._moveChecker.checkIsMoveAllowed(coordinate, data.value);
-              if (result.isValid) {
+              const moveCheckResult = this.settings.notifyOnWrongMoves ?
+                this._moveChecker.checkIsMoveAllowed(coordinate, data.value) : MoveCheckResult.getValid();
+              if (moveCheckResult.isValid) {
                 cell.setUserValue(data.value);
-                this._autoCleaner.reduceDraftValues(data.value, coordinate);
+                this.verifyIsBoardSolved();
+
+                if (this.settings.autoCleanDraftValues) {
+                  this._autoCleaner.reduceDraftValues(data.value, coordinate);
+                }
               } else {
-                this.startDigitError(cell, result, data.value);
+                this.startDigitError(cell, moveCheckResult, data.value);
               }
             }
           }
         }
       }
-
-      this.verifyBoardSolved();
     });
   }
 
@@ -236,38 +244,17 @@ export class GameComponent implements OnInit {
     cell.restoreContentSnapshot(snapshot);
   }
 
-  private verifyBoardSolved() {
-    this.isBoardCompleted = !this._boardComponent.hasIncompleteCells();
-    if (this.isBoardCompleted) {
-      if (this.boardContainsSolution()) {
-        this.isGameSolved = true;
-        this._boardComponent.canSelect = false;
+  private verifyIsBoardSolved() {
+    if (this.puzzle) {
+      this.isBoardCompleted = !this._boardComponent.hasIncompleteCells();
+      if (this.isBoardCompleted) {
+        const boardAnswerDigits = this._boardComponent.getAnswerDigits();
+        if (this.puzzle.answerDigits === boardAnswerDigits) {
+          this.isGameSolved = true;
+          this._boardComponent.canSelect = false;
+        }
       }
     }
-  }
-
-  boardContainsSolution(): boolean {
-    let isCorrect = true;
-
-    const puzzle = this.puzzle;
-    if (puzzle) {
-      const answerText = puzzle.answerLines.reduce((left, right) => left.concat(right));
-      const answerDigits = answerText.match(/\d+/g);
-      if (answerDigits) {
-        answerDigits.forEach((digit, index) => {
-          const answerValue = parseInt(digit, 10);
-          const coordinate = Coordinate.fromIndex(index, puzzle.info.boardSize);
-          const cell = this._boardComponent.getCell(coordinate);
-          if (cell) {
-            if (cell.value !== answerValue) {
-              isCorrect = false;
-            }
-          }
-        });
-      }
-    }
-
-    return isCorrect;
   }
 
   onHintClicked() {
@@ -310,7 +297,7 @@ export class GameComponent implements OnInit {
           }
         }
 
-        this.verifyBoardSolved();
+        this.verifyIsBoardSolved();
       }
     });
   }
@@ -361,5 +348,12 @@ export class GameComponent implements OnInit {
 
   debugIsTypingTextChanged(isTypingText: boolean) {
     this.isTypingText = isTypingText;
+  }
+
+  changeSettings(settings: GameSettings) {
+    this.settings = {
+      notifyOnWrongMoves: settings.notifyOnWrongMoves,
+      autoCleanDraftValues: settings.autoCleanDraftValues
+    };
   }
 }

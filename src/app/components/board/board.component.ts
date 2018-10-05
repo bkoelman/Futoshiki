@@ -130,6 +130,14 @@ export class BoardComponent implements Board, OnInit {
     }
   }
 
+  getAnswerDigits() {
+    let answerDigits = '';
+    this._cells.forEach(cell => {
+      answerDigits += cell.value || '.';
+    });
+    return answerDigits;
+  }
+
   loadGame(saveState: GameSaveState) {
     if (saveState.cellSnapshotMap !== undefined) {
       ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(saveState.cellSnapshotMap, (indexText, snapshot) => {

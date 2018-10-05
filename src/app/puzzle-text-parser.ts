@@ -8,36 +8,31 @@ import { ObjectFacilities } from './object-facilities';
 
 export class PuzzleTextParser {
     static parseText(puzzleText: string, info: PuzzleInfo): PuzzleData {
-        const startBoard = PuzzleTextParser.parseStartBoard(info, puzzleText);
-        const answerLines = PuzzleTextParser.parseAnswerLines(puzzleText, info.boardSize);
+        const startBoard = PuzzleTextParser.parseStartBoard(puzzleText, info.boardSize);
+        const answerDigits = PuzzleTextParser.parseAnswerDigits(puzzleText, info.boardSize);
 
         return {
             info: info,
             startBoard: startBoard,
-            answerLines: answerLines
+            answerDigits: answerDigits
         };
     }
 
-    private static parseStartBoard(info: PuzzleInfo, puzzleText: string) {
-        const startBoard = new MemoryBoard(info.boardSize);
+    private static parseStartBoard(puzzleText: string, boardSize: number): MemoryBoard {
+        const startBoard = new MemoryBoard(boardSize);
         const innerParser = new InnerPuzzleTextParser(puzzleText, startBoard);
         innerParser.parseStartBoard();
         return startBoard;
     }
 
-    private static parseAnswerLines(puzzleText: string, boardSize: number): string[] {
-        const answerLines: string[] = [];
-
+    private static parseAnswerDigits(puzzleText: string, boardSize: number): string {
         const lineLength = boardSize * 2 - 1;
-        const lineCount = 2 * lineLength;
-
-        for (let lineIndex = lineCount / 2; lineIndex < lineCount; lineIndex++) {
-            const textIndex = lineLength * lineIndex;
-            const line = puzzleText.slice(textIndex, textIndex + lineLength);
-            answerLines.push(line);
+        const answerText = puzzleText.substring(lineLength * lineLength);
+        const answerMatchArray = answerText.match(/\d+/g);
+        if (answerMatchArray) {
+            return answerMatchArray.join('');
         }
-
-        return answerLines;
+        return '';
     }
 }
 

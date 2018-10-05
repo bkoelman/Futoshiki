@@ -4,5 +4,5 @@ import { MemoryBoard } from './memory-board';
 export interface PuzzleData {
     info: PuzzleInfo;
     startBoard: MemoryBoard;
-    answerLines: string[];
+    answerDigits: string;
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { GameSettings } from '../../game-settings';
 
 @Component({
   selector: 'app-debug-console',
@@ -9,10 +10,13 @@ export class DebugConsoleComponent implements OnInit {
 
   @Input() isVisible!: boolean;
   @Input() isEnabled!: boolean;
+  @Input() notifyOnWrongMoves!: boolean;
+  @Input() autoCleanDraftValues!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();
   @Output() promoteClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
+  @Output() settingsChanged = new EventEmitter<GameSettings>();
 
   ngOnInit() {
   }
@@ -39,5 +43,12 @@ export class DebugConsoleComponent implements OnInit {
 
   textLostFocus() {
     this.isTypingTextChanged.emit(false);
+  }
+
+  updateSettings() {
+    this.settingsChanged.emit({
+      notifyOnWrongMoves: this.notifyOnWrongMoves,
+      autoCleanDraftValues: this.autoCleanDraftValues
+    });
   }
 }

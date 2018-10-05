@@ -25,9 +25,11 @@
 
 <div *ngIf="puzzle !== undefined">
   <button type="button" class="btn btn-secondary" [disabled]="!canUndo" (click)="undo()">Undo</button>
-  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput" (click)="restart(true)">Restart</button>
-  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput" data-toggle="modal" data-target="#changePuzzleModal"
-    (click)="showChangePuzzleModal()">Change puzzle</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput && !isGameSolved" (click)="restart(true)">Restart</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput && !isGameSolved" data-toggle="modal"
+    data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">Change puzzle</button>
 </div>
-<app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
-  (helpClicked)="calculateDraftValues()" (promoteClicked)="promoteDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
+<app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput || isGameSolved"
+  [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
+  (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (promoteClicked)="promoteDraftValues()"
+  (isTypingTextChanged)="debugIsTypingTextChanged($event)" (settingsChanged)="changeSettings($event)"></app-debug-console>
