@@ -51,7 +51,7 @@ export class GameComponent implements OnInit {
     notifyOnWrongMoves: false
   };
 
-  private get canAcceptInput() {
+  get canAcceptInput() {
     return !this._isAnimating && !this.hasRetrieveError && this.playState !== GameCompletionState.Won;
   }
 
