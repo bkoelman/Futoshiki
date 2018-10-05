@@ -26,7 +26,7 @@
 - [x] auto-cleanup draft digits on regular digit entry
 - [ ] nicer styling when puzzle solved (show button "new random game")
 - [ ] display coordinate rulers
-- [ ] block invalid (based on rules) digit entry; highlight related cells
+- [x] block invalid (based on rules) digit entry; highlight related cells
 - [ ] block invalid (based on rules) draft digit entry; highlight related cells
 - [ ] move `Promote` button from debug mode into normal game
 - [ ] code refactorings and cleanup

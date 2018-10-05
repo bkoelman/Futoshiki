@@ -36,20 +36,55 @@ export class MoveChecker {
         return violations;
     }
 
-    private getViolatingCoordinatesForOperators(coordinate: Coordinate, digit: number): {
-        coordinate: Coordinate, direction: MoveDirection
-    }[] {
-        const violations = [];
+    private getViolatingCoordinatesForOperators(coordinate: Coordinate, digit: number): MoveDirection[] {
+        const violations: MoveDirection[] = [];
 
-        // TODO: Handle double operators
-
-        for (const direction of [MoveDirection.Left, MoveDirection.Right, MoveDirection.Up, MoveDirection.Down]) {
-            if (!this.isSingleOperatorAllowed(coordinate, direction, digit)) {
-                violations.push({ coordinate: coordinate, direction: direction });
+        for (const directionPair of [[MoveDirection.Left, MoveDirection.Right], [MoveDirection.Up, MoveDirection.Down]]) {
+            if (!this.isOperatorPairAllowed(coordinate, directionPair[0], directionPair[1], digit)) {
+                violations.push(directionPair[0]);
+                violations.push(directionPair[1]);
+            } else {
+                for (const direction of directionPair) {
+                    if (!this.isSingleOperatorAllowed(coordinate, direction, digit)) {
+                        violations.push(direction);
+                    }
+                }
             }
         }
 
         return violations;
+    }
+
+    private isOperatorPairAllowed(coordinate: Coordinate, direction1: MoveDirection, direction2: MoveDirection, digit: number): boolean {
+        if (coordinate.canMoveOne(direction1) && coordinate.canMoveOne(direction2)) {
+            const operator1 = this._board.getOperator(coordinate, direction1);
+            const operator2 = this._board.getOperator(coordinate, direction2);
+
+            if (operator1 !== ComparisonOperator.None && operator1 === operator2) {
+                const adjacentCoordinate1 = coordinate.moveOne(direction1);
+                const adjacentCoordinate2 = coordinate.moveOne(direction2);
+                const adjacentCell1 = this._board.getCell(adjacentCoordinate1);
+                const adjacentCell2 = this._board.getCell(adjacentCoordinate2);
+
+                if (adjacentCell1 && adjacentCell2) {
+                    if (adjacentCell1.value === undefined && adjacentCell2.value === undefined) {
+                        if (operator1 === ComparisonOperator.LessThan) {
+                            const adjacentMaxValue = this._board.size - 1;
+                            if (digit >= adjacentMaxValue) {
+                                return false;
+                            }
+                        } else {
+                            const adjacentMinValue = 2;
+                            if (digit <= adjacentMinValue) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private isSingleOperatorAllowed(coordinate: Coordinate, direction: MoveDirection, digit: number): boolean {

@@ -207,7 +207,7 @@ export class GameComponent implements OnInit {
                   this._autoCleaner.reduceDraftValues(data.value, coordinate);
                 }
               } else {
-                this.startDigitError(cell, moveCheckResult, data.value);
+                this.startDigitError(cell, coordinate, moveCheckResult, data.value);
               }
             }
           }
@@ -216,7 +216,7 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private startDigitError(cell: DigitCellComponent, result: MoveCheckResult, digit: number) {
+  private startDigitError(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number) {
     const snapshot = cell.getContentSnapshot();
     this._isAnimating = true;
     cell.setUserValue(digit);
@@ -231,7 +231,7 @@ export class GameComponent implements OnInit {
     }
 
     for (const offendingOperator of result.offendingOperators) {
-      const operatorComponent = this._boardComponent.getOperatorComponent(offendingOperator.coordinate, offendingOperator.direction);
+      const operatorComponent = this._boardComponent.getOperatorComponent(coordinate, offendingOperator);
       if (operatorComponent) {
         operatorComponent.flash(() => this.completeDigitError(cell, snapshot));
       }

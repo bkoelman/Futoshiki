@@ -8,8 +8,7 @@ export class MoveCheckResult {
         return this.offendingCells.length === 0 && this.offendingOperators.length === 0;
     }
 
-    constructor(public offendingCells: Coordinate[],
-        public offendingOperators: { coordinate: Coordinate, direction: MoveDirection }[]) {
+    constructor(public offendingCells: Coordinate[], public offendingOperators: MoveDirection[]) {
     }
 
     static getValid() {

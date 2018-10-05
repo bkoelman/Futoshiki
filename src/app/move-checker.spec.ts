@@ -86,14 +86,10 @@ describe('MoveChecker', () => {
             expect(result.isValid).toBeFalsy();
             expect(result.offendingCells.length).toBe(0);
             expect(result.offendingOperators.length).toBe(4);
-            expect(result.offendingOperators[0].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[0].direction]).toBe(MoveDirection[MoveDirection.Left]);
-            expect(result.offendingOperators[1].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[1].direction]).toBe(MoveDirection[MoveDirection.Right]);
-            expect(result.offendingOperators[2].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[2].direction]).toBe(MoveDirection[MoveDirection.Up]);
-            expect(result.offendingOperators[3].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[3].direction]).toBe(MoveDirection[MoveDirection.Down]);
+            expect(MoveDirection[result.offendingOperators[0]]).toBe(MoveDirection[MoveDirection.Left]);
+            expect(MoveDirection[result.offendingOperators[1]]).toBe(MoveDirection[MoveDirection.Right]);
+            expect(MoveDirection[result.offendingOperators[2]]).toBe(MoveDirection[MoveDirection.Up]);
+            expect(MoveDirection[result.offendingOperators[3]]).toBe(MoveDirection[MoveDirection.Down]);
         });
 
         it('should block on greater-than operator mismatches', () => {
@@ -114,14 +110,54 @@ describe('MoveChecker', () => {
             expect(result.isValid).toBeFalsy();
             expect(result.offendingCells.length).toBe(0);
             expect(result.offendingOperators.length).toBe(4);
-            expect(result.offendingOperators[0].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[0].direction]).toBe(MoveDirection[MoveDirection.Left]);
-            expect(result.offendingOperators[1].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[1].direction]).toBe(MoveDirection[MoveDirection.Right]);
-            expect(result.offendingOperators[2].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[2].direction]).toBe(MoveDirection[MoveDirection.Up]);
-            expect(result.offendingOperators[3].coordinate.toString()).toBe('B2');
-            expect(MoveDirection[result.offendingOperators[3].direction]).toBe(MoveDirection[MoveDirection.Down]);
+            expect(MoveDirection[result.offendingOperators[0]]).toBe(MoveDirection[MoveDirection.Left]);
+            expect(MoveDirection[result.offendingOperators[1]]).toBe(MoveDirection[MoveDirection.Right]);
+            expect(MoveDirection[result.offendingOperators[2]]).toBe(MoveDirection[MoveDirection.Up]);
+            expect(MoveDirection[result.offendingOperators[3]]).toBe(MoveDirection[MoveDirection.Down]);
+        });
+
+        it('should block on less-than operator pair mismatch', () => {
+            const checker = createMoveCheckerForBoard(`
+                +----+----+----+----+
+                |    |    |    |    |
+                +----+----+----+----+
+                |    >    <    |    |
+                +----+----+----+----+
+                |    |    |    |    |
+                +----+----+----+----+
+                |    |    |    |    |
+                +----+----+----+----+
+                `);
+
+            const result = checker.checkIsMoveAllowed(3, Coordinate.fromText('B2', 4));
+
+            expect(result.isValid).toBeFalsy();
+            expect(result.offendingCells.length).toBe(0);
+            expect(result.offendingOperators.length).toBe(2);
+            expect(MoveDirection[result.offendingOperators[0]]).toBe(MoveDirection[MoveDirection.Left]);
+            expect(MoveDirection[result.offendingOperators[1]]).toBe(MoveDirection[MoveDirection.Right]);
+        });
+
+        it('should block on greater-than operator pair mismatch', () => {
+            const checker = createMoveCheckerForBoard(`
+                +----+----+----+----+
+                |    |    |    |    |
+                +----+-^--+----+----+
+                |    |    |    |    |
+                +----+-v--+----+----+
+                |    |    |    |    |
+                +----+----+----+----+
+                |    |    |    |    |
+                +----+----+----+----+
+                `);
+
+            const result = checker.checkIsMoveAllowed(2, Coordinate.fromText('B2', 4));
+
+            expect(result.isValid).toBeFalsy();
+            expect(result.offendingCells.length).toBe(0);
+            expect(result.offendingOperators.length).toBe(2);
+            expect(MoveDirection[result.offendingOperators[0]]).toBe(MoveDirection[MoveDirection.Up]);
+            expect(MoveDirection[result.offendingOperators[1]]).toBe(MoveDirection[MoveDirection.Down]);
         });
 
         it('should block on mixed mismatches', () => {
@@ -144,8 +180,7 @@ describe('MoveChecker', () => {
             expect(result.offendingCells[0].toString()).toBe('C2');
             expect(result.offendingCells[1].toString()).toBe('D3');
             expect(result.offendingOperators.length).toBe(1);
-            expect(result.offendingOperators[0].coordinate.toString()).toBe('C3');
-            expect(MoveDirection[result.offendingOperators[0].direction]).toBe(MoveDirection[MoveDirection.Right]);
+            expect(MoveDirection[result.offendingOperators[0]]).toBe(MoveDirection[MoveDirection.Right]);
         });
     });
 
