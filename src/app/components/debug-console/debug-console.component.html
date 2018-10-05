@@ -1,13 +1,13 @@
-<ng-container *ngIf="isEnabled">
+<ng-container *ngIf="isVisible">
   <p></p>
   <div class="row">
     <div class="col-sm-10">
-      <textarea [(ngModel)]="_saveText" rows="4" class="w-100" (focus)="textGotFocus()" (blur)="textLostFocus()"></textarea>
+      <textarea [(ngModel)]="_saveText" rows="4" class="w-100" [disabled]="!isEnabled" (focus)="textGotFocus()" (blur)="textLostFocus()"></textarea>
     </div>
     <div class="col-sm-2">
-      <button type="button" class="btn btn-secondary mb-2 mr-2" (click)="onLoadClicked()">Load</button>
-      <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="isGameSolved" (click)="onHelpClicked()">Help</button>
-      <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="isGameSolved" (click)="onPromoteClicked()">Promote</button>
+      <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="!isEnabled" (click)="onLoadClicked()">Load</button>
+      <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="!isEnabled" (click)="onHelpClicked()">Help</button>
+      <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="!isEnabled" (click)="onPromoteClicked()">Promote</button>
     </div>
   </div>
 </ng-container>

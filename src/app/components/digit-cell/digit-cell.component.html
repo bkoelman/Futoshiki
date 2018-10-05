@@ -1,17 +1,19 @@
-<div class="box-container box-border" [class.clickable]="!isFixed && canSelect" [class.non-clickable]="isFixed || !canSelect"
-  [class.square-selected]="isSelected" [ngClass]="'square-' + boardSize" (click)="onBoxClicked()">
-  <div class="container-content">
+<div class="box-container" [class.box-border]="!hasError" [class.box-error-border]="hasError" [class.clickable]="!isFixed && canSelect"
+  [class.non-clickable]="isFixed || !canSelect" [class.square-selected]="isSelected" [ngClass]="'square-' + boardSize"
+  (click)="onBoxClicked()">
+  <div #flashable *ngIf="!isEmpty" class="container-content">
     <div class="container-content-table">
       <div *ngIf="!isDraft" class="container-content-table-cell auto-resize-text">
         <span *ngIf="isFixed">{{value}}</span>
-        <span *ngIf="!isFixed && value !== undefined" class="text-success">{{value}}</span>
+        <span *ngIf="!isFixed && value !== undefined" [class.text-success]="errorDigit === undefined"
+          [class.text-danger]="errorDigit !== undefined">{{value}}</span>
       </div>
       <div *ngIf="isDraft">
         <div *ngFor="let number of 9 | repeat" class="box-container draft-cell-block">
           <div class="container-content">
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
-                <div class="text-primary">
+                <div [class.text-primary]="errorDigit !== number + 1" [class.text-danger]="errorDigit === number + 1">
                   <div *ngIf="_draftValues.indexOf(number + 1) >= 0">{{number + 1}}</div>
                 </div>
               </div>

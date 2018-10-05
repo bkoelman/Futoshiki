@@ -1,16 +1,20 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
 import { Cell } from '../../models/cell.js';
+
+declare var $: any;
 
 @Component({
   selector: 'app-digit-cell',
   templateUrl: './digit-cell.component.html'
 })
 export class DigitCellComponent implements Cell, OnInit {
+  @ViewChild('flashable') private _flashableElementRef!: ElementRef;
   private _userValue: number | undefined;
   private _draftValues: number[] = [];
 
   isSelected = false;
+  errorDigit: number | undefined = undefined;
   @Input() boardSize!: number;
   @Input() fixedValue: number | undefined;
   @Input() canSelect!: boolean;
@@ -94,6 +98,14 @@ export class DigitCellComponent implements Cell, OnInit {
     }
   }
 
+  setError(draftDigit: number | undefined) {
+    this.errorDigit = draftDigit || 1;
+  }
+
+  clearError() {
+    this.errorDigit = undefined;
+  }
+
   getContentSnapshot(): CellContentSnapshot {
     return new CellContentSnapshot(this._userValue, this._draftValues.slice());
   }
@@ -146,6 +158,10 @@ export class DigitCellComponent implements Cell, OnInit {
     }
 
     return result;
+  }
+
+  flash(callback: () => void) {
+    $(this._flashableElementRef.nativeElement).animateCss('flash', callback);
   }
 
   onBoxClicked() {

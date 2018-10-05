@@ -7,6 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class DebugConsoleComponent implements OnInit {
   private _saveText = '';
 
+  @Input() isVisible!: boolean;
   @Input() isEnabled!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();

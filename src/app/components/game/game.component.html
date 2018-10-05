@@ -1,8 +1,8 @@
 <div *ngIf="puzzle === undefined">
-  <div *ngIf="!hasError" class="alert alert-primary">
+  <div *ngIf="!hasRetrieveError" class="alert alert-primary">
     Loading puzzle...
   </div>
-  <div *ngIf="hasError" class="alert alert-danger">
+  <div *ngIf="hasRetrieveError" class="alert alert-danger">
     Failed to load puzzle.
   </div>
 </div>
@@ -12,7 +12,7 @@
 <div class="clearfix"></div>
 <p></p>
 
-<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="!isGameSolved" [areKeysEnabled]="areKeysEnabled()"
+<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput" [areKeysEnabled]="areShortcutKeysEnabled"
   (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
 
 <p></p>
@@ -24,11 +24,10 @@
 </div>
 
 <div *ngIf="puzzle !== undefined">
-  <button type="button" class="btn btn-secondary" [disabled]="!canUndo()" (click)="undo()">Undo</button>
-  <button type="button" class="btn btn-secondary ml-2" (click)="restart(true)">Restart</button>
-  <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">
-    Change puzzle
-  </button>
+  <button type="button" class="btn btn-secondary" [disabled]="!canUndo" (click)="undo()">Undo</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput" (click)="restart(true)">Restart</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput" data-toggle="modal" data-target="#changePuzzleModal"
+    (click)="showChangePuzzleModal()">Change puzzle</button>
 </div>
-<app-debug-console [isEnabled]="inDebugMode && puzzle !== undefined" (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()"
-  (promoteClicked)="promoteDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
+<app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
+  (helpClicked)="calculateDraftValues()" (promoteClicked)="promoteDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>

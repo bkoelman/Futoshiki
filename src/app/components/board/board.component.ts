@@ -8,6 +8,7 @@ import { ComparisonOperator } from '../../models/comparison-operator.enum';
 import { Board } from '../../models/board';
 import { MoveDirection } from '../../models/move-direction.enum';
 import { CellSnapshot } from '../../models/cell-snapshot';
+import { OperatorCellComponent } from '../operator-cell/operator-cell.component';
 
 @Component({
   selector: 'app-board',
@@ -15,6 +16,7 @@ import { CellSnapshot } from '../../models/cell-snapshot';
 })
 export class BoardComponent implements Board, OnInit {
   @ViewChildren(DigitCellComponent) private _cells!: QueryList<DigitCellComponent>;
+  @ViewChildren(OperatorCellComponent) private _operators!: QueryList<OperatorCellComponent>;
   private _canSelect = true;
 
   @Input() startBoard: Board | undefined;
@@ -99,6 +101,33 @@ export class BoardComponent implements Board, OnInit {
 
   getOperator(coordinate: Coordinate, direction: MoveDirection): ComparisonOperator {
     return this.startBoard ? this.startBoard.getOperator(coordinate, direction) : ComparisonOperator.None;
+  }
+
+  getOperatorComponent(coordinate: Coordinate, direction: MoveDirection): OperatorCellComponent | undefined {
+    const operatorIndex = this.calculateOperatorIndex(coordinate, direction);
+    if (operatorIndex !== undefined) {
+      return this._operators.find((item, index) => index === operatorIndex);
+    }
+
+    return undefined;
+  }
+
+  calculateOperatorIndex(coordinate: Coordinate, direction: MoveDirection) {
+    const cellIndex = coordinate.toIndex();
+    const cellRowIndex = Math.floor(cellIndex / this.size);
+    const cellColumnIndex = cellIndex % this.size;
+    const operatorRowSize = 2 * this.size - 1;
+
+    switch (direction) {
+      case MoveDirection.Left:
+        return cellRowIndex * operatorRowSize + cellColumnIndex - 1;
+      case MoveDirection.Right:
+        return cellRowIndex * operatorRowSize + cellColumnIndex;
+      case MoveDirection.Up:
+        return (cellRowIndex - 1) * operatorRowSize + this.size - 1 + cellColumnIndex;
+      case MoveDirection.Down:
+        return cellRowIndex * operatorRowSize + this.size - 1 + cellColumnIndex;
+    }
   }
 
   loadGame(saveState: GameSaveState) {

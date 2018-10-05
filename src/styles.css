@@ -13,6 +13,10 @@
     border: 2px #dee2e6 solid;
 }
 
+.box-error-border {
+    border: 2px #dc3545 solid;
+}
+
 .draft-cell-block {
     width: 33%;
     padding-bottom: 33%;

@@ -16,7 +16,9 @@ import { DebugConsoleComponent } from '../debug-console/debug-console.component'
 import { DraftCleaner } from '../../draft-cleaner';
 import { MoveChecker } from '../../move-checker';
 import { UndoTracker } from '../../undo-tracker';
-import { MoveDirection } from '../../models/move-direction.enum';
+import { MoveCheckResult } from '../../models/move-check-result';
+import { DigitCellComponent } from '../digit-cell/digit-cell.component';
+import { CellContentSnapshot } from '../../models/cell-content-snapshot';
 
 declare var $: any;
 
@@ -33,13 +35,26 @@ export class GameComponent implements OnInit {
   private _autoCleaner!: DraftCleaner;
   private _moveChecker!: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
+  private _isAnimating = false;
 
   puzzle: PuzzleData | undefined;
-  hasError = false;
+  hasRetrieveError = false;
   isBoardCompleted = false;
   isGameSolved = false;
   inDebugMode = false;
   isTypingText = false;
+
+  private get canAcceptInput() {
+    return !this._isAnimating && !this.hasRetrieveError && !this.isGameSolved;
+  }
+
+  get areShortcutKeysEnabled(): boolean {
+    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this.isTypingText;
+  }
+
+  get canUndo() {
+    return this.canAcceptInput && this._undoTracker.canUndo();
+  }
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
   }
@@ -78,7 +93,7 @@ export class GameComponent implements OnInit {
   }
 
   private retrievePuzzle(request: PuzzleInfo, downloadCompletedAsyncCallback?: () => void) {
-    this.hasError = false;
+    this.hasRetrieveError = false;
     this.puzzleDownloadController.startRequest(request,
       () => this._dataService.getPuzzle(request),
       (isVisible) => this.onPuzzleLoaderVisibilityChanged(isVisible),
@@ -121,7 +136,7 @@ export class GameComponent implements OnInit {
   }
 
   private onPuzzleDownloadFailed(err: any) {
-    this.hasError = true;
+    this.hasRetrieveError = true;
     console.error(err);
   }
 
@@ -141,14 +156,6 @@ export class GameComponent implements OnInit {
     if (this.puzzle) {
       this._changePuzzleComponent.setDefaults(this.puzzle.info);
     }
-  }
-
-  areKeysEnabled(): boolean {
-    return !this._changePuzzleComponent.isModalVisible && !this.isTypingText;
-  }
-
-  canUndo() {
-    return this._undoTracker.canUndo() && !this.isGameSolved;
   }
 
   undo() {
@@ -186,17 +193,11 @@ export class GameComponent implements OnInit {
             const coordinate = this._boardComponent.getCoordinate(cell);
             if (coordinate) {
               const result = this._moveChecker.checkIsMoveAllowed(coordinate, data.value);
-              if (!this.inDebugMode || /* TODO: Remove debug condition */ result.isValid) {
+              if (result.isValid) {
                 cell.setUserValue(data.value);
                 this._autoCleaner.reduceDraftValues(data.value, coordinate);
               } else {
-                for (const offendingCoordinate of result.offendingCells) {
-                  console.log(`Move not allowed due to cell ${offendingCoordinate}.`);
-                }
-                for (const offendingOperator of result.offendingOperators) {
-                  console.log(`Move not allowed due to operator at ` +
-                    `${MoveDirection[offendingOperator.direction]} of ${offendingOperator.coordinate}.`);
-                }
+                this.startDigitError(cell, result, data.value);
               }
             }
           }
@@ -205,6 +206,34 @@ export class GameComponent implements OnInit {
 
       this.verifyBoardSolved();
     });
+  }
+
+  private startDigitError(cell: DigitCellComponent, result: MoveCheckResult, digit: number) {
+    const snapshot = cell.getContentSnapshot();
+    this._isAnimating = true;
+    cell.setUserValue(digit);
+    cell.setError(undefined);
+    setTimeout(() => this.rebindAutoResizeTexts());
+
+    for (const offendingCoordinate of result.offendingCells) {
+      const offendingCell = this._boardComponent.getCell(offendingCoordinate);
+      if (offendingCell) {
+        offendingCell.flash(() => this.completeDigitError(cell, snapshot));
+      }
+    }
+
+    for (const offendingOperator of result.offendingOperators) {
+      const operatorComponent = this._boardComponent.getOperatorComponent(offendingOperator.coordinate, offendingOperator.direction);
+      if (operatorComponent) {
+        operatorComponent.flash(() => this.completeDigitError(cell, snapshot));
+      }
+    }
+  }
+
+  private completeDigitError(cell: DigitCellComponent, snapshot: CellContentSnapshot) {
+    this._isAnimating = false;
+    cell.clearError();
+    cell.restoreContentSnapshot(snapshot);
   }
 
   private verifyBoardSolved() {
@@ -292,7 +321,9 @@ export class GameComponent implements OnInit {
   }
 
   onBoardContentChanged(event: CellSnapshot) {
-    this._undoTracker.registerCellChange(event);
+    if (this.canAcceptInput) {
+      this._undoTracker.registerCellChange(event);
+    }
   }
 
   private storeGameSaveStateInCookie() {
