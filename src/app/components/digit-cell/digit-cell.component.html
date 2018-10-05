@@ -14,7 +14,7 @@
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
                 <div [class.text-primary]="errorDigit !== number + 1" [class.text-danger]="errorDigit === number + 1">
-                  <div *ngIf="_draftValues.indexOf(number + 1) >= 0">{{number + 1}}</div>
+                  <div *ngIf="_draftValues.indexOf(number + 1) > -1">{{number + 1}}</div>
                 </div>
               </div>
             </div>

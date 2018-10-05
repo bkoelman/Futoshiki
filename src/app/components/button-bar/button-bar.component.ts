@@ -8,7 +8,7 @@ export class ButtonBarComponent implements OnInit {
   @Input() boardSize: number | undefined;
   @Input() isEnabled!: boolean;
   @Input() areKeysEnabled!: boolean;
-  @Output() digitClicked = new EventEmitter<{ value: number, isDraft: boolean }>();
+  @Output() digitClicked = new EventEmitter<{ digit: number, isDraft: boolean }>();
   @Output() clearClicked = new EventEmitter();
   @Output() hintClicked = new EventEmitter();
 
@@ -20,7 +20,7 @@ export class ButtonBarComponent implements OnInit {
       const button = <HTMLElement>event.target;
       const digit = parseInt(button.innerText, 10);
       this.digitClicked.emit({
-        value: digit,
+        digit: digit,
         isDraft: isDraft
       });
     }
@@ -49,7 +49,7 @@ export class ButtonBarComponent implements OnInit {
         const digit = parseInt(event.key, 10);
         if (!isNaN(digit) && digit > 0 && digit <= this.boardSize) {
           this.digitClicked.emit({
-            value: digit,
+            digit: digit,
             isDraft: event.ctrlKey || event.altKey
           });
         }

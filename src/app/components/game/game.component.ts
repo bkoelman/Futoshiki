@@ -70,7 +70,7 @@ export class GameComponent implements OnInit {
     this._autoCleaner = new DraftCleaner(this._boardComponent);
     this._moveChecker = new MoveChecker(this._boardComponent);
 
-    this.inDebugMode = location.search.indexOf('debug') >= 0;
+    this.inDebugMode = location.search.indexOf('debug') > -1;
 
     const saveState = this.getGameSaveStateFromCookie();
     this.retrievePuzzle(saveState.info, () => this._boardComponent.loadGame(saveState));
@@ -187,27 +187,29 @@ export class GameComponent implements OnInit {
     }
   }
 
-  onDigitClicked(data: { value: number, isDraft: boolean }) {
+  onDigitClicked(data: { digit: number, isDraft: boolean }) {
     this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell) {
         if (data.isDraft) {
-          cell.toggleDraftValue(data.value);
+          if (cell.containsDraftValue(data.digit)) {
+            cell.removeDraftValue(data.digit);
+          } else {
+            if (this.verifyMoveAllowed(cell, data.digit, data.isDraft)) {
+              cell.insertDraftValue(data.digit);
+            }
+          }
         } else {
-          if (cell.value !== data.value) {
-            const coordinate = this._boardComponent.getCoordinate(cell);
-            if (coordinate) {
-              const moveCheckResult = this.settings.notifyOnWrongMoves ?
-                this._moveChecker.checkIsMoveAllowed(data.value, coordinate) : MoveCheckResult.getValid();
-              if (moveCheckResult.isValid) {
-                cell.setUserValue(data.value);
-                this.verifyIsBoardSolved();
+          if (cell.value !== data.digit) {
+            if (this.verifyMoveAllowed(cell, data.digit, data.isDraft)) {
+              cell.setUserValue(data.digit);
+              this.verifyIsBoardSolved();
 
-                if (this.settings.autoCleanDraftValues) {
-                  this._autoCleaner.reduceDraftValues(data.value, coordinate);
+              if (this.settings.autoCleanDraftValues) {
+                const coordinate = this._boardComponent.getCoordinate(cell);
+                if (coordinate) {
+                  this._autoCleaner.reduceDraftValues(data.digit, coordinate);
                 }
-              } else {
-                this.startDigitError(cell, coordinate, moveCheckResult, data.value);
               }
             }
           }
@@ -216,29 +218,50 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private startDigitError(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number) {
+  private verifyMoveAllowed(cell: DigitCellComponent, digit: number, isDraft: boolean): boolean {
+    const coordinate = this._boardComponent.getCoordinate(cell);
+    if (coordinate) {
+      const moveCheckResult = this.settings.notifyOnWrongMoves ?
+        this._moveChecker.checkIsMoveAllowed(digit, coordinate) : MoveCheckResult.createValid();
+      if (!moveCheckResult.isValid) {
+        this.startErrorForMove(cell, coordinate, moveCheckResult, digit, isDraft);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private startErrorForMove(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number, isDraft: boolean) {
     const snapshot = cell.getContentSnapshot();
     this._isAnimating = true;
-    cell.setUserValue(digit);
-    cell.setError(undefined);
+
+    if (isDraft) {
+      cell.insertDraftValue(digit);
+      cell.setError(digit);
+    } else {
+      cell.setUserValue(digit);
+      cell.setError(undefined);
+    }
+
     setTimeout(() => this.rebindAutoResizeTexts());
 
     for (const offendingCoordinate of result.offendingCells) {
       const offendingCell = this._boardComponent.getCell(offendingCoordinate);
       if (offendingCell) {
-        offendingCell.flash(() => this.completeDigitError(cell, snapshot));
+        offendingCell.flash(() => this.completeErrorForMove(cell, snapshot));
       }
     }
 
     for (const offendingOperator of result.offendingOperators) {
       const operatorComponent = this._boardComponent.getOperatorComponent(coordinate, offendingOperator);
       if (operatorComponent) {
-        operatorComponent.flash(() => this.completeDigitError(cell, snapshot));
+        operatorComponent.flash(() => this.completeErrorForMove(cell, snapshot));
       }
     }
   }
 
-  private completeDigitError(cell: DigitCellComponent, snapshot: CellContentSnapshot) {
+  private completeErrorForMove(cell: DigitCellComponent, snapshot: CellContentSnapshot) {
     this._isAnimating = false;
     cell.clearError();
     cell.restoreContentSnapshot(snapshot);

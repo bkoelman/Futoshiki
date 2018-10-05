@@ -78,20 +78,22 @@ export class DigitCellComponent implements Cell, OnInit {
     }
   }
 
-  toggleDraftValue(digit: number) {
-    this.raiseChangeEventFor(() => {
-      if (this._draftValues.indexOf(digit) >= 0) {
-        this._draftValues = this._draftValues.filter(item => item !== digit);
-      } else {
+  containsDraftValue(digit: number): boolean {
+    return this._draftValues.indexOf(digit) > -1;
+  }
+
+  insertDraftValue(digit: number) {
+    if (!this.containsDraftValue(digit)) {
+      this.raiseChangeEventFor(() => {
         this._userValue = undefined;
         this._draftValues.push(digit);
         this._draftValues.sort();
-      }
-    });
+      });
+    }
   }
 
   removeDraftValue(digit: number) {
-    if (this._draftValues.indexOf(digit) >= 0) {
+    if (this.containsDraftValue(digit)) {
       this.raiseChangeEventFor(() => {
         this._draftValues = this._draftValues.filter(item => item !== digit);
       });

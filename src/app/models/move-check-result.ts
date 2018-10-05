@@ -11,7 +11,7 @@ export class MoveCheckResult {
     constructor(public offendingCells: Coordinate[], public offendingOperators: MoveDirection[]) {
     }
 
-    static getValid() {
+    static createValid() {
         return MoveCheckResult._emptySingleton;
     }
 }

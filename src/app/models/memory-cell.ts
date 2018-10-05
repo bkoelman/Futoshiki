@@ -86,7 +86,7 @@ export class MemoryCell implements Cell {
             throw new Error(`Invalid draft value '${digit}'.`);
         }
 
-        if (this._draftValues.indexOf(digit) >= 0) {
+        if (this._draftValues.indexOf(digit) > -1) {
             this._draftValues = this._draftValues.filter(item => item !== digit);
         }
     }
