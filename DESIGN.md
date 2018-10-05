@@ -29,29 +29,33 @@
 - [x] block invalid (based on rules) digit entry; highlight related cells
 - [x] block invalid (based on rules) draft digit entry; highlight related cells
 - [ ] move `Promote` button from debug mode into normal game
+- [ ] move `Undo` into button bar and enable Ctrl+Z shortcut
+- [ ] nicer styling of button bar
+  - [ ] move `Restart`, `New game`, `Change puzzle`, `Settings`, `Game rules` behind hamburger menu
+  - [ ] controls left: `Undo`, `Promote`, `Hint`, `Menu`
+  - [ ] move bar to side, depending on screen size (https://davidwalsh.name/orientation-change)
+- [ ] `Hint` button (unrelated to selection)
+  - [ ] fill draft values for any empty cells
+  - [ ] promote all cells that contain one draft digit
+  - [ ] apply solver strategies (http://pzl.org.uk/futoshiki.html)
+    - [x] Naked Set
+    - [ ] Naked Triples/Quads with subsets
+    - [x] Hidden Set
+    - [ ] Hidden Triples/Quads with subsets
+    - [x] Relative Size (Single)
+    - [x] Relative Size (Double) (http://www.davdata.nl/futoshiki.html point 4)
+    - [ ] X-Wing
+    - .... see http://www.sudokuwiki.org
+- [ ] `?` button
+  - Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
   - [ ] validate inputs in class members
   - [x] split parsing and rendering of downloaded puzzle in BoardComponent
-  - [ ] move classes into subfolder 'logic' / maybe change into services?
   - [x] extract undo tracking into separate class
   - [ ] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
-- [ ] learn mode: auto-select all possible numbers in empty cells
-- [ ] automated solver (http://pzl.org.uk/futoshiki.html)
-  - [x] Naked Set
-  - [ ] Naked Triples/Quads with subsets
-  - [x] Hidden Set
-  - [ ] Hidden Triples/Quads with subsets
-  - [x] Relative Size (Single)
-  - [x] Relative Size (Double) (http://www.davdata.nl/futoshiki.html point 4)
-  - [ ] X-Wing
-  - .... see http://www.sudokuwiki.org
 - [ ] option to track elapsed time
 - [ ] helptext: game rules and strategies
-- [ ] move Undo into button bar and enable Ctrl+Z shortcut
-- [ ] nicer styling of button bar
-  - [ ] move `Restart`, `Change puzzle`, `Settings` behind hamburger menu
-  - [ ] move to side, depending on screen size (https://davidwalsh.name/orientation-change)
 - [ ] cleanup README.md
 - [ ] consider to use "prettier" code-formatter
 - [ ] optimize performance
