@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { GameSettings } from '../../game-settings';
+import { GameSettings } from '../../models/game-settings';
 
 @Component({
   selector: 'app-debug-console',

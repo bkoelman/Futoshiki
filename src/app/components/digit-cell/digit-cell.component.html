@@ -1,6 +1,6 @@
 <div class="box-container" [class.box-border]="!hasError" [class.box-error-border]="hasError" [class.clickable]="!isFixed && canSelect"
-  [class.non-clickable]="isFixed || !canSelect" [class.square-selected]="isSelected" [ngClass]="'square-' + boardSize"
-  (click)="onBoxClicked()">
+  [class.non-clickable]="isFixed || !canSelect" [class.square-selected]="isSelected" [class.square-won]="playState === GameCompletionState.Won"
+  [class.square-lost]="!isSelected && playState === GameCompletionState.Lost" [ngClass]="'square-' + boardSize" (click)="onBoxClicked()">
   <div #flashable *ngIf="!isEmpty" class="container-content">
     <div class="container-content-table">
       <div *ngIf="!isDraft" class="container-content-table-cell auto-resize-text">

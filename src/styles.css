@@ -52,6 +52,16 @@
     background-color: rgba(0, 0, 0, .075);
 }
 
+.square-won {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.square-lost {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
 .clickable:hover {
     opacity: .85;
     transition: opacity 100ms ease-in-out;
@@ -104,9 +114,9 @@
 }
 
 .rounded-button.inactive {
-    background: #DADCDF;
-    background-image: linear-gradient(to bottom, rgb(181, 186, 190) 0%, rgb(237, 238, 239) 100%);
-    border: 1px solid #DADCDF;
+    background: #6c757d;
+    border: 1px solid #6c757d;
+    opacity: 0.65;
 }
 
 .transparent {

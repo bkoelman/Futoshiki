@@ -9,6 +9,7 @@ import { Board } from '../../models/board';
 import { MoveDirection } from '../../models/move-direction.enum';
 import { CellSnapshot } from '../../models/cell-snapshot';
 import { OperatorCellComponent } from '../operator-cell/operator-cell.component';
+import { GameCompletionState } from '../../models/game-completion-state.enum';
 
 @Component({
   selector: 'app-board',
@@ -21,6 +22,7 @@ export class BoardComponent implements Board, OnInit {
 
   @Input() startBoard: Board | undefined;
   @Input() size = -1;
+  @Input() playState!: GameCompletionState;
   @Output() contentChanged = new EventEmitter<CellSnapshot>();
 
   get canSelect(): boolean {

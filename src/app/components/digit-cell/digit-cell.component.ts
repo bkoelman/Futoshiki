@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
 import { Cell } from '../../models/cell.js';
+import { GameCompletionState } from '../../models/game-completion-state.enum.js';
 
 declare var $: any;
 
@@ -13,11 +14,14 @@ export class DigitCellComponent implements Cell, OnInit {
   private _userValue: number | undefined;
   private _draftValues: number[] = [];
 
+  GameCompletionState = GameCompletionState;
+
   isSelected = false;
   errorDigit: number | undefined = undefined;
   @Input() boardSize!: number;
   @Input() fixedValue: number | undefined;
   @Input() canSelect!: boolean;
+  @Input() playState!: GameCompletionState;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
   @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 

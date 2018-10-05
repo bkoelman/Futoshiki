@@ -1,7 +1,7 @@
 <ng-container *ngIf="startBoard">
     <div *ngFor="let rowIndex of size | repeat">
         <ng-container *ngFor="let columnIndex of size | repeat">
-            <app-digit-cell [boardSize]="size" [canSelect]="canSelect" (cellClicked)="onCellClicked($event)"
+            <app-digit-cell [boardSize]="size" [canSelect]="canSelect" [playState]="playState" (cellClicked)="onCellClicked($event)"
                 (contentChanged)="onCellContentChanged($event)" [fixedValue]="getFixedValueAt(rowIndex, columnIndex)"></app-digit-cell>
             <ng-container *ngIf="columnIndex < size - 1">
                 <app-operator-cell [boardSize]="size" [value]="getOperatorAtRight(rowIndex, columnIndex)"></app-operator-cell>

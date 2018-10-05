@@ -19,7 +19,8 @@ import { UndoTracker } from '../../undo-tracker';
 import { MoveCheckResult } from '../../models/move-check-result';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot';
-import { GameSettings } from '../../game-settings';
+import { GameSettings } from '../../models/game-settings';
+import { GameCompletionState } from '../../models/game-completion-state.enum';
 
 declare var $: any;
 
@@ -38,10 +39,11 @@ export class GameComponent implements OnInit {
   private _saveGameAdapter = new SaveGameAdapter();
   private _isAnimating = false;
 
+  GameCompletionStateAlias = GameCompletionState;
+
   puzzle: PuzzleData | undefined;
   hasRetrieveError = false;
-  isBoardCompleted = false;
-  isGameSolved = false;
+  playState = GameCompletionState.Playing;
   inDebugMode = false;
   isTypingText = false;
   settings: GameSettings = {
@@ -50,7 +52,7 @@ export class GameComponent implements OnInit {
   };
 
   private get canAcceptInput() {
-    return !this._isAnimating && !this.hasRetrieveError && !this.isGameSolved;
+    return !this._isAnimating && !this.hasRetrieveError && this.playState !== GameCompletionState.Won;
   }
 
   get areShortcutKeysEnabled(): boolean {
@@ -146,8 +148,7 @@ export class GameComponent implements OnInit {
   }
 
   restart(updateGameSaveState: boolean) {
-    this.isBoardCompleted = false;
-    this.isGameSolved = false;
+    this.playState = GameCompletionState.Playing;
 
     this._undoTracker.reset();
     this._boardComponent.reset();
@@ -166,6 +167,7 @@ export class GameComponent implements OnInit {
   undo() {
     if (this._undoTracker.undo()) {
       this._boardComponent.clearSelection();
+      this.playState = GameCompletionState.Playing;
       this.storeGameSaveStateInCookie();
     }
   }
@@ -173,7 +175,6 @@ export class GameComponent implements OnInit {
   onClearClicked() {
     const cell = this._boardComponent.getSelectedCell();
     if (cell && !cell.isEmpty) {
-
       this.captureCellChanges(() => {
         cell.clear();
       });
@@ -182,6 +183,7 @@ export class GameComponent implements OnInit {
 
   private captureCellChanges(action: () => void) {
     if (this._undoTracker.captureUndoFrame(action)) {
+      this.verifyIsBoardSolved();
       this.storeGameSaveStateInCookie();
       setTimeout(() => this.rebindAutoResizeTexts());
     }
@@ -203,7 +205,6 @@ export class GameComponent implements OnInit {
           if (cell.value !== data.digit) {
             if (this.verifyMoveAllowed(cell, data.digit, data.isDraft)) {
               cell.setUserValue(data.digit);
-              this.verifyIsBoardSolved();
 
               if (this.settings.autoCleanDraftValues) {
                 const coordinate = this._boardComponent.getCoordinate(cell);
@@ -269,13 +270,17 @@ export class GameComponent implements OnInit {
 
   private verifyIsBoardSolved() {
     if (this.puzzle) {
-      this.isBoardCompleted = !this._boardComponent.hasIncompleteCells();
-      if (this.isBoardCompleted) {
+      const isBoardCompleted = !this._boardComponent.hasIncompleteCells();
+      if (isBoardCompleted) {
         const boardAnswerDigits = this._boardComponent.getAnswerDigits();
         if (this.puzzle.answerDigits === boardAnswerDigits) {
-          this.isGameSolved = true;
+          this.playState = GameCompletionState.Won;
           this._boardComponent.canSelect = false;
+        } else {
+          this.playState = GameCompletionState.Lost;
         }
+      } else {
+        this.playState = GameCompletionState.Playing;
       }
     }
   }
@@ -319,8 +324,6 @@ export class GameComponent implements OnInit {
             }
           }
         }
-
-        this.verifyIsBoardSolved();
       }
     });
   }
@@ -338,7 +341,8 @@ export class GameComponent implements OnInit {
 
   private storeGameSaveStateInCookie() {
     if (this.puzzle) {
-      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent, this.isGameSolved);
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent,
+        this.playState !== GameCompletionState.Playing);
       Cookies.set('save', gameStateText, {
         expires: 30
       });

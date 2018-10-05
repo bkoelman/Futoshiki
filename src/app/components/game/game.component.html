@@ -7,7 +7,7 @@
   </div>
 </div>
 <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
-<app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" (contentChanged)="onBoardContentChanged($event)"></app-board>
+<app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState" (contentChanged)="onBoardContentChanged($event)"></app-board>
 
 <div class="clearfix"></div>
 <p></p>
@@ -16,20 +16,14 @@
   (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
 
 <p></p>
-<div class="alert alert-success" role="alert" *ngIf="isGameSolved">
-  Solved!
-</div>
-<div class="alert alert-danger" role="alert" *ngIf="isBoardCompleted && !isGameSolved">
-  Wrong!
-</div>
-
 <div *ngIf="puzzle !== undefined">
   <button type="button" class="btn btn-secondary" [disabled]="!canUndo" (click)="undo()">Undo</button>
-  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput && !isGameSolved" (click)="restart(true)">Restart</button>
-  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput && !isGameSolved" data-toggle="modal"
-    data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">Change puzzle</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput && playState !== GameCompletionStateAlias.Won"
+    (click)="restart(true)">Restart</button>
+  <button type="button" class="btn btn-secondary ml-2" [disabled]="!canAcceptInput && playState !== GameCompletionStateAlias.Won"
+    data-toggle="modal" data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">Change puzzle</button>
 </div>
-<app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput || isGameSolved"
+<app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput || playState === GameCompletionStateAlias.Won"
   [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
   (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (promoteClicked)="promoteDraftValues()"
   (isTypingTextChanged)="debugIsTypingTextChanged($event)" (settingsChanged)="changeSettings($event)"></app-debug-console>
