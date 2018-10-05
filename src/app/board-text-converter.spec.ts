@@ -4,6 +4,7 @@ import { MoveDirection } from './models/move-direction.enum';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MemoryBoard } from './models/memory-board';
 import { expectEmptyCell, expectSingleUserValue, expectDraftValues, expectOperator, expectFixedValue } from './test-expectations.spec';
+import { MemoryCell } from './models/memory-cell';
 
 describe('BoardTextConverter', () => {
     let converter: BoardTextConverter;
@@ -82,21 +83,21 @@ describe('BoardTextConverter', () => {
         it('should format board correctly', () => {
             const board = new MemoryBoard(5);
 
-            board.getCell(Coordinate.fromText('A1', board.size)).setDraftValues([2, 5]);
-            board.getCell(Coordinate.fromText('A5', board.size)).setDraftValues([1, 2, 3, 4, 5]);
+            getExistingCell(board, 'A1').setDraftValues([2, 5]);
+            getExistingCell(board, 'A5').setDraftValues([1, 2, 3, 4, 5]);
 
-            board.getCell(Coordinate.fromText('B3', board.size)).setDraftValues([3, 4, 5]);
+            getExistingCell(board, 'B3').setDraftValues([3, 4, 5]);
 
-            board.getCell(Coordinate.fromText('C3', board.size)).setFixedValue(2);
-            board.getCell(Coordinate.fromText('C5', board.size)).setDraftValues([1, 3, 4]);
+            getExistingCell(board, 'C3').setFixedValue(2);
+            getExistingCell(board, 'C5').setDraftValues([1, 3, 4]);
 
-            board.getCell(Coordinate.fromText('D1', board.size)).setUserValue(3);
-            board.getCell(Coordinate.fromText('D2', board.size)).setUserValue(2);
-            board.getCell(Coordinate.fromText('D3', board.size)).setDraftValues([1]);
-            board.getCell(Coordinate.fromText('D5', board.size)).setDraftValues([4, 5]);
+            getExistingCell(board, 'D1').setUserValue(3);
+            getExistingCell(board, 'D2').setUserValue(2);
+            getExistingCell(board, 'D3').setDraftValues([1]);
+            getExistingCell(board, 'D5').setDraftValues([4, 5]);
 
-            board.getCell(Coordinate.fromText('E1', board.size)).setFixedValue(4);
-            board.getCell(Coordinate.fromText('E4', board.size)).setDraftValues([1, 2, 3]);
+            getExistingCell(board, 'E1').setFixedValue(4);
+            getExistingCell(board, 'E4').setDraftValues([1, 2, 3]);
 
             board.setOperator(Coordinate.fromText('A1', board.size), MoveDirection.Down, ComparisonOperator.GreaterThan);
             board.setOperator(Coordinate.fromText('A3', board.size), MoveDirection.Down, ComparisonOperator.LessThan);
@@ -127,4 +128,13 @@ describe('BoardTextConverter', () => {
                 +----+----+-----+-----+-------+`);
         });
     });
+
+    function getExistingCell(board: MemoryBoard, coordinateText: string): MemoryCell {
+        const cell = board.getCell(Coordinate.fromText(coordinateText, board.size));
+        if (!cell) {
+            throw new Error(`Cell '${coordinateText}' not found on ${board.size}x${board.size} board.`);
+        }
+
+        return cell;
+    }
 });

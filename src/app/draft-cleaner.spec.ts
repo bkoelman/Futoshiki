@@ -2,7 +2,7 @@ import { BoardTextConverter } from './board-text-converter';
 import { Coordinate } from './models/coordinate';
 import { Board } from './models/board';
 import { DraftCleaner } from './draft-cleaner';
-import { expectEmptyCell, expectSingleUserValue, expectDraftValues, expectFixedValue } from './test-expectations.spec';
+import { expectEmptyCell, expectDraftValues, expectFixedValue } from './test-expectations.spec';
 
 describe('DraftCleaner', () => {
     let board: Board;

@@ -198,7 +198,7 @@ export class GameComponent implements OnInit {
             const coordinate = this._boardComponent.getCoordinate(cell);
             if (coordinate) {
               const moveCheckResult = this.settings.notifyOnWrongMoves ?
-                this._moveChecker.checkIsMoveAllowed(coordinate, data.value) : MoveCheckResult.getValid();
+                this._moveChecker.checkIsMoveAllowed(data.value, coordinate) : MoveCheckResult.getValid();
               if (moveCheckResult.isValid) {
                 cell.setUserValue(data.value);
                 this.verifyIsBoardSolved();

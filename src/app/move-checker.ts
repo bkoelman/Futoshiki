@@ -8,7 +8,7 @@ export class MoveChecker {
     constructor(private _board: Board) {
     }
 
-    checkIsMoveAllowed(coordinate: Coordinate, digit: number): MoveCheckResult {
+    checkIsMoveAllowed(digit: number, coordinate: Coordinate): MoveCheckResult {
         const coordinateSequence = this.getCoordinatesInRowColumn(coordinate);
 
         const violatingCoordinates = this.getViolatingCoordinatesInSequence(coordinateSequence, digit);

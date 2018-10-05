@@ -8,7 +8,9 @@ export function expectEmptyCell(coordinateText: string, board: Board) {
     const cell = board.getCell(coordinate);
 
     expect(cell).toBeDefined();
-    expect(cell.value).toBeUndefined();
+    if (cell) {
+        expect(cell.value).toBeUndefined();
+    }
 }
 
 export function expectFixedValue(coordinateText: string, digit: number, board: Board) {
@@ -16,8 +18,10 @@ export function expectFixedValue(coordinateText: string, digit: number, board: B
     const cell = board.getCell(coordinate);
 
     expect(cell).toBeDefined();
-    expect(cell.isFixed).toBeTruthy();
-    expect(cell.value).toBe(digit);
+    if (cell) {
+        expect(cell.isFixed).toBeTruthy();
+        expect(cell.value).toBe(digit);
+    }
 }
 
 export function expectSingleUserValue(coordinateText: string, digit: number, board: Board) {
@@ -25,8 +29,10 @@ export function expectSingleUserValue(coordinateText: string, digit: number, boa
     const cell = board.getCell(coordinate);
 
     expect(cell).toBeDefined();
-    expect(cell.isFixed).toBeFalsy();
-    expect(cell.value).toBe(digit);
+    if (cell) {
+        expect(cell.isFixed).toBeFalsy();
+        expect(cell.value).toBe(digit);
+    }
 }
 
 export function expectDraftValues(coordinateText: string, digits: number[], board: Board) {
@@ -34,11 +40,13 @@ export function expectDraftValues(coordinateText: string, digits: number[], boar
     const cell = board.getCell(coordinate);
 
     expect(cell).toBeDefined();
-    expect(cell.value).toBeUndefined();
-    const possibleValues = cell.getPossibleValues();
+    if (cell) {
+        expect(cell.value).toBeUndefined();
+        const possibleValues = cell.getPossibleValues();
 
-    expect(possibleValues.length).toBe(digits.length);
-    expect(possibleValues.join()).toBe(digits.join());
+        expect(possibleValues.length).toBe(digits.length);
+        expect(possibleValues.join()).toBe(digits.join());
+    }
 }
 
 export function expectOperator(coordinateText: string, direction: MoveDirection, operator: ComparisonOperator, board: Board) {
