@@ -67,17 +67,15 @@ export class MoveChecker {
                 const adjacentCell2 = this._board.getCell(adjacentCoordinate2);
 
                 if (adjacentCell1 && adjacentCell2) {
-                    if (adjacentCell1.value === undefined && adjacentCell2.value === undefined) {
-                        if (operator1 === ComparisonOperator.LessThan) {
-                            const adjacentMaxValue = this._board.size - 1;
-                            if (digit >= adjacentMaxValue) {
-                                return false;
-                            }
-                        } else {
-                            const adjacentMinValue = 2;
-                            if (digit <= adjacentMinValue) {
-                                return false;
-                            }
+                    if (operator1 === ComparisonOperator.LessThan) {
+                        const adjacentMaxValue = this._board.size - 1;
+                        if (digit >= adjacentMaxValue) {
+                            return false;
+                        }
+                    } else {
+                        const adjacentMinValue = 2;
+                        if (digit <= adjacentMinValue) {
+                            return false;
                         }
                     }
                 }
