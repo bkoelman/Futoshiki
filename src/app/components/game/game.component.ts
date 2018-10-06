@@ -167,8 +167,10 @@ export class GameComponent implements OnInit {
   undo() {
     if (this._undoTracker.undo()) {
       this._boardComponent.clearSelection();
-      this.playState = GameCompletionState.Playing;
+
+      this.verifyIsBoardSolved();
       this.storeGameSaveStateInCookie();
+      setTimeout(() => this.rebindAutoResizeTexts());
     }
   }
 
