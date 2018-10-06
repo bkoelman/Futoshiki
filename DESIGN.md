@@ -28,7 +28,7 @@
 - [ ] display coordinate rulers
 - [x] block invalid (based on rules) digit entry; highlight related cells
 - [x] block invalid (based on rules) draft digit entry; highlight related cells
-- [ ] move `Promote` button from debug mode into normal game
+- [x] move `Promote` button from debug mode into normal game
 - [ ] move `Undo` into button bar and enable Ctrl+Z shortcut
 - [ ] nicer styling of button bar
   - [ ] move `Restart`, `New game`, `Change puzzle`, `Settings`, `Game rules` behind hamburger menu

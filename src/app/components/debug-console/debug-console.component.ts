@@ -14,7 +14,6 @@ export class DebugConsoleComponent implements OnInit {
   @Input() autoCleanDraftValues!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();
-  @Output() promoteClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
   @Output() settingsChanged = new EventEmitter<GameSettings>();
 
@@ -31,10 +30,6 @@ export class DebugConsoleComponent implements OnInit {
 
   onHelpClicked() {
     this.helpClicked.emit();
-  }
-
-  onPromoteClicked() {
-    this.promoteClicked.emit();
   }
 
   textGotFocus() {
