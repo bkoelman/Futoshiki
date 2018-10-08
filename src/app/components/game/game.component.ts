@@ -53,15 +53,16 @@ export class GameComponent implements OnInit {
   };
 
   get canAcceptInput() {
-    return !this._isAnimating && !this.hasRetrieveError && this.playState !== GameCompletionState.Won;
+    return !this._isAnimating && !this.hasRetrieveError;
   }
 
   get areShortcutKeysEnabled(): boolean {
-    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this.isTypingText && !this._isMenuOpen;
+    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this.isTypingText && !this._isMenuOpen &&
+      this.playState !== GameCompletionState.Won;
   }
 
   get canUndo() {
-    return this.canAcceptInput && this._undoTracker.canUndo();
+    return this.canAcceptInput && this._undoTracker.canUndo() && this.playState !== GameCompletionState.Won;
   }
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
