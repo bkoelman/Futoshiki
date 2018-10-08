@@ -15,6 +15,7 @@ import { HttpRequestController } from './services/http-request-controller';
 import { PuzzleDataService } from './services/puzzle-data.service';
 import { DebugConsoleComponent } from './components/debug-console/debug-console.component';
 import { RepeatPipe } from './repeat.pipe';
+import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -34,7 +35,8 @@ describe('AppComponent', () => {
         ChangePuzzleComponent,
         EnumNamesToArrayPipe,
         DebugConsoleComponent,
-        RepeatPipe
+        RepeatPipe,
+        MenuBarComponent
       ],
       providers: [
         HttpRequestController,
@@ -46,16 +48,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  }));
-  it(`should have as title 'Futoshiki'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('Futoshiki');
-  }));
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Futoshiki');
   }));
 });

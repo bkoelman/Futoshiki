@@ -1,30 +1,33 @@
-<div *ngIf="puzzle === undefined">
-  <div *ngIf="!hasRetrieveError" class="alert alert-primary">
-    Loading puzzle...
+<app-menu-bar [restartEnabled]="puzzle !== undefined && (canAcceptInput || playState === GameCompletionStateAlias.Won)" (isOpenChanged)="menuBarOpenChanged($event)" (restartClicked)="restart(true)"></app-menu-bar>
+
+<div class="container game-container">
+  <div *ngIf="puzzle === undefined">
+    <div *ngIf="!hasRetrieveError" class="alert alert-primary">
+      Loading puzzle...
+    </div>
+    <div *ngIf="hasRetrieveError" class="alert alert-danger">
+      Failed to load puzzle.
+    </div>
   </div>
-  <div *ngIf="hasRetrieveError" class="alert alert-danger">
-    Failed to load puzzle.
+  <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
+  <app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState"
+    (contentChanged)="onBoardContentChanged($event)"></app-board>
+
+  <div class="clearfix"></div>
+  <p></p>
+
+  <app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput" [areKeysEnabled]="areShortcutKeysEnabled"
+    (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
+
+  <p></p>
+  <div *ngIf="puzzle !== undefined">
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canUndo" (click)="undo()">Undo</button>
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput" (click)="promoteDraftValues()">Promote</button>
+    <button type="button" class="btn btn-secondary mb-2" [disabled]="!canAcceptInput && playState !== GameCompletionStateAlias.Won"
+      data-toggle="modal" data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">Change puzzle</button>
   </div>
+  <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput || playState === GameCompletionStateAlias.Won"
+    [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
+    (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"
+    (settingsChanged)="changeSettings($event)"></app-debug-console>
 </div>
-<app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
-<app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState" (contentChanged)="onBoardContentChanged($event)"></app-board>
-
-<div class="clearfix"></div>
-<p></p>
-
-<app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput" [areKeysEnabled]="areShortcutKeysEnabled"
-  (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
-
-<p></p>
-<div *ngIf="puzzle !== undefined">
-  <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canUndo" (click)="undo()">Undo</button>
-  <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput" (click)="promoteDraftValues()">Promote</button>
-  <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput && playState !== GameCompletionStateAlias.Won"
-    (click)="restart(true)">Restart</button>
-  <button type="button" class="btn btn-secondary mb-2" [disabled]="!canAcceptInput && playState !== GameCompletionStateAlias.Won"
-    data-toggle="modal" data-target="#changePuzzleModal" (click)="showChangePuzzleModal()">Change puzzle</button>
-</div>
-<app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput || playState === GameCompletionStateAlias.Won"
-  [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
-  (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"
-  (settingsChanged)="changeSettings($event)"></app-debug-console>

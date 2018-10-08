@@ -38,6 +38,7 @@ export class GameComponent implements OnInit {
   private _moveChecker!: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
   private _isAnimating = false;
+  private _isMenuOpen = false;
 
   GameCompletionStateAlias = GameCompletionState;
 
@@ -56,7 +57,7 @@ export class GameComponent implements OnInit {
   }
 
   get areShortcutKeysEnabled(): boolean {
-    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this.isTypingText;
+    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this.isTypingText && !this._isMenuOpen;
   }
 
   get canUndo() {
@@ -384,5 +385,9 @@ export class GameComponent implements OnInit {
       notifyOnWrongMoves: settings.notifyOnWrongMoves,
       autoCleanDraftValues: settings.autoCleanDraftValues
     };
+  }
+
+  menuBarOpenChanged(isOpened: boolean) {
+    this._isMenuOpen = isOpened;
   }
 }

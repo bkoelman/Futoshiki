@@ -1,0 +1,14 @@
+<nav class="navbar fixed-top navbar-dark bg-dark">
+  <span class="navbar-brand mb-0 h1">Futoshiki</span>
+  <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarContent">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#" [class.disabled]="!restartEnabled" (click)="onMenuItemClicked(restartClicked, restartEnabled)">Restart</a>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -22,14 +22,21 @@ export class PuzzleDataService {
           return PuzzleTextParser.parseText(responseText, request);
         })
       )
-      // .pipe(delay(5000)) // Uncomment to debug slow networks
+      // .pipe(delay(5000)) // Uncomment to simulate slow network
       ;
   }
 
   private formatPuzzleUrl(request: PuzzleInfo): string {
-    const baseUrl = 'https://raw.githubusercontent.com/bkoelman/Futoshiki/master/';
+    const baseUrl = this.getBaseUrl();
     const fileName = 'Puzzle' + this.prefixNumber(request.id, '0000') + '.txt';
     return `${baseUrl}puzzles/${PuzzleDifficulty[request.difficulty]}/0${request.boardSize}x0${request.boardSize}/${fileName}`;
+  }
+
+  private getBaseUrl() {
+    // Uncomment to simulate server error
+    // return 'https://httpstat.us/500';
+
+    return 'https://raw.githubusercontent.com/bkoelman/Futoshiki/master/';
   }
 
   private prefixNumber(value: number, padding: string) {
