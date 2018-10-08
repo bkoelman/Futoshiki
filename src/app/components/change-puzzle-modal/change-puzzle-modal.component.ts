@@ -7,9 +7,9 @@ declare var $: any;
 
 @Component({
   selector: 'app-change-puzzle',
-  templateUrl: './change-puzzle.component.html'
+  templateUrl: './change-puzzle-modal.component.html'
 })
-export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
+export class ChangePuzzleModalComponent implements OnInit, AfterViewChecked {
   private _bootstrapHooksRegistered = false;
   private _lastChangeEventData: string | undefined;
 

@@ -5,9 +5,9 @@ declare var $: any;
 
 @Component({
   selector: 'app-settings',
-  templateUrl: './settings.component.html'
+  templateUrl: './settings-modal.component.html'
 })
-export class SettingsComponent implements OnInit, AfterViewChecked {
+export class SettingsModalComponent implements OnInit, AfterViewChecked {
   private _bootstrapHooksRegistered = false;
   private _initialSettings: string | undefined;
 

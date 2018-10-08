@@ -9,14 +9,14 @@ import { DigitCellComponent } from './components/digit-cell/digit-cell.component
 import { OperatorCellComponent } from './components/operator-cell/operator-cell.component';
 import { SpacerCellComponent } from './components/spacer-cell/spacer-cell.component';
 import { ButtonBarComponent } from './components/button-bar/button-bar.component';
-import { ChangePuzzleComponent } from './components/change-puzzle/change-puzzle.component';
+import { ChangePuzzleModalComponent } from './components/change-puzzle-modal/change-puzzle-modal.component';
 import { EnumNamesToArrayPipe } from './enum-names-to-array.pipe';
 import { HttpRequestController } from './services/http-request-controller';
 import { PuzzleDataService } from './services/puzzle-data.service';
 import { DebugConsoleComponent } from './components/debug-console/debug-console.component';
 import { RepeatPipe } from './repeat.pipe';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
-import { SettingsComponent } from './components/settings/settings.component';
+import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -33,12 +33,12 @@ describe('AppComponent', () => {
         OperatorCellComponent,
         SpacerCellComponent,
         ButtonBarComponent,
-        ChangePuzzleComponent,
+        ChangePuzzleModalComponent,
         EnumNamesToArrayPipe,
         DebugConsoleComponent,
         RepeatPipe,
         MenuBarComponent,
-        SettingsComponent
+        SettingsModalComponent
       ],
       providers: [
         HttpRequestController,

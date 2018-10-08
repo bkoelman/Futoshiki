@@ -5,7 +5,7 @@ import { PuzzleDataService } from '../../services/puzzle-data.service';
 import { PuzzleDifficulty } from '../../models/puzzle-difficulty.enum';
 import { PuzzleInfo } from '../../models/puzzle-info';
 import { PuzzleData } from '../../models/puzzle-data';
-import { ChangePuzzleComponent } from '../change-puzzle/change-puzzle.component';
+import { ChangePuzzleModalComponent } from '../change-puzzle-modal/change-puzzle-modal.component';
 import { HttpRequestController } from '../../services/http-request-controller';
 import { CellSnapshot } from '../../models/cell-snapshot';
 import { Coordinate } from '../../models/coordinate';
@@ -21,7 +21,7 @@ import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot';
 import { GameSettings } from '../../models/game-settings';
 import { GameCompletionState } from '../../models/game-completion-state.enum';
-import { SettingsComponent } from '../settings/settings.component';
+import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { SettingsAdapter } from '../../settings-adapter';
 
 declare var $: any;
@@ -32,8 +32,8 @@ declare var $: any;
 })
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) private _boardComponent!: BoardComponent;
-  @ViewChild(ChangePuzzleComponent) private _changePuzzleComponent!: ChangePuzzleComponent;
-  @ViewChild(SettingsComponent) private _settingsComponent!: SettingsComponent;
+  @ViewChild(ChangePuzzleModalComponent) private _changePuzzleModalComponent!: ChangePuzzleModalComponent;
+  @ViewChild(SettingsModalComponent) private _settingsModalComponent!: SettingsModalComponent;
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
   private _undoTracker!: UndoTracker;
   private _solver!: PuzzleSolver;
@@ -58,7 +58,7 @@ export class GameComponent implements OnInit {
   }
 
   get areShortcutKeysEnabled(): boolean {
-    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this._settingsComponent.isModalVisible &&
+    return this.canAcceptInput && !this._changePuzzleModalComponent.isModalVisible && !this._settingsModalComponent.isModalVisible &&
       !this.isTypingText && !this._isMenuOpen && this.playState !== GameCompletionState.Won;
   }
 
@@ -131,7 +131,7 @@ export class GameComponent implements OnInit {
   }
 
   private onPuzzleLoaderVisibilityChanged(isVisible: boolean) {
-    this._changePuzzleComponent.isLoaderVisible = isVisible;
+    this._changePuzzleModalComponent.isLoaderVisible = isVisible;
   }
 
   private onPuzzleDownloadSucceeded(data: PuzzleData, downloadCompletedAsyncCallback?: () => void) {
@@ -181,16 +181,16 @@ export class GameComponent implements OnInit {
 
   startRandomGame() {
     const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
-    this._changePuzzleComponent.selectRandomGame(puzzleInfo);
+    this._changePuzzleModalComponent.selectRandomGame(puzzleInfo);
   }
 
   showChangePuzzleModal() {
     const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
-    this._changePuzzleComponent.setDefaults(puzzleInfo);
+    this._changePuzzleModalComponent.setDefaults(puzzleInfo);
   }
 
   showSettings() {
-    this._settingsComponent.setDefaults(this.settings);
+    this._settingsModalComponent.setDefaults(this.settings);
   }
 
   undo() {

@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SettingsComponent } from './settings.component';
 import { FormsModule } from '@angular/forms';
 
-describe('SettingsComponent', () => {
-  let component: SettingsComponent;
-  let fixture: ComponentFixture<SettingsComponent>;
+import { ChangePuzzleModalComponent } from './change-puzzle-modal.component';
+import { EnumNamesToArrayPipe } from '../../enum-names-to-array.pipe';
+
+describe('ChangePuzzleModalComponent', () => {
+  let component: ChangePuzzleModalComponent;
+  let fixture: ComponentFixture<ChangePuzzleModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -13,14 +14,15 @@ describe('SettingsComponent', () => {
         FormsModule
       ],
       declarations: [
-        SettingsComponent
+        ChangePuzzleModalComponent,
+        EnumNamesToArrayPipe
       ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SettingsComponent);
+    fixture = TestBed.createComponent(ChangePuzzleModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
