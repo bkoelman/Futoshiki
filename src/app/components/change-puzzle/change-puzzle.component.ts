@@ -57,14 +57,14 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
     this._lastChangeEventData = undefined;
   }
 
-  onPreviousButtonClicked(event: Event) {
+  onPreviousButtonClicked() {
     if (this.info) {
       this.info.id--;
       this.onPuzzleChanged();
     }
   }
 
-  onNextButtonClicked(event: Event) {
+  onNextButtonClicked() {
     if (this.info) {
       this.info.id++;
       this.onPuzzleChanged();
@@ -78,7 +78,7 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  onApplyButtonClicked(event: Event) {
+  onApplyButtonClicked() {
     this.onPuzzleChanged();
   }
 

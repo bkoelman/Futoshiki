@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-menu-bar',
@@ -6,7 +7,9 @@ import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular
 })
 export class MenuBarComponent implements OnInit {
   @Input() restartEnabled!: boolean;
+  @Input() changePuzzleEnabled!: boolean;
   @Output() restartClicked = new EventEmitter();
+  @Output() changePuzzleClicked = new EventEmitter();
   @Output() isOpenChanged = new EventEmitter<boolean>();
 
   get isMenuOpened(): boolean {
@@ -19,7 +22,7 @@ export class MenuBarComponent implements OnInit {
 
   ngOnInit() {
     $(document).ready(() => {
-      $(document).click(event => {
+      $(document).click((event: JQuery.Event) => {
         const clickTarget = $(event.target);
 
         if (this.isMenuOpened && this.isClickOutsideMenuComponent(clickTarget)) {
@@ -35,11 +38,11 @@ export class MenuBarComponent implements OnInit {
     });
   }
 
-  private isClickOutsideMenuComponent(clickTarget: JQuery<Document>): boolean {
+  private isClickOutsideMenuComponent(clickTarget: JQuery<EventTarget>): boolean {
     return !clickTarget.hasClass('navbar') && clickTarget.parents('.navbar').length === 0;
   }
 
-  private isClickOnHamburgerIcon(clickTarget: JQuery<Document>): boolean {
+  private isClickOnHamburgerIcon(clickTarget: JQuery<EventTarget>): boolean {
     return clickTarget.parents('button.navbar-toggler').length > 0;
   }
 
