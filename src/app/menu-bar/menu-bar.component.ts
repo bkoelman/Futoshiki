@@ -9,9 +9,11 @@ export class MenuBarComponent implements OnInit {
   @Input() restartEnabled!: boolean;
   @Input() newGameEnabled!: boolean;
   @Input() changePuzzleEnabled!: boolean;
+  @Input() settingsEnabled!: boolean;
   @Output() restartClicked = new EventEmitter();
   @Output() newGameClicked = new EventEmitter();
   @Output() changePuzzleClicked = new EventEmitter();
+  @Output() settingsClicked = new EventEmitter();
   @Output() isOpenChanged = new EventEmitter<boolean>();
 
   get isMenuOpened(): boolean {

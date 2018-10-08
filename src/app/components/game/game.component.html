@@ -1,9 +1,11 @@
 <app-menu-bar [restartEnabled]="puzzle !== undefined && canAcceptInput" (restartClicked)="restart(true)"
   [newGameEnabled]="canAcceptInput || hasRetrieveError" (newGameClicked)="startRandomGame()" [changePuzzleEnabled]="canAcceptInput || hasRetrieveError"
-  (changePuzzleClicked)="showChangePuzzleModal()" (isOpenChanged)="menuBarOpenChanged($event)"></app-menu-bar>
+  (changePuzzleClicked)="showChangePuzzleModal()" [settingsEnabled]="canAcceptInput || hasRetrieveError"
+  (settingsClicked)="showSettings()" (isOpenChanged)="menuBarOpenChanged($event)"></app-menu-bar>
 
 <div class="container game-container">
   <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
+  <app-settings (settingsChanged)="onSettingsChanged($event)"></app-settings>
 
   <div *ngIf="puzzle === undefined">
     <div *ngIf="!hasRetrieveError" class="alert alert-primary">
@@ -33,6 +35,5 @@
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput"
     [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
-    (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"
-    (settingsChanged)="changeSettings($event)"></app-debug-console>
+    (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
 </div>

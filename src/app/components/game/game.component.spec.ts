@@ -15,6 +15,7 @@ import { PuzzleDataService } from '../../services/puzzle-data.service';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
 import { RepeatPipe } from '../../repeat.pipe';
 import { MenuBarComponent } from '../../menu-bar/menu-bar.component';
+import { SettingsComponent } from '../settings/settings.component';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -37,7 +38,8 @@ describe('GameComponent', () => {
         EnumNamesToArrayPipe,
         DebugConsoleComponent,
         RepeatPipe,
-        MenuBarComponent
+        MenuBarComponent,
+        SettingsComponent
       ],
       providers: [
         HttpRequestController,

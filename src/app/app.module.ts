@@ -19,6 +19,7 @@ import { PuzzleDataService } from './services/puzzle-data.service';
 import { DebugConsoleComponent } from './components/debug-console/debug-console.component';
 import { RepeatPipe } from './repeat.pipe';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
     EnumNamesToArrayPipe,
     DebugConsoleComponent,
     RepeatPipe,
-    MenuBarComponent
+    MenuBarComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

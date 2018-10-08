@@ -22,6 +22,12 @@
           Change puzzle
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" [class.disabled]="!settingsEnabled" data-target="#settingsModal" data-toggle="modal"
+          (click)="onMenuItemClicked(settingsClicked, settingsEnabled)">
+          Settings
+        </a>
+      </li>
     </ul>
   </div>
 </nav>

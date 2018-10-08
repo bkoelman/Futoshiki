@@ -21,6 +21,8 @@ import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot';
 import { GameSettings } from '../../models/game-settings';
 import { GameCompletionState } from '../../models/game-completion-state.enum';
+import { SettingsComponent } from '../settings/settings.component';
+import { SettingsAdapter } from '../../settings-adapter';
 
 declare var $: any;
 
@@ -31,12 +33,14 @@ declare var $: any;
 export class GameComponent implements OnInit {
   @ViewChild(BoardComponent) private _boardComponent!: BoardComponent;
   @ViewChild(ChangePuzzleComponent) private _changePuzzleComponent!: ChangePuzzleComponent;
+  @ViewChild(SettingsComponent) private _settingsComponent!: SettingsComponent;
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
   private _undoTracker!: UndoTracker;
   private _solver!: PuzzleSolver;
   private _autoCleaner!: DraftCleaner;
   private _moveChecker!: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
+  private _settingsAdapter = new SettingsAdapter();
   private _isAnimating = false;
   private _isMenuOpen = false;
 
@@ -47,18 +51,15 @@ export class GameComponent implements OnInit {
   playState = GameCompletionState.Playing;
   inDebugMode = false;
   isTypingText = false;
-  settings: GameSettings = {
-    autoCleanDraftValues: true,
-    notifyOnWrongMoves: false
-  };
+  settings: GameSettings;
 
   get canAcceptInput() {
     return !this._isAnimating && !this.hasRetrieveError;
   }
 
   get areShortcutKeysEnabled(): boolean {
-    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this.isTypingText && !this._isMenuOpen &&
-      this.playState !== GameCompletionState.Won;
+    return this.canAcceptInput && !this._changePuzzleComponent.isModalVisible && !this._settingsComponent.isModalVisible &&
+      !this.isTypingText && !this._isMenuOpen && this.playState !== GameCompletionState.Won;
   }
 
   get canUndo() {
@@ -66,6 +67,7 @@ export class GameComponent implements OnInit {
   }
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
+    this.settings = this.getSettingsFromCookie();
   }
 
   ngOnInit() {
@@ -98,6 +100,23 @@ export class GameComponent implements OnInit {
         id: 1
       },
       cellSnapshotMap: undefined
+    };
+  }
+
+  private getSettingsFromCookie(): GameSettings {
+    const settingsText = Cookies.get('settings');
+    if (settingsText) {
+      console.log('Settings cookie detected.');
+
+      const settings = this._settingsAdapter.parseText(settingsText);
+      if (settings) {
+        return settings;
+      }
+    }
+
+    return {
+      autoCleanDraftValues: true,
+      notifyOnWrongMoves: false
     };
   }
 
@@ -168,6 +187,10 @@ export class GameComponent implements OnInit {
   showChangePuzzleModal() {
     const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
     this._changePuzzleComponent.setDefaults(puzzleInfo);
+  }
+
+  showSettings() {
+    this._settingsComponent.setDefaults(this.settings);
   }
 
   undo() {
@@ -336,9 +359,14 @@ export class GameComponent implements OnInit {
     });
   }
 
-  onPuzzleSelectionChanged(value: PuzzleInfo) {
+  onPuzzleSelectionChanged(info: PuzzleInfo) {
     this.puzzle = undefined;
-    this.retrievePuzzle(value);
+    this.retrievePuzzle(info);
+  }
+
+  onSettingsChanged(settings: GameSettings) {
+    this.settings = settings;
+    this.storeSettingsInCookie();
   }
 
   onBoardContentChanged(event: CellSnapshot) {
@@ -363,6 +391,15 @@ export class GameComponent implements OnInit {
     }
   }
 
+  private storeSettingsInCookie() {
+    const gameStateText = this._settingsAdapter.toText(this.settings);
+    Cookies.set('settings', gameStateText, {
+      expires: 30
+    });
+
+    console.log('Settings cookie updated.');
+  }
+
   loadGame(gameStateText: string) {
     if (this.puzzle) {
       const saveState = this._saveGameAdapter.parseText(gameStateText);
@@ -383,13 +420,6 @@ export class GameComponent implements OnInit {
 
   debugIsTypingTextChanged(isTypingText: boolean) {
     this.isTypingText = isTypingText;
-  }
-
-  changeSettings(settings: GameSettings) {
-    this.settings = {
-      notifyOnWrongMoves: settings.notifyOnWrongMoves,
-      autoCleanDraftValues: settings.autoCleanDraftValues
-    };
   }
 
   menuBarOpenChanged(isOpened: boolean) {

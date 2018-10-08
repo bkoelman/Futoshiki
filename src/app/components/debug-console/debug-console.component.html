@@ -8,16 +8,5 @@
       <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="!isEnabled" (click)="onLoadClicked()">Load</button>
       <button type="button" class="btn btn-secondary mb-2 mr-2" [disabled]="!isEnabled" (click)="onHelpClicked()">Help</button>
     </div>
-    <div class="col-sm-12">
-      <div class="form-group form-check form-check-inline mb-0">
-        <input [(ngModel)]="notifyOnWrongMoves" (change)="updateSettings()" type="checkbox" class="form-check-input" id="notifyWrongMovesCheckbox">
-        <label class="form-check-label" for="notifyWrongMovesCheckbox">Notify on wrong moves</label>
-      </div>
-      <div class="form-group form-check  form-check-inline">
-        <input [(ngModel)]="autoCleanDraftValues" (change)="updateSettings()" type="checkbox" class="form-check-input"
-          id="AutoCleanDraftValuesCheckbox">
-        <label class="form-check-label" for="AutoCleanDraftValuesCheckbox">Auto-clean draft values</label>
-      </div>
-    </div>
   </div>
 </ng-container>
