@@ -31,8 +31,8 @@
 - [x] move `Promote` button from debug mode into normal game
 - [ ] move `Undo` into button bar and enable Ctrl+Z shortcut
 - [ ] nicer styling of button bar
-  - [ ] move `Restart`, `New game`, `Change puzzle`, `Settings`, `Game rules` behind hamburger menu
-  - [ ] controls left: `Undo`, `Promote`, `Hint`, `Menu`
+  - [x] move `Restart`, `New game`, `Change puzzle`, `Settings` behind hamburger menu
+  - [ ] controls left: `Undo`, `Promote`, `Hint`
   - [ ] move bar to side, depending on screen size (https://davidwalsh.name/orientation-change)
 - [ ] `Hint` button (unrelated to selection)
   - [ ] fill draft values for any empty cells
@@ -55,7 +55,7 @@
   - [ ] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
 - [ ] option to track elapsed time
-- [ ] helptext: game rules and strategies
+- [ ] add menu option to show game rules and strategies
 - [ ] cleanup README.md
 - [ ] consider to use "prettier" code-formatter
 - [ ] optimize performance
