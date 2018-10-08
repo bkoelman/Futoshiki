@@ -6,6 +6,7 @@
 <div class="container game-container">
   <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
   <app-settings (settingsChanged)="onSettingsChanged($event)"></app-settings>
+  <app-win-modal (newGameClicked)="startRandomGame()" (restartClicked)="restart(true)" (changePuzzleClicked)="showChangePuzzleModal()"></app-win-modal>
 
   <div *ngIf="puzzle === undefined">
     <div *ngIf="!hasRetrieveError" class="alert alert-primary">

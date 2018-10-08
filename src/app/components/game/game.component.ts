@@ -307,6 +307,7 @@ export class GameComponent implements OnInit {
         if (this.puzzle.answerDigits === boardAnswerDigits) {
           this.playState = GameCompletionState.Won;
           this._boardComponent.canSelect = false;
+          $('#winModal').modal('show');
         } else {
           this.playState = GameCompletionState.Lost;
         }

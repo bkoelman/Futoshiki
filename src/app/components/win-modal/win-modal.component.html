@@ -1,0 +1,21 @@
+<div class="modal fade transparent" id="winModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Puzzle solved</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Well done! You solved the puzzle!
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" (click)="onNewGameClicked()" data-dismiss="modal">New game</button>
+        <button type="button" class="btn btn-secondary" (click)="onRestartClicked()" data-dismiss="modal">Restart</button>
+        <button type="button" class="btn btn-secondary" (click)="onChangePuzzleClicked()" data-target="#changePuzzleModal"
+          data-toggle="modal" data-dismiss="modal">Change puzzle</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,7 @@
 - [x] add support for Internet Explorer
 - [x] replace favicon
 - [x] auto-cleanup draft digits on regular digit entry
-- [ ] nicer styling when puzzle solved (show button "new random game")
+- [x] nicer styling when puzzle solved (show button "new random game")
 - [ ] display coordinate rulers
 - [x] block invalid (based on rules) digit entry; highlight related cells
 - [x] block invalid (based on rules) draft digit entry; highlight related cells

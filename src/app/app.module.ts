@@ -20,6 +20,7 @@ import { DebugConsoleComponent } from './components/debug-console/debug-console.
 import { RepeatPipe } from './repeat.pipe';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
+import { WinModalComponent } from './components/win-modal/win-modal.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { SettingsModalComponent } from './components/settings-modal/settings-mod
     DebugConsoleComponent,
     RepeatPipe,
     MenuBarComponent,
-    SettingsModalComponent
+    SettingsModalComponent,
+    WinModalComponent
   ],
   imports: [
     BrowserModule,

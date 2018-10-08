@@ -17,6 +17,7 @@ import { DebugConsoleComponent } from './components/debug-console/debug-console.
 import { RepeatPipe } from './repeat.pipe';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
+import { WinModalComponent } from './components/win-modal/win-modal.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -38,7 +39,8 @@ describe('AppComponent', () => {
         DebugConsoleComponent,
         RepeatPipe,
         MenuBarComponent,
-        SettingsModalComponent
+        SettingsModalComponent,
+        WinModalComponent
       ],
       providers: [
         HttpRequestController,
