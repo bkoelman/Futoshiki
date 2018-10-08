@@ -7,8 +7,10 @@ import * as $ from 'jquery';
 })
 export class MenuBarComponent implements OnInit {
   @Input() restartEnabled!: boolean;
+  @Input() newGameEnabled!: boolean;
   @Input() changePuzzleEnabled!: boolean;
   @Output() restartClicked = new EventEmitter();
+  @Output() newGameClicked = new EventEmitter();
   @Output() changePuzzleClicked = new EventEmitter();
   @Output() isOpenChanged = new EventEmitter<boolean>();
 

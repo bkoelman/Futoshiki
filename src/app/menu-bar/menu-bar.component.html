@@ -7,11 +7,20 @@
   <div class="collapse navbar-collapse" id="navbarContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#" [class.disabled]="!restartEnabled" (click)="onMenuItemClicked(restartClicked, restartEnabled)">Restart</a>
+        <a class="nav-link" href="#" [class.disabled]="!restartEnabled" (click)="onMenuItemClicked(restartClicked, restartEnabled)">
+          Restart
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" [class.disabled]="!newGameEnabled" (click)="onMenuItemClicked(newGameClicked, newGameEnabled)">
+          New game
+        </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#" [class.disabled]="!changePuzzleEnabled" data-target="#changePuzzleModal"
-          data-toggle="modal" (click)="onMenuItemClicked(changePuzzleClicked, changePuzzleEnabled)">Change puzzle</a>
+          data-toggle="modal" (click)="onMenuItemClicked(changePuzzleClicked, changePuzzleEnabled)">
+          Change puzzle
+        </a>
       </li>
     </ul>
   </div>

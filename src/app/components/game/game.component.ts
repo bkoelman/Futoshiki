@@ -160,6 +160,11 @@ export class GameComponent implements OnInit {
     }
   }
 
+  startRandomGame() {
+    const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
+    this._changePuzzleComponent.selectRandomGame(puzzleInfo);
+  }
+
   showChangePuzzleModal() {
     const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
     this._changePuzzleComponent.setDefaults(puzzleInfo);

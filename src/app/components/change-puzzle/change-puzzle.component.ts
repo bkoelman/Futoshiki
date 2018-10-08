@@ -57,6 +57,11 @@ export class ChangePuzzleComponent implements OnInit, AfterViewChecked {
     this._lastChangeEventData = undefined;
   }
 
+  selectRandomGame(info: PuzzleInfo) {
+    this.setDefaults(info);
+    this.onRandomButtonClicked();
+  }
+
   onPreviousButtonClicked() {
     if (this.info) {
       this.info.id--;

@@ -1,6 +1,6 @@
 <app-menu-bar [restartEnabled]="puzzle !== undefined && canAcceptInput" (restartClicked)="restart(true)"
-  [changePuzzleEnabled]="canAcceptInput || hasRetrieveError" (changePuzzleClicked)="showChangePuzzleModal()"
-  (isOpenChanged)="menuBarOpenChanged($event)"></app-menu-bar>
+  [newGameEnabled]="canAcceptInput || hasRetrieveError" (newGameClicked)="startRandomGame()" [changePuzzleEnabled]="canAcceptInput || hasRetrieveError"
+  (changePuzzleClicked)="showChangePuzzleModal()" (isOpenChanged)="menuBarOpenChanged($event)"></app-menu-bar>
 
 <div class="container game-container">
   <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
@@ -13,20 +13,24 @@
       Failed to load puzzle.
     </div>
   </div>
+
   <app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState"
     (contentChanged)="onBoardContentChanged($event)"></app-board>
 
-    <div class="clearfix"></div>
-    <p></p>
-  
-  <app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput && playState !== GameCompletionStateAlias.Won" [areKeysEnabled]="areShortcutKeysEnabled"
-    (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()" (hintClicked)="onHintClicked()"></app-button-bar>
+  <div class="clearfix"></div>
+  <p></p>
+
+  <app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput && playState !== GameCompletionStateAlias.Won"
+    [areKeysEnabled]="areShortcutKeysEnabled" (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()"
+    (hintClicked)="onHintClicked()"></app-button-bar>
 
   <p></p>
   <div *ngIf="puzzle !== undefined">
     <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canUndo" (click)="undo()">Undo</button>
-    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won" (click)="promoteDraftValues()">Promote</button>
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won"
+      (click)="promoteDraftValues()">Promote</button>
   </div>
+
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput"
     [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
     (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"
