@@ -2,7 +2,7 @@
   [class.clickable]="!isFixed && canSelect" [class.non-clickable]="isFixed || !canSelect" [class.square-selected]="isSelected"
   [class.square-won]="playState === GameCompletionState.Won" [class.square-lost]="!isSelected && playState === GameCompletionState.Lost"
   [ngClass]="'square-' + boardSize" (click)="onBoxClicked()">
-  <div #flashable *ngIf="!isEmpty" class="container-content">
+  <div #flashable *ngIf="!isEmpty" class="container-content fast">
     <div class="container-content-table">
       <div *ngIf="!isDraft" class="container-content-table-cell auto-resize-text">
         <span *ngIf="isFixed">{{value}}</span>
