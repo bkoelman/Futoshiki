@@ -29,20 +29,25 @@ export class HttpRequestController<TRequest, TResponse> {
                 if (requestSucceeded) {
                     requestSucceeded(data);
                 }
+
+                this.completeRequest(loaderVisibilityChanged);
             },
             (err: any) => {
                 if (requestFailed) {
                     requestFailed(err);
                 }
-            }, () => {
-                this._pendingRequestExecution = undefined;
-                this._pendingRequestJson = undefined;
 
-                if (loaderVisibilityChanged) {
-                    loaderVisibilityChanged(false);
-                }
+                this.completeRequest(loaderVisibilityChanged);
             });
+    }
 
+    private completeRequest(loaderVisibilityChanged: (isVisible: boolean) => void) {
+        this._pendingRequestExecution = undefined;
+        this._pendingRequestJson = undefined;
+
+        if (loaderVisibilityChanged) {
+            loaderVisibilityChanged(false);
+        }
     }
 
     private isExecutingRequest(requestJson: string): boolean {

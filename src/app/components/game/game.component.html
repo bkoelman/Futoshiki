@@ -3,6 +3,8 @@
   (isOpenChanged)="menuBarOpenChanged($event)"></app-menu-bar>
 
 <div class="container game-container">
+  <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
+
   <div *ngIf="puzzle === undefined">
     <div *ngIf="!hasRetrieveError" class="alert alert-primary">
       Loading puzzle...
@@ -11,7 +13,6 @@
       Failed to load puzzle.
     </div>
   </div>
-  <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
   <app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState"
     (contentChanged)="onBoardContentChanged($event)"></app-board>
 

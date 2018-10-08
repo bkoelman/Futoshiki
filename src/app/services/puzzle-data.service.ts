@@ -27,14 +27,16 @@ export class PuzzleDataService {
   }
 
   private formatPuzzleUrl(request: PuzzleInfo): string {
-    const baseUrl = this.getBaseUrl();
+    const baseUrl = this.getBaseUrl(request.id);
     const fileName = 'Puzzle' + this.prefixNumber(request.id, '0000') + '.txt';
     return `${baseUrl}puzzles/${PuzzleDifficulty[request.difficulty]}/0${request.boardSize}x0${request.boardSize}/${fileName}`;
   }
 
-  private getBaseUrl() {
-    // Uncomment to simulate server error
-    // return 'https://httpstat.us/500';
+  private getBaseUrl(puzzleId: number) {
+    if (puzzleId % 2 === 1) {
+      // Uncomment to simulate 404 server error
+      // return 'https://raw.githubusercontent.com/bkoelman/Futoshiki/not-found/';
+    }
 
     return 'https://raw.githubusercontent.com/bkoelman/Futoshiki/master/';
   }

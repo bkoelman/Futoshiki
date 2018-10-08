@@ -161,9 +161,8 @@ export class GameComponent implements OnInit {
   }
 
   showChangePuzzleModal() {
-    if (this.puzzle) {
-      this._changePuzzleComponent.setDefaults(this.puzzle.info);
-    }
+    const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
+    this._changePuzzleComponent.setDefaults(puzzleInfo);
   }
 
   undo() {
