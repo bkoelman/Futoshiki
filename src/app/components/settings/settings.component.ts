@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
-import * as $ from 'jquery';
 import { GameSettings } from '../../models/game-settings';
+
+declare var $: any;
 
 @Component({
   selector: 'app-settings',

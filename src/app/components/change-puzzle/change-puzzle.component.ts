@@ -1,8 +1,9 @@
 import { Component, OnInit, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
-import * as $ from 'jquery';
 import { PuzzleInfo } from '../../models/puzzle-info';
 import { PuzzleDifficulty } from '../../models/puzzle-difficulty.enum';
 import { ObjectFacilities } from '../../object-facilities';
+
+declare var $: any;
 
 @Component({
   selector: 'app-change-puzzle',
