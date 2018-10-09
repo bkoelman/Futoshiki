@@ -4,7 +4,8 @@ import { MoveDirection } from './models/move-direction.enum';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { MemoryBoard } from './models/memory-board';
 import { expectEmptyCell, expectSingleUserValue, expectDraftValues, expectOperator, expectFixedValue } from './test-expectations.spec';
-import { MemoryCell } from './models/memory-cell';
+import { Cell } from './models/cell';
+import { Board } from './models/board';
 
 describe('BoardTextConverter', () => {
     let converter: BoardTextConverter;
@@ -129,7 +130,7 @@ describe('BoardTextConverter', () => {
         });
     });
 
-    function getExistingCell(board: MemoryBoard, coordinateText: string): MemoryCell {
+    function getExistingCell(board: Board, coordinateText: string): Cell {
         const cell = board.getCell(Coordinate.fromText(coordinateText, board.size));
         if (!cell) {
             throw new Error(`Cell '${coordinateText}' not found on ${board.size}x${board.size} board.`);

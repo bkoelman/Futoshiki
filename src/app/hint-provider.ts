@@ -1,9 +1,8 @@
 import { Coordinate } from './models/coordinate';
 import { Board } from './models/board';
-import { GameSettings } from './models/game-settings';
 import { SolverStrategy } from './solvers/solver-strategy';
-import { SetDraftValuesStrategy } from './solvers/set-draft-values-strategy';
-import { PromoteSingleDraftValueStrategy } from './solvers/promote-single-draft-value-strategy';
+import { OperatorWithHiddenSingleStrategy } from './solvers/operator-with-hidden-single-strategy';
+import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { MoveChecker } from './move-checker';
 
 export class HintProvider {
@@ -13,17 +12,17 @@ export class HintProvider {
     constructor(private _board: Board) {
         this._checker = new MoveChecker(this._board);
         this._strategies = [
-            new PromoteSingleDraftValueStrategy(this._board),
-            new SetDraftValuesStrategy(this._board)
+            new NakedSingleStrategy(this._board),
+            new OperatorWithHiddenSingleStrategy(this._board)
         ];
     }
 
-    runAtBoard(settings: GameSettings): boolean {
-        return this.runStrategies(strategy => strategy.runAtBoard(settings));
+    runAtBoard(): boolean {
+        return this.runStrategies(strategy => strategy.runAtBoard());
     }
 
-    runAtCoordinate(coordinate: Coordinate, settings: GameSettings): boolean {
-        return this.runStrategies(strategy => strategy.runAtCoordinate(coordinate, settings));
+    runAtCoordinate(coordinate: Coordinate): boolean {
+        return this.runStrategies(strategy => strategy.runAtCoordinate(coordinate));
     }
 
     private runStrategies(runStrategy: (strategy: SolverStrategy) => boolean) {

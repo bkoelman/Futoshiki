@@ -425,7 +425,7 @@ export class GameComponent implements OnInit {
 
   onHintBoardClicked() {
     this.captureCellChanges(() => {
-      this._hintProvider.runAtBoard(this.settings);
+      this._hintProvider.runAtBoard();
     });
   }
 
@@ -435,7 +435,7 @@ export class GameComponent implements OnInit {
       if (cell && cell.value === undefined) {
         const coordinate = this._boardComponent.getCoordinate(cell);
         if (coordinate) {
-          this._hintProvider.runAtCoordinate(coordinate, this.settings);
+          this._hintProvider.runAtCoordinate(coordinate);
         }
       }
     });
