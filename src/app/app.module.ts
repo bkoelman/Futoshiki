@@ -18,7 +18,7 @@ import { HttpCacheService } from './services/http-cache.service';
 import { PuzzleDataService } from './services/puzzle-data.service';
 import { DebugConsoleComponent } from './components/debug-console/debug-console.component';
 import { RepeatPipe } from './repeat.pipe';
-import { MenuBarComponent } from './menu-bar/menu-bar.component';
+import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
 import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
 import { WinModalComponent } from './components/win-modal/win-modal.component';
 

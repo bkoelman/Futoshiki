@@ -14,7 +14,7 @@ import { HttpRequestController } from '../../services/http-request-controller';
 import { PuzzleDataService } from '../../services/puzzle-data.service';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
 import { RepeatPipe } from '../../repeat.pipe';
-import { MenuBarComponent } from '../../menu-bar/menu-bar.component';
+import { MenuBarComponent } from '../menu-bar/menu-bar.component';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { WinModalComponent } from '../win-modal/win-modal.component';
 
