@@ -39,7 +39,13 @@ export class UndoTracker {
     }
 
     captureUndoFrame(action: () => void): boolean {
-        this.captureCellChanges(action);
+        try {
+            this.captureCellChanges(action);
+        } catch (e) {
+            console.log('Auto-rollback after error: ' + e.message);
+            this.rollbackCellChanges();
+            return false;
+        }
 
         const snapshots = this.getSnapshotsForCapturedCellChanges();
         if (snapshots.length > 0) {
@@ -54,9 +60,21 @@ export class UndoTracker {
         this._cellChangesCaptured = {};
         this._isCapturingCellChanges = true;
 
-        action();
+        try {
+            action();
+        } finally {
+            this._isCapturingCellChanges = false;
+        }
+    }
 
-        this._isCapturingCellChanges = false;
+    private rollbackCellChanges() {
+        ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._cellChangesCaptured, (index, contentSnapshot) => {
+            const coordinate = Coordinate.fromIndex(parseInt(index, 10), this._board.size);
+            const cell = this._board.getCell(coordinate);
+            if (cell) {
+                cell.restoreContentSnapshot(contentSnapshot);
+            }
+        });
     }
 
     private getSnapshotsForCapturedCellChanges() {
