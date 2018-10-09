@@ -424,7 +424,9 @@ export class GameComponent implements OnInit {
   }
 
   onHintBoardClicked() {
-    this._hintProvider.runAtBoard(this.settings);
+    this.captureCellChanges(() => {
+      this._hintProvider.runAtBoard(this.settings);
+    });
   }
 
   onHintCellClicked() {

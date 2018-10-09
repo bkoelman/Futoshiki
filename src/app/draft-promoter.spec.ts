@@ -2,7 +2,8 @@ import { BoardTextConverter } from './board-text-converter';
 import { Board } from './models/board';
 import { DraftPromoter } from './draft-promoter';
 import { DraftCleaner } from './draft-cleaner';
-import { expectDraftValues, expectFixedValue, expectSingleUserValue } from './test-expectations.spec';
+import { expectDraftValues, expectFixedValue, expectSingleUserValue, expectEmptyCell } from './test-expectations.spec';
+import { Coordinate } from './models/coordinate';
 
 describe('DraftPromoter', () => {
     let board: Board;
@@ -29,9 +30,63 @@ describe('DraftPromoter', () => {
         promoter = new DraftPromoter(cleaner, board);
     });
 
+    describe('promoteSingleDraftValueAt', () => {
+        it('should promote single draft value on the board', () => {
+            const hasChanges = promoter.promoteSingleDraftValueAt(Coordinate.fromText('A2', board.size), false);
+
+            expect(hasChanges).toBeTruthy();
+
+            expectSingleUserValue('A2', 3, board);
+            expectDraftValues('A3', [3, 4], board);
+
+            expectDraftValues('C3', [3], board);
+        });
+
+        it('should promote single draft value and cleanup on the board', () => {
+            const hasChanges = promoter.promoteSingleDraftValueAt(Coordinate.fromText('A2', board.size), true);
+
+            expect(hasChanges).toBeTruthy();
+
+            expectSingleUserValue('A2', 3, board);
+            expectDraftValues('A3', [4], board);
+
+            expectDraftValues('C3', [3], board);
+        });
+
+        it('should do nothing for fixed value', () => {
+            const hasChanges = promoter.promoteSingleDraftValueAt(Coordinate.fromText('B3', board.size), true);
+
+            expect(hasChanges).toBeFalsy();
+            expectFixedValue('B3', 2, board);
+        });
+
+        it('should do nothing for user value', () => {
+            const hasChanges = promoter.promoteSingleDraftValueAt(Coordinate.fromText('C2', board.size), true);
+
+            expect(hasChanges).toBeFalsy();
+            expectSingleUserValue('C2', 4, board);
+        });
+
+        it('should do nothing for empty cell', () => {
+            const hasChanges = promoter.promoteSingleDraftValueAt(Coordinate.fromText('D1', board.size), true);
+
+            expect(hasChanges).toBeFalsy();
+            expectEmptyCell('D1', board);
+        });
+
+        it('should do nothing for multiple draft values', () => {
+            const hasChanges = promoter.promoteSingleDraftValueAt(Coordinate.fromText('C1', board.size), true);
+
+            expect(hasChanges).toBeFalsy();
+            expectDraftValues('C1', [1, 2, 3], board);
+        });
+    });
+
     describe('promoteSingleDraftValues', () => {
         it('should promote draft values on the board', () => {
-            promoter.promoteSingleDraftValues(false);
+            const hasChanges = promoter.promoteSingleDraftValues(false);
+
+            expect(hasChanges).toBeTruthy();
 
             expectSingleUserValue('A2', 3, board);
             expectDraftValues('A3', [3, 4], board);
@@ -44,7 +99,9 @@ describe('DraftPromoter', () => {
         });
 
         it('should promote draft values and cleanup on the board', () => {
-            promoter.promoteSingleDraftValues(true);
+            const hasChanges = promoter.promoteSingleDraftValues(true);
+
+            expect(hasChanges).toBeTruthy();
 
             expectDraftValues('A3', [4], board);
 

@@ -17,23 +17,25 @@ export class HintProvider {
 
     runAtBoard(settings: GameSettings): boolean {
         for (const strategy of this._strategies) {
-            console.log('Running strategy: ' + strategy.name);
+            console.log('Running next strategy: ' + strategy.name);
             if (strategy.runAtBoard(settings)) {
                 return true;
             }
         }
 
+        console.log('Hint is not available.');
         return false;
     }
 
     runAtCoordinate(coordinate: Coordinate, settings: GameSettings): boolean {
         for (const strategy of this._strategies) {
-            console.log('Running strategy: ' + strategy.name);
+            console.log('Running next strategy: ' + strategy.name);
             if (strategy.runAtCoordinate(coordinate, settings)) {
                 return true;
             }
         }
 
+        console.log('Hint is not available.');
         return false;
     }
 }
