@@ -13,6 +13,8 @@ export class DebugConsoleComponent implements OnInit {
   @Input() autoCleanDraftValues!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();
+  @Output() hintBoardClicked = new EventEmitter();
+  @Output() hintCellClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
 
   ngOnInit() {
@@ -28,6 +30,14 @@ export class DebugConsoleComponent implements OnInit {
 
   onHelpClicked() {
     this.helpClicked.emit();
+  }
+
+  onHintBoardClicked() {
+    this.hintBoardClicked.emit();
+  }
+
+  onHintCellClicked() {
+    this.hintCellClicked.emit();
   }
 
   textGotFocus() {

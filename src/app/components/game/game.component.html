@@ -36,5 +36,6 @@
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput"
     [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
-    (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
+    (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (hintBoardClicked)="onHintBoardClicked()"
+    (hintCellClicked)="onHintCellClicked()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
 </div>

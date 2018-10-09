@@ -24,6 +24,7 @@ import { GameCompletionState } from '../../models/game-completion-state.enum';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { SettingsAdapter } from '../../settings-adapter';
 import { DraftPromoter } from 'src/app/draft-promoter';
+import { HintProvider } from 'src/app/hint-provider';
 
 declare var $: any;
 
@@ -41,6 +42,7 @@ export class GameComponent implements OnInit {
   private _autoCleaner!: DraftCleaner;
   private _draftPromoter!: DraftPromoter;
   private _moveChecker!: MoveChecker;
+  private _hintProvider!: HintProvider;
   private _saveGameAdapter = new SaveGameAdapter();
   private _settingsAdapter = new SettingsAdapter();
   private _isAnimating = false;
@@ -78,6 +80,7 @@ export class GameComponent implements OnInit {
     this._autoCleaner = new DraftCleaner(this._boardComponent);
     this._draftPromoter = new DraftPromoter(this._autoCleaner, this._boardComponent);
     this._moveChecker = new MoveChecker(this._boardComponent);
+    this._hintProvider = new HintProvider(this._boardComponent);
 
     this.inDebugMode = location.search.indexOf('debug') > -1;
 
@@ -418,5 +421,21 @@ export class GameComponent implements OnInit {
 
   menuBarOpenChanged(isOpened: boolean) {
     this._isMenuOpen = isOpened;
+  }
+
+  onHintBoardClicked() {
+    this._hintProvider.runAtBoard(this.settings);
+  }
+
+  onHintCellClicked() {
+    this.captureCellChanges(() => {
+      const cell = this._boardComponent.getSelectedCell();
+      if (cell && cell.value === undefined) {
+        const coordinate = this._boardComponent.getCoordinate(cell);
+        if (coordinate) {
+          this._hintProvider.runAtCoordinate(coordinate, this.settings);
+        }
+      }
+    });
   }
 }
