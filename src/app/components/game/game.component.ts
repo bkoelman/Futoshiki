@@ -23,6 +23,7 @@ import { GameSettings } from '../../models/game-settings';
 import { GameCompletionState } from '../../models/game-completion-state.enum';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { SettingsAdapter } from '../../settings-adapter';
+import { DraftPromoter } from 'src/app/draft-promoter';
 
 declare var $: any;
 
@@ -38,6 +39,7 @@ export class GameComponent implements OnInit {
   private _undoTracker!: UndoTracker;
   private _solver!: PuzzleSolver;
   private _autoCleaner!: DraftCleaner;
+  private _draftPromoter!: DraftPromoter;
   private _moveChecker!: MoveChecker;
   private _saveGameAdapter = new SaveGameAdapter();
   private _settingsAdapter = new SettingsAdapter();
@@ -74,6 +76,7 @@ export class GameComponent implements OnInit {
     this._undoTracker = new UndoTracker(this._boardComponent);
     this._solver = new PuzzleSolver(this._boardComponent);
     this._autoCleaner = new DraftCleaner(this._boardComponent);
+    this._draftPromoter = new DraftPromoter(this._autoCleaner, this._boardComponent);
     this._moveChecker = new MoveChecker(this._boardComponent);
 
     this.inDebugMode = location.search.indexOf('debug') > -1;
@@ -346,17 +349,7 @@ export class GameComponent implements OnInit {
 
   promoteDraftValues() {
     this.captureCellChanges(() => {
-      if (this.puzzle) {
-        for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
-          const cell = this._boardComponent.getCell(coordinate);
-          if (cell && cell.value === undefined) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length === 1) {
-              cell.setUserValue(possibleValues[0]);
-            }
-          }
-        }
-      }
+      this._draftPromoter.promoteSingleDraftValues(this.settings.autoCleanDraftValues);
     });
   }
 
