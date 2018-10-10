@@ -5,11 +5,11 @@ import { ObjectFacilities } from '../object-facilities';
 import { MoveDirection } from '../models/move-direction.enum';
 import { ComparisonOperator } from '../models/comparison-operator.enum';
 
-export class OperatorStrategy implements SolverStrategy {
+export class OperatorStrategy extends SolverStrategy {
     private readonly _enableLog = false;
-    readonly name = 'Operator';
 
-    constructor(private _board: Board) {
+    constructor(board: Board) {
+        super('Operator', board);
     }
 
     runAtBoard(): boolean {
@@ -29,8 +29,8 @@ export class OperatorStrategy implements SolverStrategy {
     private singleRunAtBoard(): boolean {
         let hasChanges = false;
 
-        for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
-            const cell = this._board.getCell(coordinate);
+        for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
+            const cell = this.board.getCell(coordinate);
             if (cell && cell.value === undefined) {
                 if (this.runAtCoordinate(coordinate)) {
                     hasChanges = true;
@@ -47,7 +47,7 @@ export class OperatorStrategy implements SolverStrategy {
     }
 
     private calculateCandidateValueSetAt(coordinate: Coordinate): number[] {
-        const candidateValueSet = ObjectFacilities.createNumberSequence(this._board.size);
+        const candidateValueSet = ObjectFacilities.createNumberSequence(this.board.size);
 
         this.reduceCandidateSetForOperators(coordinate, candidateValueSet);
 
@@ -74,21 +74,21 @@ export class OperatorStrategy implements SolverStrategy {
         candidateValueSet: number[]): boolean {
 
         if (coordinate.canMoveOne(direction1) && coordinate.canMoveOne(direction2)) {
-            const operator1 = this._board.getOperator(coordinate, direction1);
-            const operator2 = this._board.getOperator(coordinate, direction2);
+            const operator1 = this.board.getOperator(coordinate, direction1);
+            const operator2 = this.board.getOperator(coordinate, direction2);
 
             if (operator1 !== ComparisonOperator.None && operator1 === operator2) {
-                const adjacentCell1 = this._board.getCell(coordinate.moveOne(direction1));
-                const adjacentCell2 = this._board.getCell(coordinate.moveOne(direction2));
+                const adjacentCell1 = this.board.getCell(coordinate.moveOne(direction1));
+                const adjacentCell2 = this.board.getCell(coordinate.moveOne(direction2));
 
                 if (adjacentCell1 && adjacentCell2) {
                     if (operator1 === ComparisonOperator.LessThan) {
-                        const adjacentMaxValue1 = adjacentCell1.getMaximum() || this._board.size;
-                        const adjacentMaxValue2 = adjacentCell2.getMaximum() || this._board.size;
+                        const adjacentMaxValue1 = adjacentCell1.getMaximum() || this.board.size;
+                        const adjacentMaxValue2 = adjacentCell2.getMaximum() || this.board.size;
 
                         if (adjacentMaxValue1 === adjacentMaxValue2) {
                             const adjacentMaxValue = adjacentMaxValue1 - 1;
-                            const generateCount = this._board.size - adjacentMaxValue + 1;
+                            const generateCount = this.board.size - adjacentMaxValue + 1;
                             const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
                             return this.tryReduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
                                 `Operator Pair rule (${direction1} > this < ${direction2})`);
@@ -113,14 +113,14 @@ export class OperatorStrategy implements SolverStrategy {
 
     private reduceForSingleOperator(coordinate: Coordinate, direction: MoveDirection, candidateValueSet: number[]): boolean {
         if (coordinate.canMoveOne(direction)) {
-            const operator = this._board.getOperator(coordinate, direction);
+            const operator = this.board.getOperator(coordinate, direction);
             if (operator !== ComparisonOperator.None) {
-                const adjacentCell = this._board.getCell(coordinate.moveOne(direction));
+                const adjacentCell = this.board.getCell(coordinate.moveOne(direction));
 
                 if (adjacentCell) {
                     if (operator === ComparisonOperator.LessThan) {
-                        const adjacentMaxValue = adjacentCell.getMaximum() || this._board.size;
-                        const generateCount = this._board.size - adjacentMaxValue + 1;
+                        const adjacentMaxValue = adjacentCell.getMaximum() || this.board.size;
+                        const generateCount = this.board.size - adjacentMaxValue + 1;
                         const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
                         return this.tryReduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
                             `Single Operator rule (this < ${direction})`);
@@ -181,7 +181,7 @@ export class OperatorStrategy implements SolverStrategy {
                 console.log(`${coordinate}: [${actualValueSet}] to [${newValueSet}] (candidate set: ${candidateValueSet})`);
             }
 
-            const cell = this._board.getCell(coordinate);
+            const cell = this.board.getCell(coordinate);
             if (cell) {
                 cell.setDraftValues(newValueSet);
             }
@@ -193,7 +193,7 @@ export class OperatorStrategy implements SolverStrategy {
     }
 
     private getActualValueSet(coordinate: Coordinate): number[] {
-        const cell = this._board.getCell(coordinate);
+        const cell = this.board.getCell(coordinate);
         return cell ? cell.getPossibleValues() : [];
     }
 }

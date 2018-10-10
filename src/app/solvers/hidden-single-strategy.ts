@@ -3,18 +3,18 @@ import { Board } from '../models/board';
 import { Coordinate } from '../models/coordinate';
 import { ObjectFacilities } from '../object-facilities';
 
-export class HiddenSingleStrategy implements SolverStrategy {
+export class HiddenSingleStrategy extends SolverStrategy {
     private readonly _enableLog = false;
-    readonly name = 'Hidden Single';
 
-    constructor(private _board: Board) {
+    constructor(board: Board) {
+        super('Hidden Single', board);
     }
 
     runAtBoard(): boolean {
         let hasChanges = false;
 
-        for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
-            const cell = this._board.getCell(coordinate);
+        for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
+            const cell = this.board.getCell(coordinate);
             if (cell && cell.value === undefined) {
                 if (this.runAtCoordinate(coordinate)) {
                     hasChanges = true;
@@ -31,7 +31,7 @@ export class HiddenSingleStrategy implements SolverStrategy {
     }
 
     private calculateCandidateValueSetAt(coordinate: Coordinate): number[] {
-        const candidateValueSet = ObjectFacilities.createNumberSequence(this._board.size);
+        const candidateValueSet = ObjectFacilities.createNumberSequence(this.board.size);
 
         this.reduceCandidateSetForHiddenSingles(coordinate, candidateValueSet);
 
@@ -50,7 +50,7 @@ export class HiddenSingleStrategy implements SolverStrategy {
         sequenceName: string): boolean {
         const digitCounts = this.getDigitCountsInSequence(sequence);
 
-        const digitsToRemove = ObjectFacilities.createNumberSequence(this._board.size).filter(
+        const digitsToRemove = ObjectFacilities.createNumberSequence(this.board.size).filter(
             (count, index) => digitCounts[index + 1] >= 1);
 
         return this.tryReduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
@@ -61,7 +61,7 @@ export class HiddenSingleStrategy implements SolverStrategy {
         const digitCounts: number[] = [];
 
         for (const nextCoordinate of sequence) {
-            const cell = this._board.getCell(nextCoordinate);
+            const cell = this.board.getCell(nextCoordinate);
             if (cell) {
                 if (cell.value !== undefined) {
                     if (digitCounts[cell.value] > 0) {
@@ -120,7 +120,7 @@ export class HiddenSingleStrategy implements SolverStrategy {
                 console.log(`${coordinate}: [${actualValueSet}] to [${newValueSet}] (candidate set: ${candidateValueSet})`);
             }
 
-            const cell = this._board.getCell(coordinate);
+            const cell = this.board.getCell(coordinate);
             if (cell) {
                 cell.setDraftValues(newValueSet);
             }
@@ -132,7 +132,7 @@ export class HiddenSingleStrategy implements SolverStrategy {
     }
 
     private getActualValueSet(coordinate: Coordinate): number[] {
-        const cell = this._board.getCell(coordinate);
+        const cell = this.board.getCell(coordinate);
         return cell ? cell.getPossibleValues() : [];
     }
 }

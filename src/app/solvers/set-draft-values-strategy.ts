@@ -3,16 +3,15 @@ import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { ObjectFacilities } from '../object-facilities';
 
-export class SetDraftValuesStrategy implements SolverStrategy {
-    readonly name = 'Set Draft Values';
-
-    constructor(private _board: Board) {
+export class SetDraftValuesStrategy extends SolverStrategy {
+    constructor(board: Board) {
+        super('Set Draft Values', board);
     }
 
     runAtBoard(): boolean {
         let hasChanges = false;
 
-        for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
+        for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
             if (this.runAtCoordinate(coordinate)) {
                 hasChanges = true;
             }
@@ -22,9 +21,9 @@ export class SetDraftValuesStrategy implements SolverStrategy {
     }
 
     runAtCoordinate(coordinate: Coordinate): boolean {
-        const cell = this._board.getCell(coordinate);
+        const cell = this.board.getCell(coordinate);
         if (cell && cell.getPossibleValues().length === 0) {
-            cell.setDraftValues(ObjectFacilities.createNumberSequence(this._board.size));
+            cell.setDraftValues(ObjectFacilities.createNumberSequence(this.board.size));
             return true;
         }
 

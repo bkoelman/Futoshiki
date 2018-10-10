@@ -4,14 +4,14 @@ import { Coordinate } from '../models/coordinate';
 import { DraftPromoter } from '../draft-promoter';
 import { DraftCleaner } from '../draft-cleaner';
 
-export class NakedSingleStrategy implements SolverStrategy {
+export class NakedSingleStrategy extends SolverStrategy {
     private _promoter: DraftPromoter;
 
-    readonly name = 'Naked Single';
+    constructor(board: Board) {
+        super('Naked Single', board);
 
-    constructor(private _board: Board) {
-        const cleaner = new DraftCleaner(this._board);
-        this._promoter = new DraftPromoter(cleaner, this._board);
+        const cleaner = new DraftCleaner(board);
+        this._promoter = new DraftPromoter(cleaner, board);
     }
 
     runAtBoard(): boolean {

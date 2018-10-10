@@ -1,8 +1,14 @@
 import { Coordinate } from '../models/coordinate';
+import { Board } from '../models/board';
 
-export interface SolverStrategy {
-    readonly name: string;
+export abstract class SolverStrategy {
+    protected constructor(readonly name: string, readonly board: Board) {
+    }
 
-    runAtBoard(): boolean;
-    runAtCoordinate(coordinate: Coordinate): boolean;
+    abstract runAtBoard(): boolean;
+    abstract runAtCoordinate(coordinate: Coordinate): boolean;
+
+    protected reportChange(message: string) {
+        console.log(message);
+    }
 }
