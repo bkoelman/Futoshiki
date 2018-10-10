@@ -1,9 +1,11 @@
 import { Coordinate } from './models/coordinate';
 import { Board } from './models/board';
-import { SolverStrategy } from './solvers/solver-strategy';
-import { OperatorWithHiddenSingleStrategy } from './solvers/operator-with-hidden-single-strategy';
-import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { MoveChecker } from './move-checker';
+import { SolverStrategy } from './solvers/solver-strategy';
+import { SetDraftValuesStrategy } from './solvers/set-draft-values-strategy';
+import { NakedSingleStrategy } from './solvers/naked-single-strategy';
+import { OperatorStrategy } from './solvers/operator-strategy';
+import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
 
 export class HintProvider {
     private _checker: MoveChecker;
@@ -12,8 +14,10 @@ export class HintProvider {
     constructor(private _board: Board) {
         this._checker = new MoveChecker(this._board);
         this._strategies = [
+            new SetDraftValuesStrategy(this._board),
             new NakedSingleStrategy(this._board),
-            new OperatorWithHiddenSingleStrategy(this._board)
+            new HiddenSingleStrategy(this._board),
+            new OperatorStrategy(this._board)
         ];
     }
 

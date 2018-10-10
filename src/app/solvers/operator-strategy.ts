@@ -5,9 +5,9 @@ import { ObjectFacilities } from '../object-facilities';
 import { MoveDirection } from '../models/move-direction.enum';
 import { ComparisonOperator } from '../models/comparison-operator.enum';
 
-export class OperatorWithHiddenSingleStrategy implements SolverStrategy {
+export class OperatorStrategy implements SolverStrategy {
     private readonly _enableLog = false;
-    readonly name = 'Operator and Hidden Single';
+    readonly name = 'Operator';
 
     constructor(private _board: Board) {
     }
@@ -50,7 +50,6 @@ export class OperatorWithHiddenSingleStrategy implements SolverStrategy {
         const candidateValueSet = ObjectFacilities.createNumberSequence(this._board.size);
 
         this.reduceCandidateSetForOperators(coordinate, candidateValueSet);
-        this.reduceCandidateSetForHiddenSingles(coordinate, candidateValueSet);
 
         return candidateValueSet;
     }
@@ -138,44 +137,6 @@ export class OperatorWithHiddenSingleStrategy implements SolverStrategy {
         return false;
     }
 
-    private reduceCandidateSetForHiddenSingles(coordinate: Coordinate, candidateValueSet: number[]) {
-        const coordinatesInRow = coordinate.iterateRow(true);
-        this.reduceForSequence(coordinate, coordinatesInRow, candidateValueSet, 'row');
-
-        const coordinatesInColumn = coordinate.iterateColumn(true);
-        this.reduceForSequence(coordinate, coordinatesInColumn, candidateValueSet, 'column');
-    }
-
-    private reduceForSequence(coordinate: Coordinate, sequence: Coordinate[], candidateValueSet: number[],
-        sequenceName: string): boolean {
-        const digitCounts = this.getDigitCountsInSequence(sequence);
-
-        const digitsToRemove = ObjectFacilities.createNumberSequence(this._board.size).filter(
-            (count, index) => digitCounts[index + 1] >= 1);
-
-        return this.tryReduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
-            `Hidden Single rule in ${sequenceName}`);
-    }
-
-    private getDigitCountsInSequence(sequence: Coordinate[]): number[] {
-        const digitCounts: number[] = [];
-
-        for (const nextCoordinate of sequence) {
-            const cell = this._board.getCell(nextCoordinate);
-            if (cell) {
-                if (cell.value !== undefined) {
-                    if (digitCounts[cell.value] > 0) {
-                        digitCounts[cell.value]++;
-                    } else {
-                        digitCounts[cell.value] = 1;
-                    }
-                }
-            }
-        }
-
-        return digitCounts;
-    }
-
     private tryReduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string):
         boolean {
         const beforeText = candidateValueSet.join(',');
@@ -207,11 +168,6 @@ export class OperatorWithHiddenSingleStrategy implements SolverStrategy {
         }
 
         const actualValueSet = this.getActualValueSet(coordinate);
-
-        // TODO: Break up into separate strategies:
-        // - Set all draft values to [1..n]
-        // - Reduce based on Hidden Singles
-        // - Reduce based on operators
 
         const newValueSet = actualValueSet.length === 0 ? candidateValueSet :
             actualValueSet.filter(digit => candidateValueSet.indexOf(digit) > -1);
