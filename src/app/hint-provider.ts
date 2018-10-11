@@ -6,6 +6,8 @@ import { SetDraftValuesStrategy } from './solvers/set-draft-values-strategy';
 import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { OperatorStrategy } from './solvers/operator-strategy';
 import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
+import { NakedSetStrategy } from './solvers/naked-set-strategy';
+import { HiddenSetStrategy } from './solvers/hidden-set-strategy';
 
 export class HintProvider {
     private _checker: MoveChecker;
@@ -17,7 +19,9 @@ export class HintProvider {
             new SetDraftValuesStrategy(this._board),
             new NakedSingleStrategy(this._board),
             new HiddenSingleStrategy(this._board),
-            new OperatorStrategy(this._board)
+            new OperatorStrategy(this._board),
+            new NakedSetStrategy(this._board),
+            new HiddenSetStrategy(this._board),
         ];
     }
 

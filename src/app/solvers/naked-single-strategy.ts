@@ -8,7 +8,7 @@ export class NakedSingleStrategy extends SolverStrategy {
     private _promoter: DraftPromoter;
 
     constructor(board: Board) {
-        super('Naked Single', board);
+        super('Naked Single (Promote)', board);
 
         const cleaner = new DraftCleaner(board);
         this._promoter = new DraftPromoter(cleaner, board);
