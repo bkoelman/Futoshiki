@@ -6,7 +6,7 @@ import { SetCandidatesStrategy } from './solvers/set-candidates-strategy';
 import { PromoteStrategy } from './solvers/promote-strategy';
 import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
-import { OperatorStrategy } from './solvers/operator-strategy';
+import { OperatorsStrategy } from './solvers/operators-strategy';
 import { NakedSetStrategy } from './solvers/naked-set-strategy';
 import { HiddenSetStrategy } from './solvers/hidden-set-strategy';
 
@@ -21,8 +21,8 @@ export class HintProvider {
             new PromoteStrategy(this._board),
             new NakedSingleStrategy(this._board),
             new HiddenSingleStrategy(this._board),
+            new OperatorsStrategy(this._board),
 
-            new OperatorStrategy(this._board),
             new NakedSetStrategy(this._board),
             new HiddenSetStrategy(this._board),
         ];
