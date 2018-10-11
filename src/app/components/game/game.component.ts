@@ -307,17 +307,21 @@ export class GameComponent implements OnInit {
       const isBoardCompleted = !this._boardComponent.hasIncompleteCells();
       if (isBoardCompleted) {
         const boardAnswerDigits = this._boardComponent.getAnswerDigits();
-        if (this.puzzle.answerDigits === boardAnswerDigits) {
-          this.playState = GameCompletionState.Won;
-          this._boardComponent.canSelect = false;
-          $('#winModal').modal('show');
-        } else {
-          this.playState = GameCompletionState.Lost;
+        if (boardAnswerDigits.length > 0) {
+          if (this.puzzle.answerDigits === boardAnswerDigits) {
+            this.playState = GameCompletionState.Won;
+            this._boardComponent.canSelect = false;
+            $('#winModal').modal('show');
+          } else {
+            this.playState = GameCompletionState.Lost;
+          }
+
+          return;
         }
-      } else {
-        this.playState = GameCompletionState.Playing;
       }
     }
+
+    this.playState = GameCompletionState.Playing;
   }
 
   onHintClicked() {
