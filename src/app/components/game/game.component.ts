@@ -147,18 +147,13 @@ export class GameComponent implements OnInit {
     if (downloadCompletedAsyncCallback) {
       setTimeout(() => {
         downloadCompletedAsyncCallback();
-        this.afterPuzzleDownloadSucceeded();
+        this.afterBoardChanged();
       });
     } else {
-      this.afterPuzzleDownloadSucceeded();
+      this.afterBoardChanged();
     }
 
     setTimeout(this.rebindAutoResizeTexts);
-  }
-
-  private afterPuzzleDownloadSucceeded() {
-    this.storeGameSaveStateInCookie();
-    this.rebindAutoResizeTexts();
   }
 
   private rebindAutoResizeTexts() {
@@ -202,10 +197,7 @@ export class GameComponent implements OnInit {
   undo() {
     if (this._undoTracker.undo()) {
       this._boardComponent.clearSelection();
-
-      this.verifyIsBoardSolved();
-      this.storeGameSaveStateInCookie();
-      setTimeout(() => this.rebindAutoResizeTexts());
+      this.afterBoardChanged();
     }
   }
 
@@ -220,10 +212,14 @@ export class GameComponent implements OnInit {
 
   private captureCellChanges(action: () => void) {
     if (this._undoTracker.captureUndoFrame(action)) {
-      this.verifyIsBoardSolved();
-      this.storeGameSaveStateInCookie();
-      setTimeout(() => this.rebindAutoResizeTexts());
+      this.afterBoardChanged();
     }
+  }
+
+  private afterBoardChanged() {
+    this.verifyIsBoardSolved();
+    this.storeGameSaveStateInCookie();
+    setTimeout(() => this.rebindAutoResizeTexts());
   }
 
   onDigitClicked(data: { digit: number, isCandidate: boolean }) {
@@ -405,7 +401,7 @@ export class GameComponent implements OnInit {
         if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
           this.restart(false);
           this._boardComponent.loadGame(saveState);
-          this.storeGameSaveStateInCookie();
+          this.afterBoardChanged();
         } else {
           this.puzzle = undefined;
           this.retrievePuzzle(saveState.info, () => {
