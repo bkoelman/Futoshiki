@@ -3,9 +3,10 @@ import { Board } from './models/board';
 import { MoveChecker } from './move-checker';
 import { SolverStrategy } from './solvers/solver-strategy';
 import { SetCandidatesStrategy } from './solvers/set-candidates-strategy';
+import { PromoteStrategy } from './solvers/promote-strategy';
 import { NakedSingleStrategy } from './solvers/naked-single-strategy';
-import { OperatorStrategy } from './solvers/operator-strategy';
 import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
+import { OperatorStrategy } from './solvers/operator-strategy';
 import { NakedSetStrategy } from './solvers/naked-set-strategy';
 import { HiddenSetStrategy } from './solvers/hidden-set-strategy';
 
@@ -17,7 +18,9 @@ export class HintProvider {
         this._checker = new MoveChecker(this._board);
         this._strategies = [
             new SetCandidatesStrategy(this._board),
+            new PromoteStrategy(this._board),
             new NakedSingleStrategy(this._board),
+
             new HiddenSingleStrategy(this._board),
             new OperatorStrategy(this._board),
             new NakedSetStrategy(this._board),
@@ -36,7 +39,7 @@ export class HintProvider {
     private runStrategies(runStrategy: (strategy: SolverStrategy) => boolean) {
         if (this.isBoardValid()) {
             for (const strategy of this._strategies) {
-                console.log('Running next strategy: ' + strategy.name);
+                console.log('[Debug] Running next strategy: ' + strategy.name);
                 const hasChanges = runStrategy(strategy);
 
                 if (hasChanges) {

@@ -10,11 +10,15 @@ export class MemoryCell implements Cell {
     }
 
     get value(): number | undefined {
-        return this.isFixed ? this._fixedValue : this._userValue;
+        return this._fixedValue || this._userValue;
     }
 
     get isFixed(): boolean {
         return this._fixedValue !== undefined;
+    }
+
+    get isEmpty(): boolean {
+        return this.value === undefined && this._candidates.length === 0;
     }
 
     getPossibleValues(): number[] {

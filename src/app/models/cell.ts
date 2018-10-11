@@ -1,6 +1,7 @@
 export interface Cell {
     readonly value: number | undefined;
     readonly isFixed: boolean;
+    readonly isEmpty: boolean;
 
     getPossibleValues(): number[];
     getMinimum(): number | undefined;

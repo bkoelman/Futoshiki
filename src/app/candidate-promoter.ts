@@ -22,7 +22,7 @@ export class CandidatePromoter {
         return false;
     }
 
-    promoteSingleCandidates(cleanAfterPromote: boolean): boolean {
+    promoteSingleCandidates(cleanAfterPromote: boolean): number {
         const cellsToPromote: { cell: Cell, coordinate: Coordinate, digit: number }[] = [];
 
         for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
@@ -40,7 +40,7 @@ export class CandidatePromoter {
             }
         }
 
-        return cellsToPromote.length > 0;
+        return cellsToPromote.length;
     }
 
     private getCellToPromote(coordinate: Coordinate): { cell: Cell, coordinate: Coordinate, digit: number } | undefined {

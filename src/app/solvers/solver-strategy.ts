@@ -9,6 +9,6 @@ export abstract class SolverStrategy {
     abstract runAtCoordinate(coordinate: Coordinate): boolean;
 
     protected reportChange(message: string) {
-        console.log(message);
+        console.log(`*STEP* [${this.name}] ${message}`);
     }
 }

@@ -9,20 +9,34 @@ export class SetCandidatesStrategy extends SolverStrategy {
     }
 
     runAtBoard(): boolean {
-        let hasChanges = false;
+        let changeCount = 0;
 
         for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
-            if (this.runAtCoordinate(coordinate)) {
-                hasChanges = true;
+            if (this.innerRunAtCoordinate(coordinate)) {
+                changeCount++;
             }
+        }
+
+        if (changeCount > 0) {
+            this.reportChange(`Placed candidates in ${changeCount} empty cells.`);
+        }
+
+        return changeCount > 0;
+    }
+
+    runAtCoordinate(coordinate: Coordinate): boolean {
+        const hasChanges = this.innerRunAtCoordinate(coordinate);
+
+        if (hasChanges) {
+            this.reportChange(`Placed candidates in empty cell ${coordinate}.`);
         }
 
         return hasChanges;
     }
 
-    runAtCoordinate(coordinate: Coordinate): boolean {
+    private innerRunAtCoordinate(coordinate: Coordinate): boolean {
         const cell = this.board.getCell(coordinate);
-        if (cell && cell.getPossibleValues().length === 0) {
+        if (cell && cell.isEmpty) {
             cell.setCandidates(ObjectFacilities.createNumberSequence(this.board.size));
             return true;
         }

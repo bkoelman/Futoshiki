@@ -130,9 +130,9 @@ describe('CandidatePromoter', () => {
 
     describe('promoteSingleCandidates', () => {
         it('should promote candidates on the board', () => {
-            const hasChanges = promoter.promoteSingleCandidates(false);
+            const changeCount = promoter.promoteSingleCandidates(false);
 
-            expect(hasChanges).toBeTruthy();
+            expect(changeCount).toBe(4);
             expectBoard(board, `
                 +-----+----+-----+----+
                 |     | !3 | 34  > !2 |
@@ -146,9 +146,9 @@ describe('CandidatePromoter', () => {
         });
 
         it('should promote candidates and cleanup on the board', () => {
-            const hasChanges = promoter.promoteSingleCandidates(true);
+            const changeCount = promoter.promoteSingleCandidates(true);
 
-            expect(hasChanges).toBeTruthy();
+            expect(changeCount).toBe(4);
             expectBoard(board, `
                 +----+----+----+----+
                 |    | !3 | 4  > !2 |

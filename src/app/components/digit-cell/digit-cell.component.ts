@@ -26,7 +26,7 @@ export class DigitCellComponent implements Cell, OnInit {
   @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 
   get value(): number | undefined {
-    return this.fixedValue !== undefined ? this.fixedValue : this._userValue;
+    return this.fixedValue || this._userValue;
   }
 
   get isFixed(): boolean {
@@ -34,11 +34,11 @@ export class DigitCellComponent implements Cell, OnInit {
   }
 
   get hasCandidates(): boolean {
-    return !this.isFixed && this._candidates.length > 0;
+    return this.value === undefined && this._candidates.length > 0;
   }
 
   get isEmpty(): boolean {
-    return !this.hasCandidates && this.value === undefined;
+    return this.value === undefined && this._candidates.length === 0;
   }
 
   ngOnInit() {
