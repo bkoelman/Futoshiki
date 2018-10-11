@@ -35,7 +35,6 @@
   </div>
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput"
-    [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanCandidates]="settings.autoCleanCandidates"
     (loadClicked)="loadGame($event)" (helpClicked)="calculateCandidates()" (hintBoardClicked)="onHintBoardClicked()"
     (hintCellClicked)="onHintCellClicked()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
 </div>
