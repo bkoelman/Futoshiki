@@ -1,7 +1,7 @@
 export class CellContentSnapshot {
     private static _emptySnapshot = new CellContentSnapshot(undefined, []);
 
-    constructor(public readonly userValue: number | undefined, public readonly draftValues: number[]) {
+    constructor(public readonly userValue: number | undefined, public readonly candidates: number[]) {
     }
 
     static empty(): CellContentSnapshot {
@@ -12,8 +12,8 @@ export class CellContentSnapshot {
         return new CellContentSnapshot(userValue, []);
     }
 
-    static fromDraftValues(draftValues: number[]): CellContentSnapshot {
-        return new CellContentSnapshot(undefined, draftValues.sort());
+    static fromCandidates(candidates: number[]): CellContentSnapshot {
+        return new CellContentSnapshot(undefined, candidates.sort());
     }
 
     isEqualTo(other: CellContentSnapshot) {

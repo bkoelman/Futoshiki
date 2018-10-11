@@ -12,7 +12,7 @@ declare var $: any;
 export class DigitCellComponent implements Cell, OnInit {
   @ViewChild('flashable') private _flashableElementRef!: ElementRef;
   private _userValue: number | undefined;
-  private _draftValues: number[] = [];
+  private _candidates: number[] = [];
 
   GameCompletionState = GameCompletionState;
 
@@ -33,22 +33,22 @@ export class DigitCellComponent implements Cell, OnInit {
     return this.fixedValue !== undefined;
   }
 
-  get isDraft(): boolean {
-    return !this.isFixed && this._draftValues.length > 0;
+  get hasCandidates(): boolean {
+    return !this.isFixed && this._candidates.length > 0;
   }
 
   get isEmpty(): boolean {
-    return !this.isDraft && this.value === undefined;
+    return !this.hasCandidates && this.value === undefined;
   }
 
   ngOnInit() {
   }
 
   clear() {
-    if (this._userValue !== undefined || this._draftValues.length > 0) {
+    if (this._userValue !== undefined || this._candidates.length > 0) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._draftValues = [];
+        this._candidates = [];
       });
     }
   }
@@ -58,7 +58,7 @@ export class DigitCellComponent implements Cell, OnInit {
       this.raiseChangeEventFor(() => {
         this.fixedValue = digit;
         this._userValue = undefined;
-        this._draftValues = [];
+        this._candidates = [];
       });
     }
   }
@@ -67,45 +67,45 @@ export class DigitCellComponent implements Cell, OnInit {
     if (this._userValue !== digit) {
       this.raiseChangeEventFor(() => {
         this._userValue = digit;
-        this._draftValues = [];
+        this._candidates = [];
       });
     }
   }
 
-  setDraftValues(digits: number[]) {
+  setCandidates(digits: number[]) {
     digits.sort();
-    if (JSON.stringify(digits) !== JSON.stringify(this._draftValues)) {
+    if (JSON.stringify(digits) !== JSON.stringify(this._candidates)) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._draftValues = digits.slice();
+        this._candidates = digits.slice();
       });
     }
   }
 
-  containsDraftValue(digit: number): boolean {
-    return this._draftValues.indexOf(digit) > -1;
+  containsCandidate(digit: number): boolean {
+    return this._candidates.indexOf(digit) > -1;
   }
 
-  insertDraftValue(digit: number) {
-    if (!this.containsDraftValue(digit)) {
+  insertCandidate(digit: number) {
+    if (!this.containsCandidate(digit)) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._draftValues.push(digit);
-        this._draftValues.sort();
+        this._candidates.push(digit);
+        this._candidates.sort();
       });
     }
   }
 
-  removeDraftValue(digit: number) {
-    if (this.containsDraftValue(digit)) {
+  removeCandidate(digit: number) {
+    if (this.containsCandidate(digit)) {
       this.raiseChangeEventFor(() => {
-        this._draftValues = this._draftValues.filter(item => item !== digit);
+        this._candidates = this._candidates.filter(item => item !== digit);
       });
     }
   }
 
-  setError(draftDigit: number | undefined) {
-    this.errorDigit = draftDigit || 1;
+  setError(candidateDigit: number | undefined) {
+    this.errorDigit = candidateDigit || 1;
   }
 
   clearError() {
@@ -113,14 +113,14 @@ export class DigitCellComponent implements Cell, OnInit {
   }
 
   getContentSnapshot(): CellContentSnapshot {
-    return new CellContentSnapshot(this._userValue, this._draftValues.slice());
+    return new CellContentSnapshot(this._userValue, this._candidates.slice());
   }
 
   restoreContentSnapshot(snapshot: CellContentSnapshot) {
     const snapshotBefore = this.getContentSnapshot();
     if (!snapshotBefore.isEqualTo(snapshot)) {
       this.raiseChangeEventFor(() => {
-        this._draftValues = snapshot.draftValues.slice();
+        this._candidates = snapshot.candidates.slice();
         this._userValue = snapshot.userValue;
       });
     }
@@ -130,8 +130,8 @@ export class DigitCellComponent implements Cell, OnInit {
     let result = this.value;
 
     if (result === undefined) {
-      if (this._draftValues.length === 1) {
-        result = this._draftValues[0];
+      if (this._candidates.length === 1) {
+        result = this._candidates[0];
       }
     }
 
@@ -143,14 +143,14 @@ export class DigitCellComponent implements Cell, OnInit {
       return [this.value];
     }
 
-    return this._draftValues.slice();
+    return this._candidates.slice();
   }
 
   getMinimum(): number | undefined {
     let result = this.value;
 
-    if (result === undefined && this._draftValues.length > 0) {
-      result = Math.min(...this._draftValues);
+    if (result === undefined && this._candidates.length > 0) {
+      result = Math.min(...this._candidates);
     }
 
     return result;
@@ -159,8 +159,8 @@ export class DigitCellComponent implements Cell, OnInit {
   getMaximum(): number | undefined {
     let result = this.value;
 
-    if (result === undefined && this._draftValues.length > 0) {
-      result = Math.max(...this._draftValues);
+    if (result === undefined && this._candidates.length > 0) {
+      result = Math.max(...this._candidates);
     }
 
     return result;

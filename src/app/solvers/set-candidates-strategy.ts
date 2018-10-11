@@ -3,9 +3,9 @@ import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { ObjectFacilities } from '../object-facilities';
 
-export class SetDraftValuesStrategy extends SolverStrategy {
+export class SetCandidatesStrategy extends SolverStrategy {
     constructor(board: Board) {
-        super('Set Draft Values', board);
+        super('Set Candidates', board);
     }
 
     runAtBoard(): boolean {
@@ -23,7 +23,7 @@ export class SetDraftValuesStrategy extends SolverStrategy {
     runAtCoordinate(coordinate: Coordinate): boolean {
         const cell = this.board.getCell(coordinate);
         if (cell && cell.getPossibleValues().length === 0) {
-            cell.setDraftValues(ObjectFacilities.createNumberSequence(this.board.size));
+            cell.setCandidates(ObjectFacilities.createNumberSequence(this.board.size));
             return true;
         }
 

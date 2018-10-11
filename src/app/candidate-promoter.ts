@@ -1,19 +1,19 @@
-import { DraftCleaner } from './draft-cleaner';
+import { CandidateCleaner } from './candidate-cleaner';
 import { Board } from './models/board';
 import { Coordinate } from './models/coordinate';
 import { Cell } from './models/cell';
 
-export class DraftPromoter {
-    constructor(private _cleaner: DraftCleaner, private _board: Board) {
+export class CandidatePromoter {
+    constructor(private _cleaner: CandidateCleaner, private _board: Board) {
     }
 
-    promoteSingleDraftValueAt(coordinate: Coordinate, cleanAfterPromote: boolean): boolean {
+    promoteSingleCandidateAt(coordinate: Coordinate, cleanAfterPromote: boolean): boolean {
         const cellToPromote = this.getCellToPromote(coordinate);
         if (cellToPromote) {
             cellToPromote.cell.setUserValue(cellToPromote.digit);
 
             if (cleanAfterPromote) {
-                this._cleaner.reduceDraftValues(cellToPromote.digit, coordinate);
+                this._cleaner.reduceCandidates(cellToPromote.digit, coordinate);
             }
 
             return true;
@@ -22,7 +22,7 @@ export class DraftPromoter {
         return false;
     }
 
-    promoteSingleDraftValues(cleanAfterPromote: boolean): boolean {
+    promoteSingleCandidates(cleanAfterPromote: boolean): boolean {
         const cellsToPromote: { cell: Cell, coordinate: Coordinate, digit: number }[] = [];
 
         for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
@@ -36,7 +36,7 @@ export class DraftPromoter {
             cell.setUserValue(digit);
 
             if (cleanAfterPromote) {
-                this._cleaner.reduceDraftValues(digit, coordinate);
+                this._cleaner.reduceCandidates(digit, coordinate);
             }
         }
 

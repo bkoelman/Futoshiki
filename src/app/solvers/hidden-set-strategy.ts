@@ -72,9 +72,9 @@ export class HiddenSetStrategy extends SolverStrategy {
     private innerApplySingleOperatorRule(isLessThanAdjacentCell: boolean, adjacentCellCoordinate: Coordinate,
         currentCellCoordinate: Coordinate, candidateValueSet: number[], direction: string): void {
         // Rule: When a cell is greater than its adjacent cell, then it cannot contain digit 1 and
-        // its minimum value must be higher than the minimum draft value in the adjacent cell.
+        // its minimum value must be higher than the minimum candidate in the adjacent cell.
         // Likewise, when a cell is less than its adjacent cell, then it cannot contain the highest digit on the board and
-        // its maximum value must be lower than the maximum draft value in the adjacent cell.
+        // its maximum value must be lower than the maximum candidate in the adjacent cell.
 
         // Example:
         //      | | 12345 > 12345 |
@@ -117,10 +117,10 @@ export class HiddenSetStrategy extends SolverStrategy {
         direction1: string, direction2: string): void {
         // Rule: When a cell is greater than both of its adjacent cells in the same sequence (row or column)
         // and the adjacent cells have the same minimum value, then the cell value must be higher than their
-        // minimum draft value plus one (because the adjacent cells cannot both contain that minimum value).
+        // minimum candidate plus one (because the adjacent cells cannot both contain that minimum value).
         // Likewise, when a cell is less than both of its adjacent cells in the same sequence,
         // and the adjacent cells have the same maximum value, then the cell value must be lower than their
-        // maximum draft value minus one (because the adjacent cells cannot both contain that maximum value).
+        // maximum candidate minus one (because the adjacent cells cannot both contain that maximum value).
 
         // Example:
         //      | 2345 > 12345 < 2345 |
@@ -276,7 +276,7 @@ export class HiddenSetStrategy extends SolverStrategy {
 
             const cell = this.board.getCell(coordinate);
             if (cell) {
-                cell.setDraftValues(newValueSet);
+                cell.setCandidates(newValueSet);
             }
 
             return true;

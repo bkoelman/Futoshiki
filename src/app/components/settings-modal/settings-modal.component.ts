@@ -46,7 +46,7 @@ export class SettingsModalComponent implements OnInit, AfterViewChecked {
 
   setDefaults(settings: GameSettings) {
     this.settings = {
-      autoCleanDraftValues: settings.autoCleanDraftValues,
+      autoCleanCandidates: settings.autoCleanCandidates,
       notifyOnWrongMoves: settings.notifyOnWrongMoves
     };
     this._initialSettings = JSON.stringify(settings);
@@ -66,7 +66,7 @@ export class SettingsModalComponent implements OnInit, AfterViewChecked {
   private onSettingsChanged() {
     if (this.settings) {
       this.settingsChanged.emit({
-        autoCleanDraftValues: this.settings.autoCleanDraftValues,
+        autoCleanCandidates: this.settings.autoCleanCandidates,
         notifyOnWrongMoves: this.settings.notifyOnWrongMoves
       });
     }

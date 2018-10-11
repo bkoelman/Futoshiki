@@ -183,7 +183,7 @@ export class OperatorStrategy extends SolverStrategy {
 
             const cell = this.board.getCell(coordinate);
             if (cell) {
-                cell.setDraftValues(newValueSet);
+                cell.setCandidates(newValueSet);
             }
 
             return true;

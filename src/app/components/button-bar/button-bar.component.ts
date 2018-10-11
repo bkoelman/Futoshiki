@@ -8,20 +8,20 @@ export class ButtonBarComponent implements OnInit {
   @Input() boardSize: number | undefined;
   @Input() isEnabled!: boolean;
   @Input() areKeysEnabled!: boolean;
-  @Output() digitClicked = new EventEmitter<{ digit: number, isDraft: boolean }>();
+  @Output() digitClicked = new EventEmitter<{ digit: number, isCandidate: boolean }>();
   @Output() clearClicked = new EventEmitter();
   @Output() hintClicked = new EventEmitter();
 
   ngOnInit() {
   }
 
-  onDigitButtonClicked(event: Event, isDraft: boolean) {
+  onDigitButtonClicked(event: Event, isCandidate: boolean) {
     if (this.isEnabled) {
       const button = <HTMLElement>event.target;
       const digit = parseInt(button.innerText, 10);
       this.digitClicked.emit({
         digit: digit,
-        isDraft: isDraft
+        isCandidate: isCandidate
       });
     }
   }
@@ -50,7 +50,7 @@ export class ButtonBarComponent implements OnInit {
         if (!isNaN(digit) && digit > 0 && digit <= this.boardSize) {
           this.digitClicked.emit({
             digit: digit,
-            isDraft: event.ctrlKey || event.altKey
+            isCandidate: event.ctrlKey || event.altKey
           });
         }
       }

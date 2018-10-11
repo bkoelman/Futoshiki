@@ -41,13 +41,13 @@ export class SaveGameAdapter {
     private formatCellSnapshot(snapshot: CellContentSnapshot): string {
         if (snapshot.userValue !== undefined) {
             return 'ff' + this.decimalToHex(snapshot.userValue);
-        } else if (snapshot.draftValues.length > 0) {
-            let draftBitmask = 0;
-            for (const draftValue of snapshot.draftValues) {
-                draftBitmask += Math.pow(2, draftValue - 1);
+        } else if (snapshot.candidates.length > 0) {
+            let candidateBitmask = 0;
+            for (const candidate of snapshot.candidates) {
+                candidateBitmask += Math.pow(2, candidate - 1);
             }
 
-            const hexValue = this.decimalToHex(draftBitmask);
+            const hexValue = this.decimalToHex(candidateBitmask);
             return hexValue.length === 2 ? '00' + hexValue : hexValue;
         } else {
             return SaveGameAdapter.emptyCellText;
@@ -134,18 +134,18 @@ export class SaveGameAdapter {
         } else if (text === '0000') {
             return CellContentSnapshot.empty();
         } else {
-            let draftBitmask = parseInt(text, 16);
-            const draftValues = [];
+            let candidateBitmask = parseInt(text, 16);
+            const candidates = [];
 
-            for (const draftValue of SaveGameAdapter._allCellValuesCached) {
-                const bitmaskValue = Math.pow(2, draftValue - 1);
-                if (draftBitmask - bitmaskValue >= 0) {
-                    draftBitmask -= bitmaskValue;
-                    draftValues.push(draftValue);
+            for (const candidate of SaveGameAdapter._allCellValuesCached) {
+                const bitmaskValue = Math.pow(2, candidate - 1);
+                if (candidateBitmask - bitmaskValue >= 0) {
+                    candidateBitmask -= bitmaskValue;
+                    candidates.push(candidate);
                 }
             }
 
-            return CellContentSnapshot.fromDraftValues(draftValues);
+            return CellContentSnapshot.fromCandidates(candidates);
         }
     }
 }

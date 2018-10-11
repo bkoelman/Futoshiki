@@ -31,11 +31,11 @@
   <div *ngIf="puzzle !== undefined">
     <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canUndo" (click)="undo()">Undo</button>
     <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won"
-      (click)="promoteDraftValues()">Promote</button>
+      (click)="promoteCandidates()">Promote</button>
   </div>
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput"
-    [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanDraftValues]="settings.autoCleanDraftValues"
-    (loadClicked)="loadGame($event)" (helpClicked)="calculateDraftValues()" (hintBoardClicked)="onHintBoardClicked()"
+    [notifyOnWrongMoves]="settings.notifyOnWrongMoves" [autoCleanCandidates]="settings.autoCleanCandidates"
+    (loadClicked)="loadGame($event)" (helpClicked)="calculateCandidates()" (hintBoardClicked)="onHintBoardClicked()"
     (hintCellClicked)="onHintCellClicked()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
 </div>

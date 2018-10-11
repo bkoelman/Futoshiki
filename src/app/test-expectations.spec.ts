@@ -35,7 +35,7 @@ export function expectSingleUserValue(coordinateText: string, digit: number, boa
     }
 }
 
-export function expectDraftValues(coordinateText: string, digits: number[], board: Board) {
+export function expectCandidates(coordinateText: string, digits: number[], board: Board) {
     const coordinate = Coordinate.fromText(coordinateText, board.size);
     const cell = board.getCell(coordinate);
 

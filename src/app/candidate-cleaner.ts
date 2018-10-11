@@ -5,11 +5,11 @@ import { ObjectFacilities } from './object-facilities';
 import { Cell } from './models/cell';
 import { MoveDirection } from './models/move-direction.enum';
 
-export class DraftCleaner {
+export class CandidateCleaner {
     constructor(private _board: Board) {
     }
 
-    reduceDraftValues(digit: number, coordinate: Coordinate) {
+    reduceCandidates(digit: number, coordinate: Coordinate) {
         this.reduceForSequences(coordinate, digit);
         this.reduceForOperators(coordinate, digit);
     }
@@ -26,7 +26,7 @@ export class DraftCleaner {
         for (const coordinate of coordinatesInSequence) {
             const cell = this._board.getCell(coordinate);
             if (cell) {
-                cell.removeDraftValue(digitToRemove);
+                cell.removeCandidate(digitToRemove);
             }
         }
     }
@@ -48,21 +48,21 @@ export class DraftCleaner {
                     if (operator === ComparisonOperator.LessThan) {
                         const adjacentMinValue = digit + 1;
                         const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue - 1);
-                        this.removeDraftDigits(adjacentCell, digitsToRemove);
+                        this.removeCandidates(adjacentCell, digitsToRemove);
                     } else {
                         const adjacentMaxValue = digit - 1;
                         const generateCount = this._board.size - adjacentMaxValue;
                         const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue + 1);
-                        this.removeDraftDigits(adjacentCell, digitsToRemove);
+                        this.removeCandidates(adjacentCell, digitsToRemove);
                     }
                 }
             }
         }
     }
 
-    private removeDraftDigits(cell: Cell, digitsToRemove: number[]) {
+    private removeCandidates(cell: Cell, digitsToRemove: number[]) {
         for (const digitToRemove of digitsToRemove) {
-            cell.removeDraftValue(digitToRemove);
+            cell.removeCandidate(digitToRemove);
         }
     }
 }

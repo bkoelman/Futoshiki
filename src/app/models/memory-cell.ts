@@ -4,7 +4,7 @@ import { MemoryBoard } from './memory-board';
 export class MemoryCell implements Cell {
     private _fixedValue: number | undefined;
     private _userValue: number | undefined;
-    private _draftValues: number[] = [];
+    private _candidates: number[] = [];
 
     constructor(private _owner: MemoryBoard) {
     }
@@ -22,14 +22,14 @@ export class MemoryCell implements Cell {
             return [this.value];
         }
 
-        return this._draftValues.slice();
+        return this._candidates.slice();
     }
 
     getMinimum(): number | undefined {
         let result = this.value;
 
-        if (result === undefined && this._draftValues.length > 0) {
-            result = Math.min(...this._draftValues);
+        if (result === undefined && this._candidates.length > 0) {
+            result = Math.min(...this._candidates);
         }
 
         return result;
@@ -38,8 +38,8 @@ export class MemoryCell implements Cell {
     getMaximum(): number | undefined {
         let result = this.value;
 
-        if (result === undefined && this._draftValues.length > 0) {
-            result = Math.max(...this._draftValues);
+        if (result === undefined && this._candidates.length > 0) {
+            result = Math.max(...this._candidates);
         }
 
         return result;
@@ -52,7 +52,7 @@ export class MemoryCell implements Cell {
 
         if (digit !== undefined) {
             this._userValue = undefined;
-            this._draftValues = [];
+            this._candidates = [];
         }
 
         this._fixedValue = digit;
@@ -65,29 +65,29 @@ export class MemoryCell implements Cell {
 
         if (!this.isFixed) {
             this._userValue = digit;
-            this._draftValues = [];
+            this._candidates = [];
         }
     }
 
-    setDraftValues(digits: number[]) {
+    setCandidates(digits: number[]) {
         const firstOutOfRange = digits.find(digit => this.isOutOfRange(digit));
         if (firstOutOfRange !== undefined) {
-            throw new Error(`Invalid draft value '${firstOutOfRange}'.`);
+            throw new Error(`Invalid candidate '${firstOutOfRange}'.`);
         }
 
         if (!this.isFixed) {
             this._userValue = undefined;
-            this._draftValues = digits.slice().sort();
+            this._candidates = digits.slice().sort();
         }
     }
 
-    removeDraftValue(digit: number) {
+    removeCandidate(digit: number) {
         if (this.isOutOfRange(digit)) {
-            throw new Error(`Invalid draft value '${digit}'.`);
+            throw new Error(`Invalid candidate '${digit}'.`);
         }
 
-        if (this._draftValues.indexOf(digit) > -1) {
-            this._draftValues = this._draftValues.filter(item => item !== digit);
+        if (this._candidates.indexOf(digit) > -1) {
+            this._candidates = this._candidates.filter(item => item !== digit);
         }
     }
 

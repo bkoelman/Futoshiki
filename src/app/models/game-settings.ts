@@ -1,4 +1,4 @@
 export interface GameSettings {
-    readonly autoCleanDraftValues: boolean;
+    readonly autoCleanCandidates: boolean;
     readonly notifyOnWrongMoves: boolean;
 }

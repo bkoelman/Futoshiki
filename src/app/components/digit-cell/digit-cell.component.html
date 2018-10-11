@@ -4,18 +4,18 @@
   [ngClass]="'square-' + boardSize" (click)="onBoxClicked()">
   <div #flashable *ngIf="!isEmpty" class="container-content fast">
     <div class="container-content-table">
-      <div *ngIf="!isDraft" class="container-content-table-cell auto-resize-text">
+      <div *ngIf="value !== undefined" class="container-content-table-cell auto-resize-text">
         <span *ngIf="isFixed">{{value}}</span>
-        <span *ngIf="!isFixed && value !== undefined" [class.text-success]="errorDigit === undefined"
+        <span *ngIf="!isFixed" [class.text-success]="errorDigit === undefined"
           [class.text-danger]="errorDigit !== undefined">{{value}}</span>
       </div>
-      <div *ngIf="isDraft">
-        <div *ngFor="let number of 9 | repeat" class="box-container draft-cell-block">
+      <div *ngIf="hasCandidates">
+        <div *ngFor="let number of 9 | repeat" class="box-container candidate-cell-block">
           <div class="container-content">
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
                 <div [class.text-primary]="errorDigit !== number + 1" [class.text-danger]="errorDigit === number + 1">
-                  <div *ngIf="_draftValues.indexOf(number + 1) > -1">{{number + 1}}</div>
+                  <div *ngIf="_candidates.indexOf(number + 1) > -1">{{number + 1}}</div>
                 </div>
               </div>
             </div>

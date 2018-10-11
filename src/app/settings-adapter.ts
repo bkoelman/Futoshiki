@@ -4,7 +4,7 @@ export class SettingsAdapter {
     private static readonly _separator = '-';
 
     toText(settings: GameSettings): string {
-        return `ADC${this.formatBoolean(settings.autoCleanDraftValues)}${SettingsAdapter._separator}` +
+        return `ACC${this.formatBoolean(settings.autoCleanCandidates)}${SettingsAdapter._separator}` +
             `NWM${this.formatBoolean(settings.notifyOnWrongMoves)}`;
     }
 
@@ -13,14 +13,14 @@ export class SettingsAdapter {
     }
 
     parseText(text: string): GameSettings | undefined {
-        let autoCleanDraftValues;
+        let autoCleanCandidates;
         let notifyOnWrongMoves;
 
         for (const setting of text.split(SettingsAdapter._separator)) {
             if (setting.length >= 4) {
                 switch (setting.substring(0, 3)) {
-                    case 'ADC':
-                        autoCleanDraftValues = this.parseBoolean(setting.substring(3));
+                    case 'ACC':
+                        autoCleanCandidates = this.parseBoolean(setting.substring(3));
                         break;
                     case 'NWM':
                         notifyOnWrongMoves = this.parseBoolean(setting.substring(3));
@@ -29,12 +29,12 @@ export class SettingsAdapter {
             }
         }
 
-        if (autoCleanDraftValues === undefined || notifyOnWrongMoves === undefined) {
+        if (autoCleanCandidates === undefined || notifyOnWrongMoves === undefined) {
             return undefined;
         }
 
         return {
-            autoCleanDraftValues: autoCleanDraftValues,
+            autoCleanCandidates: autoCleanCandidates,
             notifyOnWrongMoves: notifyOnWrongMoves
         };
     }

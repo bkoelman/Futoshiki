@@ -13,7 +13,7 @@ import { PuzzleSolver } from '../../puzzle-solver';
 import { GameSaveState } from '../../models/game-save-state';
 import { SaveGameAdapter } from '../../save-game-adapter';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
-import { DraftCleaner } from '../../draft-cleaner';
+import { CandidateCleaner } from '../../candidate-cleaner';
 import { MoveChecker } from '../../move-checker';
 import { UndoTracker } from '../../undo-tracker';
 import { MoveCheckResult } from '../../models/move-check-result';
@@ -23,7 +23,7 @@ import { GameSettings } from '../../models/game-settings';
 import { GameCompletionState } from '../../models/game-completion-state.enum';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { SettingsAdapter } from '../../settings-adapter';
-import { DraftPromoter } from 'src/app/draft-promoter';
+import { CandidatePromoter } from 'src/app/candidate-promoter';
 import { HintProvider } from 'src/app/hint-provider';
 
 declare var $: any;
@@ -39,8 +39,8 @@ export class GameComponent implements OnInit {
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
   private _undoTracker!: UndoTracker;
   private _solver!: PuzzleSolver;
-  private _autoCleaner!: DraftCleaner;
-  private _draftPromoter!: DraftPromoter;
+  private _autoCleaner!: CandidateCleaner;
+  private _candidatePromoter!: CandidatePromoter;
   private _moveChecker!: MoveChecker;
   private _hintProvider!: HintProvider;
   private _saveGameAdapter = new SaveGameAdapter();
@@ -77,8 +77,8 @@ export class GameComponent implements OnInit {
   ngOnInit() {
     this._undoTracker = new UndoTracker(this._boardComponent);
     this._solver = new PuzzleSolver(this._boardComponent);
-    this._autoCleaner = new DraftCleaner(this._boardComponent);
-    this._draftPromoter = new DraftPromoter(this._autoCleaner, this._boardComponent);
+    this._autoCleaner = new CandidateCleaner(this._boardComponent);
+    this._candidatePromoter = new CandidatePromoter(this._autoCleaner, this._boardComponent);
     this._moveChecker = new MoveChecker(this._boardComponent);
     this._hintProvider = new HintProvider(this._boardComponent);
 
@@ -121,7 +121,7 @@ export class GameComponent implements OnInit {
     }
 
     return {
-      autoCleanDraftValues: true,
+      autoCleanCandidates: true,
       notifyOnWrongMoves: false
     };
   }
@@ -226,27 +226,27 @@ export class GameComponent implements OnInit {
     }
   }
 
-  onDigitClicked(data: { digit: number, isDraft: boolean }) {
+  onDigitClicked(data: { digit: number, isCandidate: boolean }) {
     this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell) {
-        if (data.isDraft) {
-          if (cell.containsDraftValue(data.digit)) {
-            cell.removeDraftValue(data.digit);
+        if (data.isCandidate) {
+          if (cell.containsCandidate(data.digit)) {
+            cell.removeCandidate(data.digit);
           } else {
-            if (this.verifyMoveAllowed(cell, data.digit, data.isDraft)) {
-              cell.insertDraftValue(data.digit);
+            if (this.verifyMoveAllowed(cell, data.digit, data.isCandidate)) {
+              cell.insertCandidate(data.digit);
             }
           }
         } else {
           if (cell.value !== data.digit) {
-            if (this.verifyMoveAllowed(cell, data.digit, data.isDraft)) {
+            if (this.verifyMoveAllowed(cell, data.digit, data.isCandidate)) {
               cell.setUserValue(data.digit);
 
-              if (this.settings.autoCleanDraftValues) {
+              if (this.settings.autoCleanCandidates) {
                 const coordinate = this._boardComponent.getCoordinate(cell);
                 if (coordinate) {
-                  this._autoCleaner.reduceDraftValues(data.digit, coordinate);
+                  this._autoCleaner.reduceCandidates(data.digit, coordinate);
                 }
               }
             }
@@ -256,13 +256,13 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private verifyMoveAllowed(cell: DigitCellComponent, digit: number, isDraft: boolean): boolean {
+  private verifyMoveAllowed(cell: DigitCellComponent, digit: number, isCandidate: boolean): boolean {
     const coordinate = this._boardComponent.getCoordinate(cell);
     if (coordinate) {
       const moveCheckResult = this.settings.notifyOnWrongMoves ?
         this._moveChecker.checkIsMoveAllowed(digit, coordinate) : MoveCheckResult.createValid();
       if (!moveCheckResult.isValid) {
-        this.startErrorForMove(cell, coordinate, moveCheckResult, digit, isDraft);
+        this.startErrorForMove(cell, coordinate, moveCheckResult, digit, isCandidate);
         return false;
       }
     }
@@ -270,12 +270,13 @@ export class GameComponent implements OnInit {
     return true;
   }
 
-  private startErrorForMove(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number, isDraft: boolean) {
+  private startErrorForMove(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number,
+    isCandidate: boolean) {
     const snapshot = cell.getContentSnapshot();
     this._isAnimating = true;
 
-    if (isDraft) {
-      cell.insertDraftValue(digit);
+    if (isCandidate) {
+      cell.insertCandidate(digit);
       cell.setError(digit);
     } else {
       cell.setUserValue(digit);
@@ -330,29 +331,29 @@ export class GameComponent implements OnInit {
         const coordinate = this._boardComponent.getCoordinate(cell);
         if (coordinate) {
           const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-          cell.setDraftValues(possibleValues);
+          cell.setCandidates(possibleValues);
         }
       }
     });
   }
 
-  calculateDraftValues() {
+  calculateCandidates() {
     this.captureCellChanges(() => {
       if (this.puzzle) {
         for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
           const cell = this._boardComponent.getCell(coordinate);
           if (cell && cell.value === undefined) {
             const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-            cell.setDraftValues(possibleValues);
+            cell.setCandidates(possibleValues);
           }
         }
       }
     });
   }
 
-  promoteDraftValues() {
+  promoteCandidates() {
     this.captureCellChanges(() => {
-      this._draftPromoter.promoteSingleDraftValues(this.settings.autoCleanDraftValues);
+      this._candidatePromoter.promoteSingleCandidates(this.settings.autoCleanCandidates);
     });
   }
 

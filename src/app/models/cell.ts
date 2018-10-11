@@ -8,6 +8,6 @@ export interface Cell {
 
     setFixedValue(digit: number): void;
     setUserValue(digit: number): void;
-    setDraftValues(digits: number[]): void;
-    removeDraftValue(digit: number): void;
+    setCandidates(digits: number[]): void;
+    removeCandidate(digit: number): void;
 }

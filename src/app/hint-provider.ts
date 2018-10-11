@@ -2,7 +2,7 @@ import { Coordinate } from './models/coordinate';
 import { Board } from './models/board';
 import { MoveChecker } from './move-checker';
 import { SolverStrategy } from './solvers/solver-strategy';
-import { SetDraftValuesStrategy } from './solvers/set-draft-values-strategy';
+import { SetCandidatesStrategy } from './solvers/set-candidates-strategy';
 import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { OperatorStrategy } from './solvers/operator-strategy';
 import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
@@ -16,7 +16,7 @@ export class HintProvider {
     constructor(private _board: Board) {
         this._checker = new MoveChecker(this._board);
         this._strategies = [
-            new SetDraftValuesStrategy(this._board),
+            new SetCandidatesStrategy(this._board),
             new NakedSingleStrategy(this._board),
             new HiddenSingleStrategy(this._board),
             new OperatorStrategy(this._board),

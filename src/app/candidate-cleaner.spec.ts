@@ -1,12 +1,12 @@
 import { BoardTextConverter } from './board-text-converter';
 import { Coordinate } from './models/coordinate';
 import { Board } from './models/board';
-import { DraftCleaner } from './draft-cleaner';
-import { expectEmptyCell, expectDraftValues, expectFixedValue } from './test-expectations.spec';
+import { CandidateCleaner } from './candidate-cleaner';
+import { expectEmptyCell, expectCandidates, expectFixedValue } from './test-expectations.spec';
 
-describe('DraftCleaner', () => {
+describe('CandidateCleaner', () => {
     let board: Board;
-    let cleaner: DraftCleaner;
+    let cleaner: CandidateCleaner;
 
     beforeEach(() => {
         const boardText = `
@@ -26,35 +26,35 @@ describe('DraftCleaner', () => {
         const converter = new BoardTextConverter();
         board = converter.textToBoard(boardText);
 
-        cleaner = new DraftCleaner(board);
+        cleaner = new CandidateCleaner(board);
     });
 
-    describe('reduceDraftValues', () => {
+    describe('reduceCandidates', () => {
         it('should reduce values in row and column', () => {
-            cleaner.reduceDraftValues(5, Coordinate.fromText('D5', board.size));
+            cleaner.reduceCandidates(5, Coordinate.fromText('D5', board.size));
 
-            expectDraftValues('D1', [2, 3, 4], board);
-            expectDraftValues('D2', [1, 2, 3, 4], board);
+            expectCandidates('D1', [2, 3, 4], board);
+            expectCandidates('D2', [1, 2, 3, 4], board);
             expectEmptyCell('D3', board);
-            expectDraftValues('D4', [2, 3, 4], board);
+            expectCandidates('D4', [2, 3, 4], board);
 
-            expectDraftValues('A5', [1, 2, 3], board);
-            expectDraftValues('B5', [2, 3], board);
+            expectCandidates('A5', [1, 2, 3], board);
+            expectCandidates('B5', [2, 3], board);
             expectFixedValue('C5', 4, board);
-            expectDraftValues('E5', [2, 3], board);
+            expectCandidates('E5', [2, 3], board);
         });
 
         it('should reduce values for greater-than operators', () => {
-            cleaner.reduceDraftValues(3, Coordinate.fromText('B2', board.size));
+            cleaner.reduceCandidates(3, Coordinate.fromText('B2', board.size));
 
-            expectDraftValues('A2', [4, 5], board);
-            expectDraftValues('C2', [5], board);
+            expectCandidates('A2', [4, 5], board);
+            expectCandidates('C2', [5], board);
         });
 
         it('should reduce values for less-than operators', () => {
-            cleaner.reduceDraftValues(2, Coordinate.fromText('D3', board.size));
+            cleaner.reduceCandidates(2, Coordinate.fromText('D3', board.size));
 
-            expectDraftValues('D2', [1], board);
+            expectCandidates('D2', [1], board);
         });
     });
 });

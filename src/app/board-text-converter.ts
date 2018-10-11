@@ -63,7 +63,7 @@ class BoardTextParser {
             } else if (token === '!' || token === '#') {
                 this.parseSingleValueInDigitLine(token);
             } else if (this.charIsDigit(token)) {
-                this.parseDraftValuesInDigitLine();
+                this.parseCandidatesInDigitLine();
             } else {
                 throw new Error(`Invalid character '${token}' in cell ${this._coordinate}.`);
             }
@@ -161,7 +161,7 @@ class BoardTextParser {
         return char >= '1' && char <= '9';
     }
 
-    private parseDraftValuesInDigitLine() {
+    private parseCandidatesInDigitLine() {
         const digits = this.consumeDigits();
 
         const uniqueDigits = ObjectFacilities.getUniqueArrayElements(digits);
@@ -174,7 +174,7 @@ class BoardTextParser {
             throw new Error(`Cell ${this._coordinate} not found.`);
         }
 
-        cell.setDraftValues(digits);
+        cell.setCandidates(digits);
     }
 
     private parseSeparatorLine() {

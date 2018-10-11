@@ -14,7 +14,7 @@
   - [x] cancel existing pending request when different one comes in
   - [x] ignore when incoming request is same as pending request
   - [x] show download indicator when loading exceeds time threshold
-- [x] extra button bar for draft digits
+- [x] extra button bar for candidate digits
 - [x] undo last move(s)
 
 # Enhancements
@@ -23,11 +23,11 @@
 - [x] print puzzle
 - [x] add support for Internet Explorer
 - [x] replace favicon
-- [x] auto-cleanup draft digits on regular digit entry
+- [x] auto-cleanup candidates on regular digit entry
 - [x] nicer styling when puzzle solved (show button "new random game")
 - [ ] display coordinate rulers
 - [x] block invalid (based on rules) digit entry; highlight related cells
-- [x] block invalid (based on rules) draft digit entry; highlight related cells
+- [x] block invalid (based on rules) candidate digit entry; highlight related cells
 - [x] move `Promote` button from debug mode into normal game
 - [ ] move `Undo` into button bar and enable Ctrl+Z shortcut
 - [ ] nicer styling of button bar
@@ -35,8 +35,8 @@
   - [ ] controls left: `Undo`, `Promote`, `Hint`
   - [ ] move bar to side, depending on screen size (https://davidwalsh.name/orientation-change)
 - [ ] `Hint` button (unrelated to selection)
-  - [ ] fill draft values for any empty cells
-  - [ ] promote all cells that contain one draft digit
+  - [ ] fill candidates for any empty cells
+  - [ ] promote all cells that contain one candidate
   - [ ] apply solver strategies (http://pzl.org.uk/futoshiki.html)
     - [x] Naked Set
     - [ ] Naked Triples/Quads with subsets
@@ -60,7 +60,7 @@
 - [ ] consider to use "prettier" code-formatter
 - [ ] optimize performance
   - [ ] try table layout instead of divs for board
-  - [ ] replace storage of cell/draft values with bitmask
+  - [ ] replace storage of cell/candidate values with bitmask
 - [ ] have some automated (unit) tests (using real puzzles)
 
 # Links for inspiration

@@ -10,7 +10,7 @@ export class DebugConsoleComponent implements OnInit {
   @Input() isVisible!: boolean;
   @Input() isEnabled!: boolean;
   @Input() notifyOnWrongMoves!: boolean;
-  @Input() autoCleanDraftValues!: boolean;
+  @Input() autoCleanCandidates!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
   @Output() helpClicked = new EventEmitter();
   @Output() hintBoardClicked = new EventEmitter();
