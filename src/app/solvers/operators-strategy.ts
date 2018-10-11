@@ -105,7 +105,7 @@ export class OperatorsStrategy extends SolverStrategy {
                             const adjacentMaxValue = adjacentMaxValue1 - 1;
                             const generateCount = this.board.size - adjacentMaxValue + 1;
                             const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
-                            return this.removeCandidatesFromCell(coordinate, digitsToRemove,
+                            return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                                 `Operators ${MoveDirection[direction1]} > ${coordinate} < ${MoveDirection[direction2]}`);
                         }
                     } else {
@@ -115,7 +115,7 @@ export class OperatorsStrategy extends SolverStrategy {
                         if (adjacentMinValue1 === adjacentMinValue2) {
                             const adjacentMinValue = adjacentMinValue1 + 1;
                             const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
-                            return this.removeCandidatesFromCell(coordinate, digitsToRemove,
+                            return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                                 `Operators ${MoveDirection[direction1]} < ${coordinate} > ${MoveDirection[direction2]}`);
                         }
                     }
@@ -137,12 +137,12 @@ export class OperatorsStrategy extends SolverStrategy {
                         const adjacentMaxValue = adjacentCell.getMaximum() || this.board.size;
                         const generateCount = this.board.size - adjacentMaxValue + 1;
                         const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
-                        return this.removeCandidatesFromCell(coordinate, digitsToRemove,
+                        return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                             `Operator ${coordinate} < ${MoveDirection[direction]}`);
                     } else {
                         const adjacentMinValue = adjacentCell.getMinimum() || 1;
                         const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
-                        return this.removeCandidatesFromCell(coordinate, digitsToRemove,
+                        return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                             `Operator ${coordinate} > ${MoveDirection[direction]}`);
                     }
                 }
@@ -152,19 +152,13 @@ export class OperatorsStrategy extends SolverStrategy {
         return false;
     }
 
-    private removeCandidatesFromCell(coordinate: Coordinate, digitsToRemove: number[], description: string): boolean {
-        const digitsRemoved = [];
+    private removeCandidatesForOperator(coordinate: Coordinate, digitsToRemove: number[], description: string): boolean {
+        const removeCount = this.removeCandidatesFromCell(coordinate, digitsToRemove);
 
-        for (const digitToRemove of digitsToRemove) {
-            if (this.removeCandidateFromCell(coordinate, digitToRemove)) {
-                digitsRemoved.push(digitToRemove);
-            }
+        if (removeCount > 0) {
+            this.reportVerbose(`${description} eliminates ${removeCount} candidates from ${coordinate}.`);
         }
 
-        if (digitsRemoved.length > 0) {
-            console.log(`${description} eliminates ${digitsRemoved} from ${coordinate}.`);
-        }
-
-        return digitsRemoved.length > 0;
+        return removeCount > 0;
     }
 }
