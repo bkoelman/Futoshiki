@@ -2,6 +2,7 @@ import { Coordinate } from './models/coordinate';
 import { MoveDirection } from './models/move-direction.enum';
 import { ComparisonOperator } from './models/comparison-operator.enum';
 import { Board } from './models/board';
+import { BoardTextConverter } from './board-text-converter';
 
 export function expectEmptyCell(coordinateText: string, board: Board) {
     const coordinate = Coordinate.fromText(coordinateText, board.size);
@@ -53,4 +54,11 @@ export function expectOperator(coordinateText: string, direction: MoveDirection,
     const coordinate = Coordinate.fromText(coordinateText, board.size);
     const operatorValue = board.getOperator(coordinate, direction);
     expect(ComparisonOperator[operatorValue]).toBe(ComparisonOperator[operator]);
+}
+
+export function expectBoard(board: Board, indentDepth: number, text: string) {
+    const converter = new BoardTextConverter();
+    const formatted = converter.boardToText(board, ' '.repeat(indentDepth));
+
+    expect('\n' + formatted).toBe(text);
 }
