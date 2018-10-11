@@ -56,9 +56,10 @@ export function expectOperator(coordinateText: string, direction: MoveDirection,
     expect(ComparisonOperator[operatorValue]).toBe(ComparisonOperator[operator]);
 }
 
-export function expectBoard(board: Board, indentDepth: number, text: string) {
+export function expectBoard(board: Board, text: string) {
     const converter = new BoardTextConverter();
-    const formatted = converter.boardToText(board, ' '.repeat(indentDepth));
+    const formatted = converter.boardToText(board);
 
-    expect('\n' + formatted).toBe(text);
+    const textLinesTrimmed = text.split(/[\r\n]+/).map(line => line.trim()).filter(line => line.length > 0).join('\n');
+    expect('\n' + formatted).toBe('\n' + textLinesTrimmed);
 }

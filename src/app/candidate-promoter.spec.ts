@@ -35,7 +35,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidateAt(Coordinate.fromText('A2', board.size), false);
 
             expect(hasChanges).toBeTruthy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+---+
                 |     | !3 | 34  > 2 |
                 +-----+-v--+-----+-v-+
@@ -51,7 +51,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidateAt(Coordinate.fromText('A2', board.size), true);
 
             expect(hasChanges).toBeTruthy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+---+
                 |     | !3 |  4  > 2 |
                 +-----+-v--+-----+-v-+
@@ -67,7 +67,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidateAt(Coordinate.fromText('B3', board.size), true);
 
             expect(hasChanges).toBeFalsy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+---+
                 |     | 3  | 34  > 2 |
                 +-----+-v--+-----+-v-+
@@ -83,7 +83,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidateAt(Coordinate.fromText('C2', board.size), true);
 
             expect(hasChanges).toBeFalsy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+---+
                 |     | 3  | 34  > 2 |
                 +-----+-v--+-----+-v-+
@@ -99,7 +99,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidateAt(Coordinate.fromText('D1', board.size), true);
 
             expect(hasChanges).toBeFalsy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+---+
                 |     | 3  | 34  > 2 |
                 +-----+-v--+-----+-v-+
@@ -115,7 +115,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidateAt(Coordinate.fromText('C1', board.size), true);
 
             expect(hasChanges).toBeFalsy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+---+
                 |     | 3  | 34  > 2 |
                 +-----+-v--+-----+-v-+
@@ -133,7 +133,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidates(false);
 
             expect(hasChanges).toBeTruthy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +-----+----+-----+----+
                 |     | !3 | 34  > !2 |
                 +-----+-v--+-----+-v--+
@@ -149,7 +149,7 @@ describe('CandidatePromoter', () => {
             const hasChanges = promoter.promoteSingleCandidates(true);
 
             expect(hasChanges).toBeTruthy();
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +----+----+----+----+
                 |    | !3 | 4  > !2 |
                 +----+-v--+----+-v--+

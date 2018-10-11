@@ -33,7 +33,7 @@ describe('CandidateCleaner', () => {
         it('should reduce values in row and column', () => {
             cleaner.reduceCandidates(5, Coordinate.fromText('D5', board.size));
 
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +------+------+-------+-----+-----+
                 |      | 2345 |       >     | 123 |
                 +--v---+--v---+-------+-----+--^--+
@@ -50,7 +50,7 @@ describe('CandidateCleaner', () => {
         it('should reduce values for greater-than operators', () => {
             cleaner.reduceCandidates(3, Coordinate.fromText('B2', board.size));
 
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +------+-----+------+------+-----+
                 |      | 45  |      >      | 123 |
                 +--v---+--v--+------+------+--^--+
@@ -67,7 +67,7 @@ describe('CandidateCleaner', () => {
         it('should reduce values for less-than operators', () => {
             cleaner.reduceCandidates(2, Coordinate.fromText('D3', board.size));
 
-            expectBoard(board, 16, `
+            expectBoard(board, `
                 +------+------+------+-----+-----+
                 |      | 2345 |      >     | 123 |
                 +--v---+--v---+------+-----+--^--+
