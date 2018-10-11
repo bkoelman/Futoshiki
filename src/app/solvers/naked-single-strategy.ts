@@ -14,7 +14,7 @@ export class NakedSingleStrategy extends SolverStrategy {
                 let changeCount = 0;
 
                 for (const nextCoordinate of coordinate.iterateRow(true).concat(coordinate.iterateColumn(true))) {
-                    if (this.removeDigitFromCell(nextCoordinate, digit)) {
+                    if (this.removeCandidateFromCell(nextCoordinate, digit)) {
                         changeCount++;
                     }
                 }
@@ -34,7 +34,7 @@ export class NakedSingleStrategy extends SolverStrategy {
         for (const nextCoordinate of coordinate.iterateRow(true).concat(coordinate.iterateColumn(true))) {
             const digit = this.getSingleDigitAt(nextCoordinate);
             if (digit !== undefined) {
-                const hasChanges = this.removeDigitFromCell(coordinate, digit);
+                const hasChanges = this.removeCandidateFromCell(coordinate, digit);
 
                 if (hasChanges) {
                     this.reportChange(`Naked single (${digit}) in cell ${nextCoordinate} eliminated '${digit}' from ${coordinate}.`);
@@ -58,9 +58,9 @@ export class NakedSingleStrategy extends SolverStrategy {
         return undefined;
     }
 
-    private removeDigitFromCell(coordinate: Coordinate, digitToRemove: number): boolean {
+    private removeCandidateFromCell(coordinate: Coordinate, digitToRemove: number): boolean {
         const cell = this.board.getCell(coordinate);
-        if (cell) {
+        if (cell && cell.value === undefined) {
             const possibleValues = cell.getPossibleValues();
             if (possibleValues.indexOf(digitToRemove) > -1) {
                 cell.removeCandidate(digitToRemove);

@@ -20,8 +20,8 @@ export class HintProvider {
             new SetCandidatesStrategy(this._board),
             new PromoteStrategy(this._board),
             new NakedSingleStrategy(this._board),
-
             new HiddenSingleStrategy(this._board),
+
             new OperatorStrategy(this._board),
             new NakedSetStrategy(this._board),
             new HiddenSetStrategy(this._board),
