@@ -18,6 +18,11 @@ export abstract class SolverStrategy {
             const possibleValues = cell.getPossibleValues();
             if (possibleValues.indexOf(digitToRemove) > -1) {
                 cell.removeCandidate(digitToRemove);
+
+                if (possibleValues.length === 1) {
+                    throw new Error(`No possible values for ${coordinate}.`);
+                }
+
                 return true;
             }
         }
