@@ -10,6 +10,7 @@ import { OperatorsStrategy } from './solvers/operators-strategy';
 import { NakedSetStrategy } from './solvers/naked-set-strategy';
 import { HiddenSetStrategy } from './solvers/hidden-set-strategy';
 import { NakedPairTripleStrategy } from './solvers/naked-pair-triple-strategy';
+import { NakedQuadStrategy } from './solvers/naked-quad-strategy';
 
 export class HintProvider {
     private _checker: MoveChecker;
@@ -27,6 +28,7 @@ export class HintProvider {
 
             // new NakedSetStrategy(this._board),
             // new HiddenSetStrategy(this._board),
+            new NakedQuadStrategy(this._board),
         ];
     }
 

@@ -8,7 +8,7 @@ export class SetFacilities {
         return new Set<number>(ObjectFacilities.createNumberSequence(count, startAt));
     }
 
-    static createPowerSet<T>(set: ReadonlySet<T>): Set<Set<T>> {
+    static createPowerSet<T>(set: ReadonlySet<T>): ReadonlySet<ReadonlySet<T>> {
         const sets = new Set<Set<T>>();
 
         for (const entry of ObjectFacilities.createPowerSet([...set])) {

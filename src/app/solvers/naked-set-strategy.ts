@@ -1,165 +1,76 @@
 import { SolverStrategy } from './solver-strategy';
 import { Coordinate } from '../models/coordinate';
-import { Board } from '../models/board';
-import { ObjectFacilities } from '../object-facilities';
+import { SetFacilities } from '../set-facilities';
 
-export class NakedSetStrategy extends SolverStrategy {
-    private _boardSizeCached: number | undefined;
-    private _powerSetForAllCellValuesCached: number[][] = [[]];
+export abstract class NakedSetStrategy extends SolverStrategy {
+    private _superBoardSizeCached = -1;
+    private _powerSetForAllCellValues: ReadonlySet<ReadonlySet<number>> = SetFacilities.emptyNumberSetOfSet;
 
-    constructor(board: Board) {
-        super('Naked Set', board);
+    protected get powerSetForAllCellValues() {
+        this.superEnsureCache();
+        return this._powerSetForAllCellValues;
     }
 
-    runAtBoard(): boolean {
-        for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
-            const cell = this.board.getCell(coordinate);
-            if (cell && cell.value === undefined) {
-                if (this.runAtCoordinate(coordinate)) {
-                    return true;
-                }
+    private superEnsureCache() {
+        if (this._superBoardSizeCached !== this.board.size) {
+            this._powerSetForAllCellValues = SetFacilities.createPowerSet(this.allCellValues);
+            this._superBoardSizeCached = this.board.size;
+        }
+    }
+
+    protected runAtSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[], sequenceName: string,
+        singleCell: Coordinate | undefined): boolean {
+        const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence);
+        if (nakedSetMembers.length === digitSet.size) {
+            let otherCells = sequence.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
+
+            if (singleCell !== undefined) {
+                otherCells = otherCells.filter(coordinate => coordinate.isEqualTo(singleCell));
             }
+
+            return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequenceName);
         }
 
         return false;
     }
 
-    runAtCoordinate(coordinate: Coordinate): boolean {
-        const candidateValueSet = this.calculateCandidateValueSetAt(coordinate);
-        return this.applyCandidateValueSet(coordinate, candidateValueSet);
-    }
-
-    private calculateCandidateValueSetAt(coordinate: Coordinate): number[] {
-        this.ensureCache();
-
-        const candidateValueSet = [...this.allCellValues];
-
-        this.applyDigitRules(coordinate, candidateValueSet);
-
-        return candidateValueSet;
-    }
-
-    private ensureCache(): void {
-        if (this._boardSizeCached !== this.board.size) {
-            this._boardSizeCached = this.board.size;
-            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet([...this.allCellValues]);
-        }
-    }
-
-    private applyDigitRules(coordinate: Coordinate, candidateValueSet: number[]): void {
-        const coordinatesInRow = coordinate.iterateRow(true);
-        const coordinatesInColumn = coordinate.iterateColumn(true);
-
-        this.applyDigitRulesInSequence(coordinate, coordinatesInRow, candidateValueSet, 'row');
-        this.applyDigitRulesInSequence(coordinate, coordinatesInColumn, candidateValueSet, 'column');
-    }
-
-    private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],
-        sequenceName: string): void {
-        const possibleDigitsInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
-
-        this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleDigitsInSequence, sequenceName);
-    }
-
-    private getPossibleCellValuesInSequence(sequence: Coordinate[]): number[][] {
-        const possibleDigitsPerCell: number[][] = [];
+    private getMembersOfNakedSetInSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[]): Coordinate[] {
+        const memberCoordinates: Coordinate[] = [];
 
         for (const coordinate of sequence) {
-            const digits = this.getPossibleDigitsForCell(coordinate);
-            possibleDigitsPerCell.push([...digits]);
-        }
+            const cell = this.board.getCell(coordinate);
+            if (cell) {
+                const candidates = cell.getCandidates();
+                const digitsInsideSet = SetFacilities.filterSet(candidates, digit => digitSet.has(digit));
+                const digitsOutsideSet = SetFacilities.filterSet(candidates, digit => !digitSet.has(digit));
 
-        return possibleDigitsPerCell;
-    }
-
-    private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleDigitsPerCell: number[][],
-        sequenceName: string): void {
-        // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells each contain only the same N digits,
-        // then those digits must be the answers for the N cells, and any occurrences of those digits in other cells in the sequence
-        // can be deleted.
-        // N ranges from 1 to the size of the board (exclusive).
-        //
-        // Example:
-        //      12 | 12 | 123 | 245 | 135
-        //  =>  12 | 12 |   3 |  45 |  35
-
-        for (const digitSet of this._powerSetForAllCellValuesCached) {
-            if (digitSet.length > 0 && digitSet.length < this.board.size) {
-                const frequency = this.getNakedSetFrequency(digitSet, possibleDigitsPerCell);
-                if (frequency >= digitSet.length) {
-                    const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) > -1);
-                    this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
-                        `Naked Set rule with set {${digitSet}} in ${sequenceName}`);
+                if (digitsInsideSet.size > 0 && digitsOutsideSet.size === 0) {
+                    memberCoordinates.push(coordinate);
                 }
             }
         }
+
+        return memberCoordinates;
     }
 
-    private getNakedSetFrequency(digitSet: number[], possibleDigitsPerCell: number[][]): number {
-        let setFoundCount = 0;
+    private removeCandidatesFromOtherCells(otherCells: Coordinate[], digitsToRemove: ReadonlySet<number>, nakedSetMembers: Coordinate[],
+        sequenceName: string): boolean {
 
-        for (const possibleDigits of possibleDigitsPerCell) {
-            if (this.isNakedSet(digitSet, possibleDigits)) {
-                setFoundCount++;
+        let changedCellCount = 0;
+        for (const coordinate of otherCells) {
+            if (this.removeCandidatesFromCell(coordinate, digitsToRemove) > 0) {
+                changedCellCount++;
             }
         }
 
-        return setFoundCount;
-    }
-
-    private isNakedSet(digitSet: number[], possibleDigits: number[]) {
-        return JSON.stringify(digitSet) === JSON.stringify(possibleDigits);
-    }
-
-    private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string): void {
-        const beforeText = candidateValueSet.join(',');
-        this.removeNumbersFromArray(candidateValueSet, digitsToRemove);
-        const afterText = candidateValueSet.join(',');
-
-        if (beforeText !== afterText) {
-            console.log(`Applying ${ruleName} at cell ${coordinate}: ${beforeText} => ${afterText}`);
-        }
-    }
-
-    private removeNumbersFromArray(targetArray: number[], numbersToRemove: number[]): void {
-        for (const numberToRemove of numbersToRemove) {
-            const indexToRemove = targetArray.indexOf(numberToRemove);
-            if (indexToRemove > -1) {
-                targetArray.splice(indexToRemove, 1);
-            }
-        }
-    }
-
-    private applyCandidateValueSet(coordinate: Coordinate, candidateValueSet: number[]): boolean {
-        if (candidateValueSet.length === 0) {
-            throw new Error(`No possible digits for ${coordinate}.`);
-        }
-
-        const actualValueSet = this.getActualValueSet(coordinate);
-
-        const newValueSet = actualValueSet.length === 0 ? candidateValueSet :
-            actualValueSet.filter(digit => candidateValueSet.indexOf(digit) > -1);
-
-        if (newValueSet.length === 0) {
-            throw new Error(`No possible digits for ${coordinate}.`);
-        }
-
-        if (newValueSet.length !== actualValueSet.length) {
-            console.log(`${coordinate}: [${actualValueSet}] to [${newValueSet}] (candidate set: ${candidateValueSet})`);
-
-            const cell = this.board.getCell(coordinate);
-            if (cell) {
-                cell.setCandidates(new Set<number>(newValueSet));
-            }
+        if (changedCellCount > 0) {
+            const name = digitsToRemove.size === 2 ? 'Naked pair' : digitsToRemove.size === 3 ? 'Naked triple' : 'Naked quad';
+            this.reportChange(`${name} (${SetFacilities.formatSet(digitsToRemove)}) in cells (${nakedSetMembers}) eliminated ` +
+                `${SetFacilities.formatSet(digitsToRemove)} from ${changedCellCount} other cells in that ${sequenceName}.`);
 
             return true;
         }
 
         return false;
-    }
-
-    private getActualValueSet(coordinate: Coordinate): number[] {
-        const cell = this.board.getCell(coordinate);
-        return cell ? [...cell.getCandidates()] : [];
     }
 }
