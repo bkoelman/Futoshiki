@@ -2,21 +2,14 @@ import { NakedSetStrategy } from './naked-set-strategy';
 import { SetFacilities } from '../set-facilities';
 import { Board } from '../models/board';
 import { Coordinate } from '../models/coordinate';
+import { BoardSizeBasedCache } from '../boardsizebasedcache';
 
 export class NakedQuadStrategy extends NakedSetStrategy {
-    private _boardSizeCached = -1;
-    private _powerSetForQuads = SetFacilities.emptyNumberSetOfSet;
+    private _powerSetForQuadsCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.filterSet(this.powerSetForAllCellValues, set => set.size === 4));
 
     private get powerSetForQuads() {
-        this.ensureCache();
-        return this._powerSetForQuads;
-    }
-
-    private ensureCache() {
-        if (this._boardSizeCached !== this.board.size) {
-            this._powerSetForQuads = SetFacilities.filterSet(this.powerSetForAllCellValues, set => set.size === 4);
-            this._boardSizeCached = this.board.size;
-        }
+        return this._powerSetForQuadsCache.value;
     }
 
     constructor(board: Board) {
@@ -24,14 +17,10 @@ export class NakedQuadStrategy extends NakedSetStrategy {
     }
 
     runAtBoard(): boolean {
-        this.ensureCache();
-
         return this.runAtSequences(this.rowColumnSequences, undefined);
     }
 
     runAtCoordinate(coordinate: Coordinate): boolean {
-        this.ensureCache();
-
         const sequences = [{
             coordinates: coordinate.iterateRow(false),
             name: 'row'

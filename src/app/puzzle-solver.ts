@@ -26,7 +26,7 @@ export class PuzzleSolver {
             console.log(`Final possible values for ${coordinate}: ${candidateValueSet}`);
         }
 
-        return new Set<number>(candidateValueSet);
+        return new Set(candidateValueSet);
     }
 
     private ensureCache(): void {

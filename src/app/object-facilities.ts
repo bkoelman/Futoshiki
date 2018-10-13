@@ -3,7 +3,7 @@ export class ObjectFacilities {
         return Array.apply(undefined, Array(count)).map((item: number, index: number) => index + startAt);
     }
 
-    static iterateObjectProperties<TValue>(obj: { [name: string]: TValue }, callback: (name: string, value: TValue) => void) {
+    static iterateObjectProperties<T>(obj: { [name: string]: T }, callback: (name: string, value: T) => void) {
         for (const propertyName in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
                 const propertyValue = obj[propertyName];

@@ -84,21 +84,21 @@ describe('BoardTextConverter', () => {
         it('should format board correctly', () => {
             const board = new MemoryBoard(5);
 
-            getExistingCell(board, 'A1').setCandidates(new Set<number>([2, 5]));
-            getExistingCell(board, 'A5').setCandidates(new Set<number>([1, 2, 3, 4, 5]));
+            getExistingCell(board, 'A1').setCandidates(new Set([2, 5]));
+            getExistingCell(board, 'A5').setCandidates(new Set([1, 2, 3, 4, 5]));
 
-            getExistingCell(board, 'B3').setCandidates(new Set<number>([3, 4, 5]));
+            getExistingCell(board, 'B3').setCandidates(new Set([3, 4, 5]));
 
             getExistingCell(board, 'C3').setFixedValue(2);
-            getExistingCell(board, 'C5').setCandidates(new Set<number>([1, 3, 4]));
+            getExistingCell(board, 'C5').setCandidates(new Set([1, 3, 4]));
 
             getExistingCell(board, 'D1').setUserValue(3);
             getExistingCell(board, 'D2').setUserValue(2);
-            getExistingCell(board, 'D3').setCandidates(new Set<number>([1]));
-            getExistingCell(board, 'D5').setCandidates(new Set<number>([4, 5]));
+            getExistingCell(board, 'D3').setCandidates(new Set([1]));
+            getExistingCell(board, 'D5').setCandidates(new Set([4, 5]));
 
             getExistingCell(board, 'E1').setFixedValue(4);
-            getExistingCell(board, 'E4').setCandidates(new Set<number>([1, 2, 3]));
+            getExistingCell(board, 'E4').setCandidates(new Set([1, 2, 3]));
 
             board.setOperator(Coordinate.fromText('A1', board.size), MoveDirection.Down, ComparisonOperator.GreaterThan);
             board.setOperator(Coordinate.fromText('A3', board.size), MoveDirection.Down, ComparisonOperator.LessThan);

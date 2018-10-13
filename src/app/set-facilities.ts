@@ -5,14 +5,14 @@ export class SetFacilities {
     static readonly emptyNumberSetOfSet: ReadonlySet<ReadonlySet<number>> = new Set<Set<number>>();
 
     static createNumberSet(count: number, startAt: number = 1): ReadonlySet<number> {
-        return new Set<number>(ObjectFacilities.createNumberSequence(count, startAt));
+        return new Set(ObjectFacilities.createNumberSequence(count, startAt));
     }
 
     static createPowerSet<T>(set: ReadonlySet<T>): ReadonlySet<ReadonlySet<T>> {
         const sets = new Set<Set<T>>();
 
         for (const entry of ObjectFacilities.createPowerSet([...set])) {
-            sets.add(new Set<T>(entry));
+            sets.add(new Set(entry));
         }
 
         return sets;

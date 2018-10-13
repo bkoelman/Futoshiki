@@ -50,7 +50,7 @@ export class DigitCellComponent implements Cell, OnInit {
   }
 
   getCandidates(): ReadonlySet<number> {
-    return this.value !== undefined ? SetFacilities.emptyNumberSet : new Set<number>(this._candidates);
+    return this.value !== undefined ? SetFacilities.emptyNumberSet : new Set(this._candidates);
   }
 
   getMinimum(): number | undefined {
@@ -109,7 +109,7 @@ export class DigitCellComponent implements Cell, OnInit {
     if (JSON.stringify(otherArray) !== JSON.stringify(thisArray)) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._candidates = new Set<number>(otherArray);
+        this._candidates = new Set(otherArray);
       });
     }
   }
@@ -135,7 +135,7 @@ export class DigitCellComponent implements Cell, OnInit {
     const array = [...digits];
     array.push(digitToInsert);
     array.sort();
-    return new Set<number>(array);
+    return new Set(array);
   }
 
   setError(candidateDigit: number | undefined) {
@@ -147,14 +147,14 @@ export class DigitCellComponent implements Cell, OnInit {
   }
 
   getContentSnapshot(): CellContentSnapshot {
-    return new CellContentSnapshot(this._userValue, new Set<number>(this._candidates));
+    return new CellContentSnapshot(this._userValue, new Set(this._candidates));
   }
 
   restoreContentSnapshot(snapshot: CellContentSnapshot) {
     const snapshotBefore = this.getContentSnapshot();
     if (!snapshotBefore.isEqualTo(snapshot)) {
       this.raiseChangeEventFor(() => {
-        this._candidates = new Set<number>(snapshot.candidates);
+        this._candidates = new Set(snapshot.candidates);
         this._userValue = snapshot.userValue;
       });
     }

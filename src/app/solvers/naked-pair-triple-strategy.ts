@@ -2,29 +2,20 @@ import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { SetFacilities } from '../set-facilities';
 import { NakedSetStrategy } from './naked-set-strategy';
+import { BoardSizeBasedCache } from '../boardsizebasedcache';
 
 export class NakedPairTripleStrategy extends NakedSetStrategy {
-    private _boardSizeCached = -1;
-    private _powerSetForPairs = SetFacilities.emptyNumberSetOfSet;
-    private _powerSetForTriples = SetFacilities.emptyNumberSetOfSet;
+    private _powerSetForPairsCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.filterSet(this.powerSetForAllCellValues, set => set.size === 2));
+    private _powerSetForTriplesCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.filterSet(this.powerSetForAllCellValues, set => set.size === 3));
 
     private get powerSetForPairs() {
-        this.ensureCache();
-        return this._powerSetForPairs;
+        return this._powerSetForPairsCache.value;
     }
 
     private get powerSetForTriples() {
-        this.ensureCache();
-        return this._powerSetForTriples;
-    }
-
-    private ensureCache() {
-        if (this._boardSizeCached !== this.board.size) {
-            this._powerSetForPairs = SetFacilities.filterSet(this.powerSetForAllCellValues, set => set.size === 2);
-            this._powerSetForTriples = SetFacilities.filterSet(this.powerSetForAllCellValues, set => set.size === 3);
-
-            this._boardSizeCached = this.board.size;
-        }
+        return this._powerSetForTriplesCache.value;
     }
 
     constructor(board: Board) {
@@ -32,14 +23,10 @@ export class NakedPairTripleStrategy extends NakedSetStrategy {
     }
 
     runAtBoard(): boolean {
-        this.ensureCache();
-
         return this.runAtSequences(this.rowColumnSequences, undefined);
     }
 
     runAtCoordinate(coordinate: Coordinate): boolean {
-        this.ensureCache();
-
         const sequences = [{
             coordinates: coordinate.iterateRow(false),
             name: 'row'

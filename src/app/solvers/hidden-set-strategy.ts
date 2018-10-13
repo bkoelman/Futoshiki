@@ -143,7 +143,7 @@ export class HiddenSetStrategy extends SolverStrategy {
 
             const cell = this.board.getCell(coordinate);
             if (cell) {
-                cell.setCandidates(new Set<number>(newValueSet));
+                cell.setCandidates(new Set(newValueSet));
             }
 
             return true;

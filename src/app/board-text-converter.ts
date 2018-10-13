@@ -164,7 +164,7 @@ class BoardTextParser {
     private parseCandidatesInDigitLine() {
         const digits = this.consumeDigits();
 
-        const uniqueDigits = new Set<number>(digits);
+        const uniqueDigits = new Set(digits);
         if (uniqueDigits.size !== digits.length) {
             throw new Error(`Duplicate digits found in cell ${this._coordinate}.`);
         }

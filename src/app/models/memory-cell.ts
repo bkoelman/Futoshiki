@@ -31,7 +31,7 @@ export class MemoryCell implements Cell {
     }
 
     getCandidates(): ReadonlySet<number> {
-        return this.value !== undefined ? SetFacilities.emptyNumberSet : new Set<number>(this._candidates);
+        return this.value !== undefined ? SetFacilities.emptyNumberSet : new Set(this._candidates);
     }
 
     getMinimum(): number | undefined {
@@ -90,7 +90,7 @@ export class MemoryCell implements Cell {
 
             const array = [...digits];
             array.sort();
-            this._candidates = new Set<number>(array);
+            this._candidates = new Set(array);
         }
     }
 

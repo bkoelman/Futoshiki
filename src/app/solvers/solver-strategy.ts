@@ -1,30 +1,23 @@
 import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { SetFacilities } from '../set-facilities';
+import { BoardSizeBasedCache } from '../boardsizebasedcache';
 
 const EnableVerboseLog = false;
 
 export abstract class SolverStrategy {
-    private _innerBoardSizeCached = -1;
-    private _innerAllCellValuesCached: ReadonlySet<number> = SetFacilities.emptyNumberSet;
-    private _innerRowColumnSequences: { coordinates: Coordinate[], name: string }[] = [];
+    private _allCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createNumberSet(this.board.size));
+    private _rowColumnSequencesCache = new BoardSizeBasedCache(this.board, () => this.getRowColumnSequences());
 
     protected get allCellValues() {
-        this.innerEnsureCache();
-        return this._innerAllCellValuesCached;
+        return this._allCellValuesCache.value;
     }
 
     protected get rowColumnSequences() {
-        this.innerEnsureCache();
-        return this._innerRowColumnSequences;
+        return this._rowColumnSequencesCache.value;
     }
 
-    private innerEnsureCache() {
-        if (this._innerBoardSizeCached !== this.board.size) {
-            this._innerAllCellValuesCached = SetFacilities.createNumberSet(this.board.size);
-            this._innerBoardSizeCached = this.board.size;
-            this._innerRowColumnSequences = this.getRowColumnSequences();
-        }
+    protected constructor(readonly name: string, readonly board: Board) {
     }
 
     private getRowColumnSequences(): { coordinates: Coordinate[], name: string }[] {
@@ -44,9 +37,6 @@ export abstract class SolverStrategy {
         return sequences;
     }
 
-    protected constructor(readonly name: string, readonly board: Board) {
-    }
-
     abstract runAtBoard(): boolean;
     abstract runAtCoordinate(coordinate: Coordinate): boolean;
 
@@ -64,7 +54,7 @@ export abstract class SolverStrategy {
         const cell = this.board.getCell(coordinate);
         if (cell) {
             if (cell.value !== undefined) {
-                return new Set<number>([cell.value]);
+                return new Set([cell.value]);
             }
 
             const candidates = cell.getCandidates();

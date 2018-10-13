@@ -1,21 +1,13 @@
 import { SolverStrategy } from './solver-strategy';
 import { Coordinate } from '../models/coordinate';
 import { SetFacilities } from '../set-facilities';
+import { BoardSizeBasedCache } from '../boardsizebasedcache';
 
 export abstract class NakedSetStrategy extends SolverStrategy {
-    private _superBoardSizeCached = -1;
-    private _powerSetForAllCellValues: ReadonlySet<ReadonlySet<number>> = SetFacilities.emptyNumberSetOfSet;
+    private _powerSetForAllCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createPowerSet(this.allCellValues));
 
     protected get powerSetForAllCellValues() {
-        this.superEnsureCache();
-        return this._powerSetForAllCellValues;
-    }
-
-    private superEnsureCache() {
-        if (this._superBoardSizeCached !== this.board.size) {
-            this._powerSetForAllCellValues = SetFacilities.createPowerSet(this.allCellValues);
-            this._superBoardSizeCached = this.board.size;
-        }
+        return this._powerSetForAllCellValuesCache.value;
     }
 
     protected runAtSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[], sequenceName: string,
