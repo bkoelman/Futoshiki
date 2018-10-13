@@ -25,16 +25,17 @@
 
   <app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput && playState !== GameCompletionStateAlias.Won"
     [areKeysEnabled]="areShortcutKeysEnabled" (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()"
-    (hintClicked)="onHintClicked()"></app-button-bar>
+    (hintClicked)="onHintCellClicked()"></app-button-bar>
 
   <p></p>
   <div *ngIf="puzzle !== undefined">
     <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canUndo" (click)="undo()">Undo</button>
     <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won"
       (click)="promoteCandidates()">Promote</button>
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won"
+      (click)="onHintBoardClicked()">Hint</button>
   </div>
 
-  <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput"
-    (loadClicked)="loadGame($event)" (helpClicked)="calculateCandidates()" (hintBoardClicked)="onHintBoardClicked()"
-    (hintCellClicked)="onHintCellClicked()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
+  <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
+    (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
 </div>

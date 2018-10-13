@@ -46,7 +46,7 @@
   - [ ] add setting to display hint explanations
     - [ ] update settings modal and store in cookie
     - [ ] add closable textblock to contain explanations
-    - [ ] move buttons from debug mode into normal game
+    - [x] move buttons from debug mode into normal game
     - [ ] display coordinate rulers
   - [x] write scanner to find matching puzzles
     - [ ] create unit tests for strategies

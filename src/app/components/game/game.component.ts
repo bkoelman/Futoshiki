@@ -9,7 +9,6 @@ import { ChangePuzzleModalComponent } from '../change-puzzle-modal/change-puzzle
 import { HttpRequestController } from '../../services/http-request-controller';
 import { CellSnapshot } from '../../models/cell-snapshot';
 import { Coordinate } from '../../models/coordinate';
-import { PuzzleSolver } from '../../puzzle-solver';
 import { GameSaveState } from '../../models/game-save-state';
 import { SaveGameAdapter } from '../../save-game-adapter';
 import { DebugConsoleComponent } from '../debug-console/debug-console.component';
@@ -38,7 +37,6 @@ export class GameComponent implements OnInit {
   @ViewChild(SettingsModalComponent) private _settingsModalComponent!: SettingsModalComponent;
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
   private _undoTracker!: UndoTracker;
-  private _solver!: PuzzleSolver;
   private _autoCleaner!: CandidateCleaner;
   private _candidatePromoter!: CandidatePromoter;
   private _moveChecker!: MoveChecker;
@@ -76,7 +74,6 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this._undoTracker = new UndoTracker(this._boardComponent);
-    this._solver = new PuzzleSolver(this._boardComponent);
     this._autoCleaner = new CandidateCleaner(this._boardComponent);
     this._candidatePromoter = new CandidatePromoter(this._autoCleaner, this._boardComponent);
     this._moveChecker = new MoveChecker(this._boardComponent);
@@ -324,36 +321,27 @@ export class GameComponent implements OnInit {
     this.playState = GameCompletionState.Playing;
   }
 
-  onHintClicked() {
+  promoteCandidates() {
+    this.captureCellChanges(() => {
+      this._candidatePromoter.promoteSingleCandidates(this.settings.autoCleanCandidates);
+    });
+  }
+
+  onHintCellClicked() {
     this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell && cell.value === undefined) {
         const coordinate = this._boardComponent.getCoordinate(cell);
         if (coordinate) {
-          const candidates = this._solver.getCandidatesAtCoordinate(coordinate);
-          cell.setCandidates(candidates);
+          this._hintProvider.runAtCoordinate(coordinate);
         }
       }
     });
   }
 
-  calculateCandidates() {
+  onHintBoardClicked() {
     this.captureCellChanges(() => {
-      if (this.puzzle) {
-        for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
-          const cell = this._boardComponent.getCell(coordinate);
-          if (cell && cell.value === undefined) {
-            const candidates = this._solver.getCandidatesAtCoordinate(coordinate);
-            cell.setCandidates(candidates);
-          }
-        }
-      }
-    });
-  }
-
-  promoteCandidates() {
-    this.captureCellChanges(() => {
-      this._candidatePromoter.promoteSingleCandidates(this.settings.autoCleanCandidates);
+      this._hintProvider.runAtBoard();
     });
   }
 
@@ -422,23 +410,5 @@ export class GameComponent implements OnInit {
 
   menuBarOpenChanged(isOpened: boolean) {
     this._isMenuOpen = isOpened;
-  }
-
-  onHintBoardClicked() {
-    this.captureCellChanges(() => {
-      this._hintProvider.runAtBoard();
-    });
-  }
-
-  onHintCellClicked() {
-    this.captureCellChanges(() => {
-      const cell = this._boardComponent.getSelectedCell();
-      if (cell && cell.value === undefined) {
-        const coordinate = this._boardComponent.getCoordinate(cell);
-        if (coordinate) {
-          this._hintProvider.runAtCoordinate(coordinate);
-        }
-      }
-    });
   }
 }
