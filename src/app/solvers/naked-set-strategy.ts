@@ -3,7 +3,39 @@ import { Coordinate } from '../models/coordinate';
 import { SetFacilities } from '../set-facilities';
 
 export abstract class NakedSetStrategy extends SolverStrategy {
-    protected runAtSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[], sequenceName: string,
+    abstract readonly powerSets: ReadonlySet<ReadonlySet<number>>[];
+
+    runAtBoard(): boolean {
+        return this.runAtSequences(this.rowColumnSequences, undefined);
+    }
+
+    runAtCoordinate(coordinate: Coordinate): boolean {
+        const sequences = [{
+            coordinates: coordinate.iterateRow(false),
+            name: 'row'
+        }, {
+            coordinates: coordinate.iterateColumn(false),
+            name: 'column'
+        }];
+
+        return this.runAtSequences(sequences, coordinate);
+    }
+
+    private runAtSequences(sequences: { coordinates: Coordinate[], name: string }[], singleCoordinate: Coordinate | undefined): boolean {
+        for (const powerSet of this.powerSets) {
+            for (const digitSet of powerSet) {
+                for (const sequence of sequences) {
+                    if (this.runAtSequence(digitSet, sequence.coordinates, sequence.name, singleCoordinate)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private runAtSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[], sequenceName: string,
         singleCoordinate: Coordinate | undefined): boolean {
         const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence);
         if (nakedSetMembers.length === digitSet.size) {
