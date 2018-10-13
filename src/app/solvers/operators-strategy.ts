@@ -1,7 +1,7 @@
 import { SolverStrategy } from './solver-strategy';
 import { Board } from '../models/board';
 import { Coordinate } from '../models/coordinate';
-import { ObjectFacilities } from '../object-facilities';
+import { SetFacilities } from '../set-facilities';
 import { MoveDirection } from '../models/move-direction.enum';
 import { ComparisonOperator } from '../models/comparison-operator.enum';
 
@@ -104,7 +104,7 @@ export class OperatorsStrategy extends SolverStrategy {
                         if (adjacentMaxValue1 === adjacentMaxValue2) {
                             const adjacentMaxValue = adjacentMaxValue1 - 1;
                             const generateCount = this.board.size - adjacentMaxValue + 1;
-                            const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
+                            const digitsToRemove = SetFacilities.createNumberSet(generateCount, adjacentMaxValue);
                             return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                                 `Operators ${MoveDirection[direction1]} > ${coordinate} < ${MoveDirection[direction2]}`);
                         }
@@ -114,7 +114,7 @@ export class OperatorsStrategy extends SolverStrategy {
 
                         if (adjacentMinValue1 === adjacentMinValue2) {
                             const adjacentMinValue = adjacentMinValue1 + 1;
-                            const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
+                            const digitsToRemove = SetFacilities.createNumberSet(adjacentMinValue);
                             return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                                 `Operators ${MoveDirection[direction1]} < ${coordinate} > ${MoveDirection[direction2]}`);
                         }
@@ -136,12 +136,12 @@ export class OperatorsStrategy extends SolverStrategy {
                     if (operator === ComparisonOperator.LessThan) {
                         const adjacentMaxValue = adjacentCell.getMaximum() || this.board.size;
                         const generateCount = this.board.size - adjacentMaxValue + 1;
-                        const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue);
+                        const digitsToRemove = SetFacilities.createNumberSet(generateCount, adjacentMaxValue);
                         return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                             `Operator ${coordinate} < ${MoveDirection[direction]}`);
                     } else {
                         const adjacentMinValue = adjacentCell.getMinimum() || 1;
-                        const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue);
+                        const digitsToRemove = SetFacilities.createNumberSet(adjacentMinValue);
                         return this.removeCandidatesForOperator(coordinate, digitsToRemove,
                             `Operator ${coordinate} > ${MoveDirection[direction]}`);
                     }
@@ -152,7 +152,7 @@ export class OperatorsStrategy extends SolverStrategy {
         return false;
     }
 
-    private removeCandidatesForOperator(coordinate: Coordinate, digitsToRemove: number[], description: string): boolean {
+    private removeCandidatesForOperator(coordinate: Coordinate, digitsToRemove: ReadonlySet<number>, description: string): boolean {
         const removeCount = this.removeCandidatesFromCell(coordinate, digitsToRemove);
 
         if (removeCount > 0) {

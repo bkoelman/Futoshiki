@@ -1,9 +1,9 @@
 import { Board } from './models/board';
 import { Coordinate } from './models/coordinate';
 import { ComparisonOperator } from './models/comparison-operator.enum';
-import { ObjectFacilities } from './object-facilities';
 import { Cell } from './models/cell';
 import { MoveDirection } from './models/move-direction.enum';
+import { SetFacilities } from './set-facilities';
 
 export class CandidateCleaner {
     constructor(private _board: Board) {
@@ -47,12 +47,12 @@ export class CandidateCleaner {
                 if (adjacentCell && adjacentCell.value === undefined) {
                     if (operator === ComparisonOperator.LessThan) {
                         const adjacentMinValue = digit + 1;
-                        const digitsToRemove = ObjectFacilities.createNumberSequence(adjacentMinValue - 1);
+                        const digitsToRemove = SetFacilities.createNumberSet(adjacentMinValue - 1);
                         this.removeCandidates(adjacentCell, digitsToRemove);
                     } else {
                         const adjacentMaxValue = digit - 1;
                         const generateCount = this._board.size - adjacentMaxValue;
-                        const digitsToRemove = ObjectFacilities.createNumberSequence(generateCount, adjacentMaxValue + 1);
+                        const digitsToRemove = SetFacilities.createNumberSet(generateCount, adjacentMaxValue + 1);
                         this.removeCandidates(adjacentCell, digitsToRemove);
                     }
                 }
@@ -60,7 +60,7 @@ export class CandidateCleaner {
         }
     }
 
-    private removeCandidates(cell: Cell, digitsToRemove: number[]) {
+    private removeCandidates(cell: Cell, digitsToRemove: ReadonlySet<number>) {
         for (const digitToRemove of digitsToRemove) {
             cell.removeCandidate(digitToRemove);
         }

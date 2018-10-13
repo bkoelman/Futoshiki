@@ -1,10 +1,11 @@
 import { Cell } from './cell';
 import { MemoryBoard } from './memory-board';
+import { SetFacilities } from '../set-facilities';
 
 export class MemoryCell implements Cell {
     private _fixedValue: number | undefined;
     private _userValue: number | undefined;
-    private _candidates: number[] = [];
+    private _candidates = new Set<number>();
 
     constructor(private _owner: MemoryBoard) {
     }
@@ -18,17 +19,25 @@ export class MemoryCell implements Cell {
     }
 
     get isEmpty(): boolean {
-        return this.value === undefined && this._candidates.length === 0;
+        return this.value === undefined && this._candidates.size === 0;
     }
 
-    getCandidates(): number[] {
-        return this.value !== undefined ? [] : this._candidates.slice();
+    containsCandidate(digit: number): boolean {
+        if (this.isOutOfRange(digit)) {
+            throw new Error(`Invalid candidate value '${digit}'.`);
+        }
+
+        return this.value === undefined && this._candidates.has(digit);
+    }
+
+    getCandidates(): ReadonlySet<number> {
+        return this.value !== undefined ? SetFacilities.emptyNumberSet : new Set<number>(this._candidates);
     }
 
     getMinimum(): number | undefined {
         let result = this.value;
 
-        if (result === undefined && this._candidates.length > 0) {
+        if (result === undefined && this._candidates.size > 0) {
             result = Math.min(...this._candidates);
         }
 
@@ -38,7 +47,7 @@ export class MemoryCell implements Cell {
     getMaximum(): number | undefined {
         let result = this.value;
 
-        if (result === undefined && this._candidates.length > 0) {
+        if (result === undefined && this._candidates.size > 0) {
             result = Math.max(...this._candidates);
         }
 
@@ -46,13 +55,13 @@ export class MemoryCell implements Cell {
     }
 
     setFixedValue(digit: number) {
-        if (this.isOutOfRange(digit)) {
-            throw new Error(`Invalid cell value '${digit}'.`);
-        }
-
         if (digit !== undefined) {
+            if (this.isOutOfRange(digit)) {
+                throw new Error(`Invalid cell value '${digit}'.`);
+            }
+
             this._userValue = undefined;
-            this._candidates = [];
+            this._candidates.clear();
         }
 
         this._fixedValue = digit;
@@ -65,30 +74,32 @@ export class MemoryCell implements Cell {
 
         if (!this.isFixed) {
             this._userValue = digit;
-            this._candidates = [];
+            this._candidates.clear();
         }
     }
 
-    setCandidates(digits: number[]) {
-        const firstOutOfRange = digits.find(digit => this.isOutOfRange(digit));
-        if (firstOutOfRange !== undefined) {
-            throw new Error(`Invalid candidate '${firstOutOfRange}'.`);
-        }
+    setCandidates(digits: ReadonlySet<number>) {
+        digits.forEach(digit => {
+            if (this.isOutOfRange(digit)) {
+                throw new Error(`Invalid candidate value '${digit}'.`);
+            }
+        });
 
         if (!this.isFixed) {
             this._userValue = undefined;
-            this._candidates = digits.slice().sort();
+
+            const array = [...digits];
+            array.sort();
+            this._candidates = new Set<number>(array);
         }
     }
 
     removeCandidate(digit: number) {
         if (this.isOutOfRange(digit)) {
-            throw new Error(`Invalid candidate '${digit}'.`);
+            throw new Error(`Invalid candidate value '${digit}'.`);
         }
 
-        if (this._candidates.indexOf(digit) > -1) {
-            this._candidates = this._candidates.filter(item => item !== digit);
-        }
+        this._candidates.delete(digit);
     }
 
     private isOutOfRange(digit: number) {

@@ -35,7 +35,7 @@ export class HiddenSingleStrategy extends SolverStrategy {
                 for (const sequence of sequences) {
                     if (!this.sequenceContainsEmptyCells(sequence.coordinates)) {
                         if (!this.sequenceContainsDigit(sequence.coordinates, digit)) {
-                            cell.setCandidates([digit]);
+                            cell.setCandidates(new Set<number>([digit]));
                             this.reportChange(`Hidden single (${digit}) in ${sequence.name} ` +
                                 `of cell ${coordinate} eliminated others in this cell.`);
                             return true;
@@ -62,7 +62,7 @@ export class HiddenSingleStrategy extends SolverStrategy {
     private sequenceContainsDigit(sequence: Coordinate[], digit: number): boolean {
         for (const coordinate of sequence) {
             const digits = this.getPossibleDigitsForCell(coordinate);
-            if (digits.indexOf(digit) > -1) {
+            if (digits.has(digit)) {
                 return true;
             }
         }

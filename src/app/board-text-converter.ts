@@ -164,8 +164,8 @@ class BoardTextParser {
     private parseCandidatesInDigitLine() {
         const digits = this.consumeDigits();
 
-        const uniqueDigits = ObjectFacilities.getUniqueArrayElements(digits);
-        if (uniqueDigits.length !== digits.length) {
+        const uniqueDigits = new Set<number>(digits);
+        if (uniqueDigits.size !== digits.length) {
             throw new Error(`Duplicate digits found in cell ${this._coordinate}.`);
         }
 
@@ -174,7 +174,7 @@ class BoardTextParser {
             throw new Error(`Cell ${this._coordinate} not found.`);
         }
 
-        cell.setCandidates(digits);
+        cell.setCandidates(uniqueDigits);
     }
 
     private parseSeparatorLine() {
@@ -252,7 +252,7 @@ class BoardTextFormatter {
         for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
             const cell = this._board.getCell(coordinate);
             if (cell) {
-                const width = cell.value !== undefined ? 2 : cell.getCandidates().length;
+                const width = cell.value !== undefined ? 2 : cell.getCandidates().size;
                 const columnIndex = this.getColumnIndex();
                 const previousWidth = maxColumnWidths[columnIndex];
                 if (previousWidth === undefined || previousWidth < width) {
@@ -352,10 +352,13 @@ class BoardTextFormatter {
         if (cell.isFixed) {
             return '#' + cell.value;
         }
+
         if (cell.value !== undefined) {
             return '!' + cell.value;
         }
-        return cell.getCandidates().join('');
+
+        const candidates = [...cell.getCandidates()];
+        return candidates.join('');
     }
 
     private formatOperatorInDigitLine(operator: ComparisonOperator): string {

@@ -12,7 +12,7 @@ export class PuzzleSolver {
     constructor(private _board: Board) {
     }
 
-    getCandidatesAtCoordinate(coordinate: Coordinate): number[] {
+    getCandidatesAtCoordinate(coordinate: Coordinate): ReadonlySet<number> {
         this.ensureCache();
 
         const candidateValueSet = this._allCellValuesCached.slice();
@@ -26,7 +26,7 @@ export class PuzzleSolver {
             console.log(`Final possible values for ${coordinate}: ${candidateValueSet}`);
         }
 
-        return candidateValueSet;
+        return new Set<number>(candidateValueSet);
     }
 
     private ensureCache(): void {
@@ -179,8 +179,8 @@ export class PuzzleSolver {
             }
 
             const candidates = cell.getCandidates();
-            if (candidates.length > 0) {
-                return candidates;
+            if (candidates.size > 0) {
+                return [...candidates];
             }
         }
 

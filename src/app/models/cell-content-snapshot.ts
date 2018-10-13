@@ -1,7 +1,9 @@
-export class CellContentSnapshot {
-    private static _emptySnapshot = new CellContentSnapshot(undefined, []);
+import { SetFacilities } from '../set-facilities';
 
-    constructor(public readonly userValue: number | undefined, public readonly candidates: number[]) {
+export class CellContentSnapshot {
+    private static readonly _emptySnapshot = new CellContentSnapshot(undefined, SetFacilities.emptyNumberSet);
+
+    constructor(public readonly userValue: number | undefined, public readonly candidates: ReadonlySet<number>) {
     }
 
     static empty(): CellContentSnapshot {
@@ -9,14 +11,16 @@ export class CellContentSnapshot {
     }
 
     static fromUserValue(userValue: number): CellContentSnapshot {
-        return new CellContentSnapshot(userValue, []);
+        return new CellContentSnapshot(userValue, SetFacilities.emptyNumberSet);
     }
 
-    static fromCandidates(candidates: number[]): CellContentSnapshot {
-        return new CellContentSnapshot(undefined, candidates.sort());
+    static fromCandidates(candidates: ReadonlySet<number>): CellContentSnapshot {
+        return new CellContentSnapshot(undefined, candidates);
     }
 
     isEqualTo(other: CellContentSnapshot) {
-        return JSON.stringify(this) === JSON.stringify(other);
+        const thisCandidates = [...this.candidates];
+        const otherCandidates = [...other.candidates];
+        return this.userValue === other.userValue && JSON.stringify(thisCandidates) === JSON.stringify(otherCandidates);
     }
 }

@@ -3,12 +3,13 @@ export interface Cell {
     readonly isFixed: boolean;
     readonly isEmpty: boolean;
 
-    getCandidates(): number[];
+    containsCandidate(digit: number): boolean;
+    getCandidates(): ReadonlySet<number>;
     getMinimum(): number | undefined;
     getMaximum(): number | undefined;
 
     setFixedValue(digit: number): void;
     setUserValue(digit: number): void;
-    setCandidates(digits: number[]): void;
+    setCandidates(digits: ReadonlySet<number>): void;
     removeCandidate(digit: number): void;
 }

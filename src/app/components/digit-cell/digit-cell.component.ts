@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild }
 import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
 import { Cell } from '../../models/cell.js';
 import { GameCompletionState } from '../../models/game-completion-state.enum.js';
+import { SetFacilities } from 'src/app/set-facilities.js';
 
 declare var $: any;
 
@@ -12,9 +13,9 @@ declare var $: any;
 export class DigitCellComponent implements Cell, OnInit {
   @ViewChild('flashable') private _flashableElementRef!: ElementRef;
   private _userValue: number | undefined;
-  private _candidates: number[] = [];
+  private _candidates = new Set<number>();
 
-  GameCompletionState = GameCompletionState;
+  GameCompletionStateAlias = GameCompletionState;
 
   isSelected = false;
   errorDigit: number | undefined = undefined;
@@ -33,22 +34,50 @@ export class DigitCellComponent implements Cell, OnInit {
     return this.fixedValue !== undefined;
   }
 
-  get hasCandidates(): boolean {
-    return this.value === undefined && this._candidates.length > 0;
+  get isEmpty(): boolean {
+    return this.value === undefined && this._candidates.size === 0;
   }
 
-  get isEmpty(): boolean {
-    return this.value === undefined && this._candidates.length === 0;
+  get hasCandidates(): boolean {
+    return this.value === undefined && this._candidates.size > 0;
   }
 
   ngOnInit() {
   }
 
+  containsCandidate(digit: number): boolean {
+    return this.value === undefined && this._candidates.has(digit);
+  }
+
+  getCandidates(): ReadonlySet<number> {
+    return this.value !== undefined ? SetFacilities.emptyNumberSet : new Set<number>(this._candidates);
+  }
+
+  getMinimum(): number | undefined {
+    let result = this.value;
+
+    if (result === undefined && this._candidates.size > 0) {
+      result = Math.min(...this._candidates);
+    }
+
+    return result;
+  }
+
+  getMaximum(): number | undefined {
+    let result = this.value;
+
+    if (result === undefined && this._candidates.size > 0) {
+      result = Math.max(...this._candidates);
+    }
+
+    return result;
+  }
+
   clear() {
-    if (this._userValue !== undefined || this._candidates.length > 0) {
+    if (this._userValue !== undefined || this._candidates.size > 0) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._candidates = [];
+        this._candidates.clear();
       });
     }
   }
@@ -58,7 +87,7 @@ export class DigitCellComponent implements Cell, OnInit {
       this.raiseChangeEventFor(() => {
         this.fixedValue = digit;
         this._userValue = undefined;
-        this._candidates = [];
+        this._candidates.clear();
       });
     }
   }
@@ -67,31 +96,20 @@ export class DigitCellComponent implements Cell, OnInit {
     if (this._userValue !== digit) {
       this.raiseChangeEventFor(() => {
         this._userValue = digit;
-        this._candidates = [];
+        this._candidates.clear();
       });
     }
   }
 
-  setCandidates(digits: number[]) {
-    digits.sort();
-    if (JSON.stringify(digits) !== JSON.stringify(this._candidates)) {
+  setCandidates(digits: ReadonlySet<number>) {
+    const thisArray = [...this._candidates];
+    const otherArray = [...digits];
+    otherArray.sort();
+
+    if (JSON.stringify(otherArray) !== JSON.stringify(thisArray)) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._candidates = digits.slice();
-      });
-    }
-  }
-
-  containsCandidate(digit: number): boolean {
-    return this._candidates.indexOf(digit) > -1;
-  }
-
-  insertCandidate(digit: number) {
-    if (!this.containsCandidate(digit)) {
-      this.raiseChangeEventFor(() => {
-        this._userValue = undefined;
-        this._candidates.push(digit);
-        this._candidates.sort();
+        this._candidates = new Set<number>(otherArray);
       });
     }
   }
@@ -99,9 +117,25 @@ export class DigitCellComponent implements Cell, OnInit {
   removeCandidate(digit: number) {
     if (this.containsCandidate(digit)) {
       this.raiseChangeEventFor(() => {
-        this._candidates = this._candidates.filter(item => item !== digit);
+        this._candidates.delete(digit);
       });
     }
+  }
+
+  insertCandidate(digit: number) {
+    if (!this.containsCandidate(digit)) {
+      this.raiseChangeEventFor(() => {
+        this._userValue = undefined;
+        this._candidates = this.insertToSortedSet(digit, this._candidates);
+      });
+    }
+  }
+
+  private insertToSortedSet(digitToInsert: number, digits: ReadonlySet<number>): Set<number> {
+    const array = [...digits];
+    array.push(digitToInsert);
+    array.sort();
+    return new Set<number>(array);
   }
 
   setError(candidateDigit: number | undefined) {
@@ -113,53 +147,17 @@ export class DigitCellComponent implements Cell, OnInit {
   }
 
   getContentSnapshot(): CellContentSnapshot {
-    return new CellContentSnapshot(this._userValue, this._candidates.slice());
+    return new CellContentSnapshot(this._userValue, new Set<number>(this._candidates));
   }
 
   restoreContentSnapshot(snapshot: CellContentSnapshot) {
     const snapshotBefore = this.getContentSnapshot();
     if (!snapshotBefore.isEqualTo(snapshot)) {
       this.raiseChangeEventFor(() => {
-        this._candidates = snapshot.candidates.slice();
+        this._candidates = new Set<number>(snapshot.candidates);
         this._userValue = snapshot.userValue;
       });
     }
-  }
-
-  getSingleValue(): number | undefined {
-    let result = this.value;
-
-    if (result === undefined) {
-      if (this._candidates.length === 1) {
-        result = this._candidates[0];
-      }
-    }
-
-    return result;
-  }
-
-  getCandidates(): number[] {
-    return this.value !== undefined ? [] : this._candidates.slice();
-  }
-
-  getMinimum(): number | undefined {
-    let result = this.value;
-
-    if (result === undefined && this._candidates.length > 0) {
-      result = Math.min(...this._candidates);
-    }
-
-    return result;
-  }
-
-  getMaximum(): number | undefined {
-    let result = this.value;
-
-    if (result === undefined && this._candidates.length > 0) {
-      result = Math.max(...this._candidates);
-    }
-
-    return result;
   }
 
   flash(callback: () => void) {

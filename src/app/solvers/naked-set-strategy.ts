@@ -32,7 +32,7 @@ export class NakedSetStrategy extends SolverStrategy {
     private calculateCandidateValueSetAt(coordinate: Coordinate): number[] {
         this.ensureCache();
 
-        const candidateValueSet = this.allCellValues.slice();
+        const candidateValueSet = [...this.allCellValues];
 
         this.applyDigitRules(coordinate, candidateValueSet);
 
@@ -42,7 +42,7 @@ export class NakedSetStrategy extends SolverStrategy {
     private ensureCache(): void {
         if (this._boardSizeCached !== this.board.size) {
             this._boardSizeCached = this.board.size;
-            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this.allCellValues);
+            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet([...this.allCellValues]);
         }
     }
 
@@ -66,7 +66,7 @@ export class NakedSetStrategy extends SolverStrategy {
 
         for (const coordinate of sequence) {
             const digits = this.getPossibleDigitsForCell(coordinate);
-            possibleDigitsPerCell.push(digits);
+            possibleDigitsPerCell.push([...digits]);
         }
 
         return possibleDigitsPerCell;
@@ -149,7 +149,7 @@ export class NakedSetStrategy extends SolverStrategy {
 
             const cell = this.board.getCell(coordinate);
             if (cell) {
-                cell.setCandidates(newValueSet);
+                cell.setCandidates(new Set<number>(newValueSet));
             }
 
             return true;
@@ -160,6 +160,6 @@ export class NakedSetStrategy extends SolverStrategy {
 
     private getActualValueSet(coordinate: Coordinate): number[] {
         const cell = this.board.getCell(coordinate);
-        return cell ? cell.getCandidates() : [];
+        return cell ? [...cell.getCandidates()] : [];
     }
 }

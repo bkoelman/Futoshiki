@@ -54,6 +54,7 @@
   - [x] extract undo tracking into separate class
   - [ ] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
+  - [x] replace number arrays with read-only sets
 - [ ] option to track elapsed time
 - [ ] add menu option to show game rules and strategies
 - [ ] cleanup README.md

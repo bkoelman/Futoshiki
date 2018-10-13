@@ -47,8 +47,9 @@ export class CandidatePromoter {
         const cell = this._board.getCell(coordinate);
         if (cell) {
             const candidates = cell.getCandidates();
-            if (candidates.length === 1) {
-                return { cell: cell, coordinate: coordinate, digit: candidates[0] };
+            if (candidates.size === 1) {
+                const digit = [...candidates][0];
+                return { cell: cell, coordinate: coordinate, digit: digit };
             }
         }
 

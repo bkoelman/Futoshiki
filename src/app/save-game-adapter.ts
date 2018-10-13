@@ -41,7 +41,7 @@ export class SaveGameAdapter {
     private formatCellSnapshot(snapshot: CellContentSnapshot): string {
         if (snapshot.userValue !== undefined) {
             return 'ff' + this.decimalToHex(snapshot.userValue);
-        } else if (snapshot.candidates.length > 0) {
+        } else if (snapshot.candidates.size > 0) {
             let candidateBitmask = 0;
             for (const candidate of snapshot.candidates) {
                 candidateBitmask += Math.pow(2, candidate - 1);
@@ -135,13 +135,13 @@ export class SaveGameAdapter {
             return CellContentSnapshot.empty();
         } else {
             let candidateBitmask = parseInt(text, 16);
-            const candidates = [];
+            const candidates = new Set<number>();
 
             for (const candidate of SaveGameAdapter._allCellValuesCached) {
                 const bitmaskValue = Math.pow(2, candidate - 1);
                 if (candidateBitmask - bitmaskValue >= 0) {
                     candidateBitmask -= bitmaskValue;
-                    candidates.push(candidate);
+                    candidates.add(candidate);
                 }
             }
 

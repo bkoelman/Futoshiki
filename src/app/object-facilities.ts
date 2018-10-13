@@ -71,10 +71,6 @@ export class ObjectFacilities {
         return false;
     }
 
-    static getUniqueArrayElements<T>(source: T[]): T[] {
-        return source.filter((value, index, self) => self.indexOf(value) === index);
-    }
-
     static repeat(count: number, action: () => void) {
         for (let index = 0; index < count; index++) {
             action();

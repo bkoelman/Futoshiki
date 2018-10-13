@@ -1,7 +1,6 @@
 import { SolverStrategy } from './solver-strategy';
 import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
-import { ObjectFacilities } from '../object-facilities';
 
 export class SetCandidatesStrategy extends SolverStrategy {
     constructor(board: Board) {

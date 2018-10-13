@@ -21,7 +21,7 @@ export class NakedSingleStrategy extends SolverStrategy {
 
                 if (changeCount > 0) {
                     this.reportChange(`Naked single (${digit}) in cell ${coordinate} ` +
-                        `eliminated '${digit}' from ${changeCount} other cells in row/column.`);
+                        `eliminated '${digit}' from ${changeCount} other cells in related row and column.`);
                     return true;
                 }
             }
@@ -48,8 +48,8 @@ export class NakedSingleStrategy extends SolverStrategy {
 
     private getSingleDigitAt(coordinate: Coordinate): number | undefined {
         const digits = this.getPossibleDigitsForCell(coordinate);
-        if (digits.length === 1) {
-            return digits[0];
+        if (digits.size === 1) {
+            return [...digits][0];
         }
 
         return undefined;
