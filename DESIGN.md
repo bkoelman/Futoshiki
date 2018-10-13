@@ -25,7 +25,6 @@
 - [x] replace favicon
 - [x] auto-cleanup candidates on regular digit entry
 - [x] nicer styling when puzzle solved (show button "new random game")
-- [ ] display coordinate rulers
 - [x] block invalid (based on rules) digit entry; highlight related cells
 - [x] block invalid (based on rules) candidate digit entry; highlight related cells
 - [x] move `Promote` button from debug mode into normal game
@@ -35,17 +34,23 @@
   - [ ] controls left: `Undo`, `Promote`, `Hint`
   - [ ] move bar to side, depending on screen size (https://davidwalsh.name/orientation-change)
 - [ ] `Hint` button (unrelated to selection)
-  - [ ] fill candidates for any empty cells
-  - [ ] promote all cells that contain one candidate
-  - [ ] apply solver strategies (http://pzl.org.uk/futoshiki.html)
-    - [x] Naked Set
-    - [ ] Naked Triples/Quads with subsets
-    - [x] Hidden Set
-    - [ ] Hidden Triples/Quads with subsets
-    - [x] Relative Size (Single)
-    - [x] Relative Size (Double) (http://www.davdata.nl/futoshiki.html point 4)
-    - [ ] X-Wing
-    - .... see http://www.sudokuwiki.org
+  - [x] basic solver strategies (http://hodoku.sourceforge.net/en/tech_hidden.php, http://pzl.org.uk/futoshiki.html)
+    - [x] Set candidates in empty cells
+    - [x] Promote all single candidates
+    - [x] Naked Singles
+    - [x] Hidden Singles
+    - [x] Operators
+    - [x] Naked Pairs/Triples
+    - [x] Hidden Pairs/Triples
+    - [x] Naked Quads
+  - [ ] add setting to display hint explanations
+    - [ ] update settings modal and store in cookie
+    - [ ] add closable textblock to contain explanations
+    - [ ] move buttons from debug mode into normal game
+    - [ ] display coordinate rulers
+  - [x] write scanner to find matching puzzles
+    - [ ] create unit tests for strategies
+  - [ ] advanced solver strategies (http://www.sudokuwiki.org)
 - [ ] `?` button
   - Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
