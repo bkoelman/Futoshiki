@@ -47,12 +47,9 @@ export class NakedSingleStrategy extends SolverStrategy {
     }
 
     private getSingleDigitAt(coordinate: Coordinate): number | undefined {
-        const cell = this.board.getCell(coordinate);
-        if (cell) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length === 1) {
-                return possibleValues[0];
-            }
+        const digits = this.getPossibleDigitsForCell(coordinate);
+        if (digits.length === 1) {
+            return digits[0];
         }
 
         return undefined;

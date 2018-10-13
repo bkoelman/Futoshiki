@@ -45,10 +45,10 @@ export class CandidatePromoter {
 
     private getCellToPromote(coordinate: Coordinate): { cell: Cell, coordinate: Coordinate, digit: number } | undefined {
         const cell = this._board.getCell(coordinate);
-        if (cell && cell.value === undefined) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length === 1) {
-                return { cell: cell, coordinate: coordinate, digit: possibleValues[0] };
+        if (cell) {
+            const candidates = cell.getCandidates();
+            if (candidates.length === 1) {
+                return { cell: cell, coordinate: coordinate, digit: candidates[0] };
             }
         }
 

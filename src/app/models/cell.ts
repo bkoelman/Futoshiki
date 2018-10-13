@@ -3,7 +3,7 @@ export interface Cell {
     readonly isFixed: boolean;
     readonly isEmpty: boolean;
 
-    getPossibleValues(): number[];
+    getCandidates(): number[];
     getMinimum(): number | undefined;
     getMaximum(): number | undefined;
 

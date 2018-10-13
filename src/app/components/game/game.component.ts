@@ -330,8 +330,8 @@ export class GameComponent implements OnInit {
       if (cell && cell.value === undefined) {
         const coordinate = this._boardComponent.getCoordinate(cell);
         if (coordinate) {
-          const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-          cell.setCandidates(possibleValues);
+          const candidates = this._solver.getCandidatesAtCoordinate(coordinate);
+          cell.setCandidates(candidates);
         }
       }
     });
@@ -343,8 +343,8 @@ export class GameComponent implements OnInit {
         for (const coordinate of Coordinate.iterateBoard(this.puzzle.info.boardSize)) {
           const cell = this._boardComponent.getCell(coordinate);
           if (cell && cell.value === undefined) {
-            const possibleValues = this._solver.getPossibleValuesAtCoordinate(coordinate);
-            cell.setCandidates(possibleValues);
+            const candidates = this._solver.getCandidatesAtCoordinate(coordinate);
+            cell.setCandidates(candidates);
           }
         }
       }

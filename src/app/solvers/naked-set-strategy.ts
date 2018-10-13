@@ -5,7 +5,6 @@ import { ObjectFacilities } from '../object-facilities';
 
 export class NakedSetStrategy extends SolverStrategy {
     private _boardSizeCached: number | undefined;
-    private _allCellValuesCached: number[] = [];
     private _powerSetForAllCellValuesCached: number[][] = [[]];
 
     constructor(board: Board) {
@@ -33,7 +32,7 @@ export class NakedSetStrategy extends SolverStrategy {
     private calculateCandidateValueSetAt(coordinate: Coordinate): number[] {
         this.ensureCache();
 
-        const candidateValueSet = this._allCellValuesCached.slice();
+        const candidateValueSet = this.allCellValues.slice();
 
         this.applyDigitRules(coordinate, candidateValueSet);
 
@@ -43,8 +42,7 @@ export class NakedSetStrategy extends SolverStrategy {
     private ensureCache(): void {
         if (this._boardSizeCached !== this.board.size) {
             this._boardSizeCached = this.board.size;
-            this._allCellValuesCached = ObjectFacilities.createNumberSequence(this.board.size);
-            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this._allCellValuesCached);
+            this._powerSetForAllCellValuesCached = ObjectFacilities.createPowerSet(this.allCellValues);
         }
     }
 
@@ -58,35 +56,23 @@ export class NakedSetStrategy extends SolverStrategy {
 
     private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],
         sequenceName: string): void {
-        const possibleValuesInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
+        const possibleDigitsInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
 
-        this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
+        this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleDigitsInSequence, sequenceName);
     }
 
     private getPossibleCellValuesInSequence(sequence: Coordinate[]): number[][] {
-        const possibleValuesPerCell: number[][] = [];
+        const possibleDigitsPerCell: number[][] = [];
 
         for (const coordinate of sequence) {
-            const possibleCellValues = this.getPossibleValuesForCell(coordinate);
-            possibleValuesPerCell.push(possibleCellValues);
+            const digits = this.getPossibleDigitsForCell(coordinate);
+            possibleDigitsPerCell.push(digits);
         }
 
-        return possibleValuesPerCell;
+        return possibleDigitsPerCell;
     }
 
-    private getPossibleValuesForCell(coordinate: Coordinate): number[] {
-        const cell = this.board.getCell(coordinate);
-        if (cell) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length > 0) {
-                return possibleValues;
-            }
-        }
-
-        return this._allCellValuesCached;
-    }
-
-    private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
+    private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleDigitsPerCell: number[][],
         sequenceName: string): void {
         // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells each contain only the same N digits,
         // then those digits must be the answers for the N cells, and any occurrences of those digits in other cells in the sequence
@@ -99,7 +85,7 @@ export class NakedSetStrategy extends SolverStrategy {
 
         for (const digitSet of this._powerSetForAllCellValuesCached) {
             if (digitSet.length > 0 && digitSet.length < this.board.size) {
-                const frequency = this.getNakedSetFrequency(digitSet, possibleValuesPerCell);
+                const frequency = this.getNakedSetFrequency(digitSet, possibleDigitsPerCell);
                 if (frequency >= digitSet.length) {
                     const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) > -1);
                     this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
@@ -109,11 +95,11 @@ export class NakedSetStrategy extends SolverStrategy {
         }
     }
 
-    private getNakedSetFrequency(digitSet: number[], possibleValuesPerCell: number[][]): number {
+    private getNakedSetFrequency(digitSet: number[], possibleDigitsPerCell: number[][]): number {
         let setFoundCount = 0;
 
-        for (const possibleValues of possibleValuesPerCell) {
-            if (this.isNakedSet(digitSet, possibleValues)) {
+        for (const possibleDigits of possibleDigitsPerCell) {
+            if (this.isNakedSet(digitSet, possibleDigits)) {
                 setFoundCount++;
             }
         }
@@ -121,8 +107,8 @@ export class NakedSetStrategy extends SolverStrategy {
         return setFoundCount;
     }
 
-    private isNakedSet(digitSet: number[], possibleValues: number[]) {
-        return JSON.stringify(digitSet) === JSON.stringify(possibleValues);
+    private isNakedSet(digitSet: number[], possibleDigits: number[]) {
+        return JSON.stringify(digitSet) === JSON.stringify(possibleDigits);
     }
 
     private reduceCandidateValueSet(candidateValueSet: number[], digitsToRemove: number[], coordinate: Coordinate, ruleName: string): void {
@@ -146,7 +132,7 @@ export class NakedSetStrategy extends SolverStrategy {
 
     private applyCandidateValueSet(coordinate: Coordinate, candidateValueSet: number[]): boolean {
         if (candidateValueSet.length === 0) {
-            throw new Error(`No possible values for ${coordinate}.`);
+            throw new Error(`No possible digits for ${coordinate}.`);
         }
 
         const actualValueSet = this.getActualValueSet(coordinate);
@@ -155,7 +141,7 @@ export class NakedSetStrategy extends SolverStrategy {
             actualValueSet.filter(digit => candidateValueSet.indexOf(digit) > -1);
 
         if (newValueSet.length === 0) {
-            throw new Error(`No possible values for ${coordinate}.`);
+            throw new Error(`No possible digits for ${coordinate}.`);
         }
 
         if (newValueSet.length !== actualValueSet.length) {
@@ -174,6 +160,6 @@ export class NakedSetStrategy extends SolverStrategy {
 
     private getActualValueSet(coordinate: Coordinate): number[] {
         const cell = this.board.getCell(coordinate);
-        return cell ? cell.getPossibleValues() : [];
+        return cell ? cell.getCandidates() : [];
     }
 }

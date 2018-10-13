@@ -252,11 +252,7 @@ class BoardTextFormatter {
         for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
             const cell = this._board.getCell(coordinate);
             if (cell) {
-                let width = cell.getPossibleValues().length;
-                if (cell.value !== undefined) {
-                    width++;
-                }
-
+                const width = cell.value !== undefined ? 2 : cell.getCandidates().length;
                 const columnIndex = this.getColumnIndex();
                 const previousWidth = maxColumnWidths[columnIndex];
                 if (previousWidth === undefined || previousWidth < width) {
@@ -359,7 +355,7 @@ class BoardTextFormatter {
         if (cell.value !== undefined) {
             return '!' + cell.value;
         }
-        return cell.getPossibleValues().join('');
+        return cell.getCandidates().join('');
     }
 
     private formatOperatorInDigitLine(operator: ComparisonOperator): string {

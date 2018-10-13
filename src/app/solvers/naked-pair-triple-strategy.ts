@@ -9,19 +9,35 @@ export class NakedPairTripleStrategy extends SolverStrategy {
     private _powerSetForTriples: number[][] = [];
     private _rowColumnSequences: { coordinates: Coordinate[], name: string }[] = [];
 
-    constructor(board: Board) {
-        super('Naked Pair/Triple', board);
+    private get powerSetForPairs() {
+        this.ensureCache();
+        return this._powerSetForPairs;
+    }
+
+    private get powerSetForTriples() {
+        this.ensureCache();
+        return this._powerSetForTriples;
+    }
+
+    private get rowColumnSequences() {
+        this.ensureCache();
+        return this._rowColumnSequences;
     }
 
     private ensureCache() {
-        if (this.board.size !== this._boardSizeCached) {
-            const allCellValues = ObjectFacilities.createNumberSequence(this.board.size);
-            const powerSetForAllCellValues = ObjectFacilities.createPowerSet(allCellValues);
+        if (this._boardSizeCached !== this.board.size) {
+            const powerSetForAllCellValues = ObjectFacilities.createPowerSet(this.allCellValues);
 
             this._powerSetForPairs = powerSetForAllCellValues.filter(set => set.length === 2);
             this._powerSetForTriples = powerSetForAllCellValues.filter(set => set.length === 3);
             this._rowColumnSequences = this.getBoardSequences();
+
+            this._boardSizeCached = this.board.size;
         }
+    }
+
+    constructor(board: Board) {
+        super('Naked Pair/Triple', board);
     }
 
     private getBoardSequences(): { coordinates: Coordinate[], name: string }[] {
@@ -44,7 +60,7 @@ export class NakedPairTripleStrategy extends SolverStrategy {
     runAtBoard(): boolean {
         this.ensureCache();
 
-        return this.runAtSequences(this._rowColumnSequences, undefined);
+        return this.runAtSequences(this.rowColumnSequences, undefined);
     }
 
     runAtCoordinate(coordinate: Coordinate): boolean {
@@ -62,7 +78,7 @@ export class NakedPairTripleStrategy extends SolverStrategy {
     }
 
     private runAtSequences(sequences: { coordinates: Coordinate[], name: string }[], coordinate: Coordinate | undefined) {
-        for (const powerSet of [this._powerSetForPairs, this._powerSetForTriples]) {
+        for (const powerSet of [this.powerSetForPairs, this.powerSetForTriples]) {
             for (const digitSet of powerSet) {
                 for (const sequence of sequences) {
                     if (this.runAtSequence(digitSet, sequence.coordinates, sequence.name, coordinate)) {
@@ -76,31 +92,31 @@ export class NakedPairTripleStrategy extends SolverStrategy {
     }
 
     private runAtSequence(digitSet: number[], sequence: Coordinate[], sequenceName: string, singleCell: Coordinate | undefined): boolean {
-        const setMembers = this.getMembersOfSetInSequence(digitSet, sequence);
-        if (setMembers.length === digitSet.length) {
-            let otherCells = sequence.filter(coordinate => !setMembers.some(member => member.isEqualTo(coordinate)));
+        const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence);
+        if (nakedSetMembers.length === digitSet.length) {
+            let otherCells = sequence.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
 
             if (singleCell !== undefined) {
                 otherCells = otherCells.filter(coordinate => coordinate.isEqualTo(singleCell));
             }
 
-            return this.removeCandidatesFromOtherCells(otherCells, digitSet, setMembers, sequenceName);
+            return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequenceName);
         }
 
         return false;
     }
 
-    private getMembersOfSetInSequence(digitSet: number[], sequence: Coordinate[]): Coordinate[] {
+    private getMembersOfNakedSetInSequence(digitSet: number[], sequence: Coordinate[]): Coordinate[] {
         const memberCoordinates: Coordinate[] = [];
 
         for (const coordinate of sequence) {
             const cell = this.board.getCell(coordinate);
             if (cell) {
-                const possibleValues = cell.getPossibleValues();
-                const valuesInsideSet = possibleValues.filter(digit => digitSet.indexOf(digit) > -1);
-                const valuesOutsideSet = possibleValues.filter(digit => digitSet.indexOf(digit) <= -1);
+                const candidates = cell.getCandidates();
+                const digitsInsideSet = candidates.filter(digit => digitSet.indexOf(digit) > -1);
+                const digitsOutsideSet = candidates.filter(digit => digitSet.indexOf(digit) <= -1);
 
-                if (valuesInsideSet.length > 0 && valuesOutsideSet.length === 0) {
+                if (digitsInsideSet.length > 0 && digitsOutsideSet.length === 0) {
                     memberCoordinates.push(coordinate);
                 }
             }
@@ -109,7 +125,7 @@ export class NakedPairTripleStrategy extends SolverStrategy {
         return memberCoordinates;
     }
 
-    private removeCandidatesFromOtherCells(otherCells: Coordinate[], digitsToRemove: number[], setMembers: Coordinate[],
+    private removeCandidatesFromOtherCells(otherCells: Coordinate[], digitsToRemove: number[], nakedSetMembers: Coordinate[],
         sequenceName: string): boolean {
 
         let changedCellCount = 0;
@@ -121,7 +137,7 @@ export class NakedPairTripleStrategy extends SolverStrategy {
 
         if (changedCellCount > 0) {
             const name = digitsToRemove.length === 2 ? 'Naked pair' : 'Naked triple';
-            this.reportChange(`${name} (${digitsToRemove}) in cells (${setMembers}) eliminated ` +
+            this.reportChange(`${name} (${digitsToRemove}) in cells (${nakedSetMembers}) eliminated ` +
                 `${digitsToRemove} from ${changedCellCount} other cells in ${sequenceName}.`);
             return true;
         }

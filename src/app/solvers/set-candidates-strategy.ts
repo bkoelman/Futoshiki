@@ -37,7 +37,7 @@ export class SetCandidatesStrategy extends SolverStrategy {
     private innerRunAtCoordinate(coordinate: Coordinate): boolean {
         const cell = this.board.getCell(coordinate);
         if (cell && cell.isEmpty) {
-            cell.setCandidates(ObjectFacilities.createNumberSequence(this.board.size));
+            cell.setCandidates(this.allCellValues);
             return true;
         }
 

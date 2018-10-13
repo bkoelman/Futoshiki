@@ -23,7 +23,7 @@ export class HiddenSingleStrategy extends SolverStrategy {
     runAtCoordinate(coordinate: Coordinate): boolean {
         const cell = this.board.getCell(coordinate);
         if (cell) {
-            for (const digit of cell.getPossibleValues()) {
+            for (const digit of cell.getCandidates()) {
                 const sequences = [{
                     coordinates: coordinate.iterateRow(true),
                     name: 'row'
@@ -61,12 +61,9 @@ export class HiddenSingleStrategy extends SolverStrategy {
 
     private sequenceContainsDigit(sequence: Coordinate[], digit: number): boolean {
         for (const coordinate of sequence) {
-            const cell = this.board.getCell(coordinate);
-            if (cell) {
-                const possibleValues = cell.getPossibleValues();
-                if (possibleValues.indexOf(digit) > -1) {
-                    return true;
-                }
+            const digits = this.getPossibleDigitsForCell(coordinate);
+            if (digits.indexOf(digit) > -1) {
+                return true;
             }
         }
 

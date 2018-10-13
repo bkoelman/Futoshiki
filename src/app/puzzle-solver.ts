@@ -12,7 +12,7 @@ export class PuzzleSolver {
     constructor(private _board: Board) {
     }
 
-    getPossibleValuesAtCoordinate(coordinate: Coordinate): number[] {
+    getCandidatesAtCoordinate(coordinate: Coordinate): number[] {
         this.ensureCache();
 
         const candidateValueSet = this._allCellValuesCached.slice();
@@ -154,36 +154,40 @@ export class PuzzleSolver {
 
     private applyDigitRulesInSequence(coordinate: Coordinate, coordinateSequence: Coordinate[], candidateValueSet: number[],
         sequenceName: string): void {
-        const possibleValuesInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
+        const possibleDigitsInSequence = this.getPossibleCellValuesInSequence(coordinateSequence);
 
-        this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
-        this.applyHiddenSetRuleInSequence(coordinate, candidateValueSet, possibleValuesInSequence, sequenceName);
+        this.applyNakedSetRuleInSequence(coordinate, candidateValueSet, possibleDigitsInSequence, sequenceName);
+        this.applyHiddenSetRuleInSequence(coordinate, candidateValueSet, possibleDigitsInSequence, sequenceName);
     }
 
     private getPossibleCellValuesInSequence(sequence: Coordinate[]): number[][] {
-        const possibleValuesPerCell: number[][] = [];
+        const possibleDigitsPerCell: number[][] = [];
 
         for (const coordinate of sequence) {
-            const possibleCellValues = this.getPossibleValuesForCell(coordinate);
-            possibleValuesPerCell.push(possibleCellValues);
+            const possibleCellValues = this.getPossibleDigitsForCell(coordinate);
+            possibleDigitsPerCell.push(possibleCellValues);
         }
 
-        return possibleValuesPerCell;
+        return possibleDigitsPerCell;
     }
 
-    private getPossibleValuesForCell(coordinate: Coordinate): number[] {
+    private getPossibleDigitsForCell(coordinate: Coordinate): number[] {
         const cell = this._board.getCell(coordinate);
         if (cell) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.length > 0) {
-                return possibleValues;
+            if (cell.value !== undefined) {
+                return [cell.value];
+            }
+
+            const candidates = cell.getCandidates();
+            if (candidates.length > 0) {
+                return candidates;
             }
         }
 
         return this._allCellValuesCached;
     }
 
-    private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
+    private applyNakedSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleDigitsPerCell: number[][],
         sequenceName: string): void {
         // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells each contain only the same N digits,
         // then those digits must be the answers for the N cells, and any occurrences of those digits in other cells in the sequence
@@ -196,7 +200,7 @@ export class PuzzleSolver {
 
         for (const digitSet of this._powerSetForAllCellValuesCached) {
             if (digitSet.length > 0 && digitSet.length < this._board.size) {
-                const frequency = this.getNakedSetFrequency(digitSet, possibleValuesPerCell);
+                const frequency = this.getNakedSetFrequency(digitSet, possibleDigitsPerCell);
                 if (frequency >= digitSet.length) {
                     const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) > -1);
                     this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
@@ -206,11 +210,11 @@ export class PuzzleSolver {
         }
     }
 
-    private getNakedSetFrequency(digitSet: number[], possibleValuesPerCell: number[][]): number {
+    private getNakedSetFrequency(digitSet: number[], possibleDigitsPerCell: number[][]): number {
         let setFoundCount = 0;
 
-        for (const possibleValues of possibleValuesPerCell) {
-            if (this.isNakedSet(digitSet, possibleValues)) {
+        for (const possibleDigits of possibleDigitsPerCell) {
+            if (this.isNakedSet(digitSet, possibleDigits)) {
                 setFoundCount++;
             }
         }
@@ -218,11 +222,11 @@ export class PuzzleSolver {
         return setFoundCount;
     }
 
-    private isNakedSet(digitSet: number[], possibleValues: number[]) {
-        return JSON.stringify(digitSet) === JSON.stringify(possibleValues);
+    private isNakedSet(digitSet: number[], possibleDigits: number[]) {
+        return JSON.stringify(digitSet) === JSON.stringify(possibleDigits);
     }
 
-    private applyHiddenSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleValuesPerCell: number[][],
+    private applyHiddenSetRuleInSequence(coordinate: Coordinate, candidateValueSet: number[], possibleDigitsPerCell: number[][],
         sequenceName: string): void {
         // Rule: a sequence (row or column) must contain exactly one of each of the digits. If N cells contain the only copies of N digits
         // in a sequence, then those digits must be the answers for the N cells, and any other digits in those cells can be deleted.
@@ -236,7 +240,7 @@ export class PuzzleSolver {
 
         for (const digitSet of powerSet) {
             if (digitSet.length > 0 && digitSet.length < this._board.size) {
-                const frequency = this.getHiddenSetFrequency(digitSet, possibleValuesPerCell);
+                const frequency = this.getHiddenSetFrequency(digitSet, possibleDigitsPerCell);
                 if (frequency === digitSet.length - 1) {
                     const digitsToRemove = candidateValueSet.filter(digit => digitSet.indexOf(digit) <= -1);
                     this.reduceCandidateValueSet(candidateValueSet, digitsToRemove, coordinate,
@@ -246,13 +250,13 @@ export class PuzzleSolver {
         }
     }
 
-    private getHiddenSetFrequency(digitSet: number[], possibleValuesPerCell: number[][]): number {
+    private getHiddenSetFrequency(digitSet: number[], possibleDigitsPerCell: number[][]): number {
         let setFoundCount = 0;
 
-        for (const possibleValues of possibleValuesPerCell) {
+        for (const possibleDigits of possibleDigitsPerCell) {
             let digitFoundCount = 0;
             for (const digit of digitSet) {
-                if (possibleValues.indexOf(digit) > -1) {
+                if (possibleDigits.indexOf(digit) > -1) {
                     digitFoundCount++;
                 }
             }

@@ -138,12 +138,8 @@ export class DigitCellComponent implements Cell, OnInit {
     return result;
   }
 
-  getPossibleValues(): number[] {
-    if (this.value !== undefined) {
-      return [this.value];
-    }
-
-    return this._candidates.slice();
+  getCandidates(): number[] {
+    return this.value !== undefined ? [] : this._candidates.slice();
   }
 
   getMinimum(): number | undefined {

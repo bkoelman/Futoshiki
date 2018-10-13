@@ -1,9 +1,22 @@
 import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
+import { ObjectFacilities } from '../object-facilities';
 
 const EnableVerboseLog = false;
 
 export abstract class SolverStrategy {
+    private _innerBoardSizeCached = -1;
+    private _innerAllCellValuesCached: number[] = [];
+
+    protected get allCellValues() {
+        if (this._innerBoardSizeCached !== this.board.size) {
+            this._innerAllCellValuesCached = ObjectFacilities.createNumberSequence(this.board.size);
+            this._innerBoardSizeCached = this.board.size;
+        }
+
+        return this._innerAllCellValuesCached;
+    }
+
     protected constructor(readonly name: string, readonly board: Board) {
     }
 
@@ -20,15 +33,31 @@ export abstract class SolverStrategy {
         }
     }
 
+    protected getPossibleDigitsForCell(coordinate: Coordinate): number[] {
+        const cell = this.board.getCell(coordinate);
+        if (cell) {
+            if (cell.value !== undefined) {
+                return [cell.value];
+            }
+
+            const candidates = cell.getCandidates();
+            if (candidates.length > 0) {
+                return candidates;
+            }
+        }
+
+        return this.allCellValues.slice();
+    }
+
     protected removeCandidateFromCell(coordinate: Coordinate, digitToRemove: number): boolean {
         const cell = this.board.getCell(coordinate);
         if (cell && cell.value === undefined) {
-            const possibleValues = cell.getPossibleValues();
-            if (possibleValues.indexOf(digitToRemove) > -1) {
+            const candidates = cell.getCandidates();
+            if (candidates.indexOf(digitToRemove) > -1) {
                 cell.removeCandidate(digitToRemove);
 
-                if (possibleValues.length === 1) {
-                    throw new Error(`No possible values for ${coordinate}.`);
+                if (candidates.length === 1) {
+                    throw new Error(`No possible digits for ${coordinate}.`);
                 }
 
                 return true;

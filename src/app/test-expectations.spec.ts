@@ -43,10 +43,10 @@ export function expectCandidates(coordinateText: string, digits: number[], board
     expect(cell).toBeDefined();
     if (cell) {
         expect(cell.value).toBeUndefined();
-        const possibleValues = cell.getPossibleValues();
+        const candidates = cell.getCandidates();
 
-        expect(possibleValues.length).toBe(digits.length);
-        expect(possibleValues.join()).toBe(digits.join());
+        expect(candidates.length).toBe(digits.length);
+        expect(candidates.join()).toBe(digits.join());
     }
 }
 
