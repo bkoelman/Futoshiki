@@ -25,7 +25,7 @@ export class HttpRequestController<TRequest, TResponse> {
 
         this._pendingRequestJson = requestJson;
         this._pendingRequestExecution = executeRequestCallback().subscribe(
-            (data) => {
+            data => {
                 if (requestSucceeded) {
                     requestSucceeded(data);
                 }
