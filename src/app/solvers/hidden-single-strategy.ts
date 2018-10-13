@@ -33,26 +33,13 @@ export class HiddenSingleStrategy extends SolverStrategy {
                 }];
 
                 for (const sequence of sequences) {
-                    if (!this.sequenceContainsEmptyCells(sequence.coordinates)) {
-                        if (!this.sequenceContainsDigit(sequence.coordinates, digit)) {
-                            cell.setCandidates(new Set([digit]));
-                            this.reportChange(`Hidden single (${digit}) in ${sequence.name} ` +
-                                `of cell ${coordinate} eliminated others in this cell.`);
-                            return true;
-                        }
+                    if (!this.sequenceContainsDigit(sequence.coordinates, digit)) {
+                        cell.setCandidates(new Set([digit]));
+                        this.reportChange(`Hidden single (${digit}) in ${sequence.name} ` +
+                            `of cell ${coordinate} eliminated others in this cell.`);
+                        return true;
                     }
                 }
-            }
-        }
-
-        return false;
-    }
-
-    private sequenceContainsEmptyCells(sequence: Coordinate[]) {
-        for (const coordinate of sequence) {
-            const cell = this.board.getCell(coordinate);
-            if (cell && cell.isEmpty) {
-                return true;
             }
         }
 

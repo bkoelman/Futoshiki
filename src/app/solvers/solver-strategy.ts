@@ -85,17 +85,31 @@ export abstract class SolverStrategy {
         return this.allCellValues;
     }
 
+    protected getArityName(count: number) {
+        switch (count) {
+            case 1:
+                return 'single';
+            case 2:
+                return 'pair';
+            case 3:
+                return 'triple';
+            case 4:
+                return 'quad';
+            default:
+                return 'set';
+        }
+    }
+
     protected removeCandidateFromCell(coordinate: Coordinate, digitToRemove: number): boolean {
         const cell = this.board.getCell(coordinate);
         if (cell && cell.value === undefined) {
             const candidates = cell.getCandidates();
             if (candidates.has(digitToRemove)) {
-                cell.removeCandidate(digitToRemove);
-
                 if (candidates.size === 1) {
                     throw new Error(`No possible digits for ${coordinate}.`);
                 }
 
+                cell.removeCandidate(digitToRemove);
                 return true;
             }
         }
@@ -113,20 +127,5 @@ export abstract class SolverStrategy {
         }
 
         return removeCount;
-    }
-
-    protected getArityName(count: number) {
-        switch (count) {
-            case 1:
-                return 'single';
-            case 2:
-                return 'pair';
-            case 3:
-                return 'triple';
-            case 4:
-                return 'quad';
-            default:
-                return 'set';
-        }
     }
 }
