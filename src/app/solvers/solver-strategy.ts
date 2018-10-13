@@ -8,6 +8,13 @@ const EnableVerboseLog = false;
 export abstract class SolverStrategy {
     private _allCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createNumberSet(this.board.size));
     private _rowColumnSequencesCache = new BoardSizeBasedCache(this.board, () => this.getRowColumnSequences());
+    private _powerSetForAllCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createPowerSet(this.allCellValues));
+    private _powerSetForPairsCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.filterSet(this._powerSetForAllCellValuesCache.value, set => set.size === 2));
+    private _powerSetForTriplesCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.filterSet(this._powerSetForAllCellValuesCache.value, set => set.size === 3));
+    private _powerSetForQuadsCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.filterSet(this._powerSetForAllCellValuesCache.value, set => set.size === 4));
 
     protected get allCellValues() {
         return this._allCellValuesCache.value;
@@ -15,6 +22,18 @@ export abstract class SolverStrategy {
 
     protected get rowColumnSequences() {
         return this._rowColumnSequencesCache.value;
+    }
+
+    protected get powerSetForPairs() {
+        return this._powerSetForPairsCache.value;
+    }
+
+    protected get powerSetForTriples() {
+        return this._powerSetForTriplesCache.value;
+    }
+
+    protected get powerSetForQuads() {
+        return this._powerSetForQuadsCache.value;
     }
 
     protected constructor(readonly name: string, readonly board: Board) {
@@ -94,5 +113,20 @@ export abstract class SolverStrategy {
         }
 
         return removeCount;
+    }
+
+    protected getArityName(count: number) {
+        switch (count) {
+            case 1:
+                return 'single';
+            case 2:
+                return 'pair';
+            case 3:
+                return 'triple';
+            case 4:
+                return 'quad';
+            default:
+                return 'set';
+        }
     }
 }

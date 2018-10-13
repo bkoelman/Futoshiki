@@ -7,10 +7,9 @@ import { PromoteStrategy } from './solvers/promote-strategy';
 import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
 import { OperatorsStrategy } from './solvers/operators-strategy';
-import { NakedSetStrategy } from './solvers/naked-set-strategy';
-import { HiddenSetStrategy } from './solvers/hidden-set-strategy';
 import { NakedPairTripleStrategy } from './solvers/naked-pair-triple-strategy';
 import { NakedQuadStrategy } from './solvers/naked-quad-strategy';
+import { HiddenPairTripleStrategy } from './solvers/hidden-pair-triple-strategy';
 
 export class HintProvider {
     private _checker: MoveChecker;
@@ -25,9 +24,7 @@ export class HintProvider {
             new HiddenSingleStrategy(this._board),
             new OperatorsStrategy(this._board),
             new NakedPairTripleStrategy(this._board),
-
-            // new NakedSetStrategy(this._board),
-            // new HiddenSetStrategy(this._board),
+            new HiddenPairTripleStrategy(this._board),
             new NakedQuadStrategy(this._board),
         ];
     }
