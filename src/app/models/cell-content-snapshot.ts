@@ -3,7 +3,10 @@ import { SetFacilities } from '../set-facilities';
 export class CellContentSnapshot {
     private static readonly _emptySnapshot = new CellContentSnapshot(undefined, SetFacilities.emptyNumberSet);
 
-    constructor(public readonly userValue: number | undefined, public readonly candidates: ReadonlySet<number>) {
+    public readonly candidates: ReadonlySet<number>;
+
+    constructor(public readonly userValue: number | undefined, candidates: ReadonlySet<number>) {
+        this.candidates = SetFacilities.sortSet(candidates);
     }
 
     static empty(): CellContentSnapshot {

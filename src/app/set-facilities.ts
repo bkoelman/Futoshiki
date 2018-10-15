@@ -31,6 +31,12 @@ export class SetFacilities {
         return filtered;
     }
 
+    static sortSet<T>(source: ReadonlySet<T>): Set<T> {
+        const array = [...source];
+        array.sort();
+        return new Set(array);
+    }
+
     static formatSet<T>(set: ReadonlySet<T>): string {
         let text = '';
 

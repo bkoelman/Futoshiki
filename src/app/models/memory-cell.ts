@@ -87,10 +87,7 @@ export class MemoryCell implements Cell {
 
         if (!this.isFixed) {
             this._userValue = undefined;
-
-            const array = [...digits];
-            array.sort();
-            this._candidates = new Set(array);
+            this._candidates = SetFacilities.sortSet(digits);
         }
     }
 

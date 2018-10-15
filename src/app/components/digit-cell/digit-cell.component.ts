@@ -127,12 +127,12 @@ export class DigitCellComponent implements Cell, OnInit {
     if (!this.containsCandidate(digit)) {
       this.raiseChangeEventFor(() => {
         this._userValue = undefined;
-        this._candidates = this.insertToSortedSet(digit, this._candidates);
+        this._candidates = this.insertIntoSortedSet(digit, this._candidates);
       });
     }
   }
 
-  private insertToSortedSet(digitToInsert: number, digits: ReadonlySet<number>): Set<number> {
+  private insertIntoSortedSet(digitToInsert: number, digits: ReadonlySet<number>): Set<number> {
     const array = [...digits];
     array.push(digitToInsert);
     array.sort();
