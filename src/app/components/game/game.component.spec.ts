@@ -17,6 +17,7 @@ import { RepeatPipe } from '../../repeat.pipe';
 import { MenuBarComponent } from '../menu-bar/menu-bar.component';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { WinModalComponent } from '../win-modal/win-modal.component';
+import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -41,7 +42,8 @@ describe('GameComponent', () => {
         RepeatPipe,
         MenuBarComponent,
         SettingsModalComponent,
-        WinModalComponent
+        WinModalComponent,
+        HintExplanationBoxComponent
       ],
       providers: [
         HttpRequestController,

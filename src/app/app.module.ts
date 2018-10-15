@@ -21,6 +21,7 @@ import { RepeatPipe } from './repeat.pipe';
 import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
 import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
 import { WinModalComponent } from './components/win-modal/win-modal.component';
+import { HintExplanationBoxComponent } from './components/hint-explanation-box/hint-explanation-box.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { WinModalComponent } from './components/win-modal/win-modal.component';
     RepeatPipe,
     MenuBarComponent,
     SettingsModalComponent,
-    WinModalComponent
+    WinModalComponent,
+    HintExplanationBoxComponent
   ],
   imports: [
     BrowserModule,

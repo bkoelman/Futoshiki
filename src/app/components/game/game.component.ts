@@ -24,6 +24,7 @@ import { SettingsModalComponent } from '../settings-modal/settings-modal.compone
 import { SettingsAdapter } from '../../settings-adapter';
 import { CandidatePromoter } from 'src/app/candidate-promoter';
 import { HintProvider } from 'src/app/hint-provider';
+import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
 
 declare var $: any;
 
@@ -36,6 +37,7 @@ export class GameComponent implements OnInit {
   @ViewChild(ChangePuzzleModalComponent) private _changePuzzleModalComponent!: ChangePuzzleModalComponent;
   @ViewChild(SettingsModalComponent) private _settingsModalComponent!: SettingsModalComponent;
   @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
+  @ViewChild(HintExplanationBoxComponent) private _hintExplanationBoxComponent!: HintExplanationBoxComponent;
   private _undoTracker!: UndoTracker;
   private _autoCleaner!: CandidateCleaner;
   private _candidatePromoter!: CandidatePromoter;
@@ -54,7 +56,6 @@ export class GameComponent implements OnInit {
   inDebugMode = false;
   isTypingText = false;
   settings: GameSettings;
-  hintText = '';
 
   get canAcceptInput() {
     return !this._isAnimating && !this.hasRetrieveError;
@@ -173,6 +174,7 @@ export class GameComponent implements OnInit {
 
     this._undoTracker.reset();
     this._boardComponent.reset();
+    this._hintExplanationBoxComponent.hide();
 
     if (updateGameSaveState) {
       this.storeGameSaveStateInCookie();
@@ -337,15 +339,15 @@ export class GameComponent implements OnInit {
           const coordinate = this._boardComponent.getCoordinate(cell);
           if (coordinate) {
             if (this._hintProvider.runAtCoordinate(coordinate)) {
-              this.hintText = this._hintProvider.explanationText;
+              this._hintExplanationBoxComponent.show(this._hintProvider.explanationText);
               return;
             }
           }
         }
 
-        this.hintText = 'Hint is not available for selected cell.';
+        this._hintExplanationBoxComponent.show('Hint is not available for selected cell.');
       } else {
-        this.hintText = '';
+        this._hintExplanationBoxComponent.hide();
       }
     });
   }
@@ -353,9 +355,9 @@ export class GameComponent implements OnInit {
   onHintBoardClicked() {
     this.captureCellChanges(() => {
       if (this._hintProvider.runAtBoard()) {
-        this.hintText = this._hintProvider.explanationText;
+        this._hintExplanationBoxComponent.show(this._hintProvider.explanationText);
       } else {
-        this.hintText = 'Hint is not available.';
+        this._hintExplanationBoxComponent.show('Hint is not available.');
       }
     });
   }

@@ -36,14 +36,7 @@
       (click)="onHintBoardClicked()">Hint</button>
   </div>
 
-  <div *ngIf="settings.showHintExplanations" class="alert alert-warning alert-dismissible fade show" role="alert"
-    [class.d-none]="hintText.length === 0">
-    {{hintText}}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <!-- TODO: When user clicks close, the box is gone forever. -->
-  </div>
+  <app-hint-explanation-box [isEnabled]="settings.showHintExplanations"></app-hint-explanation-box>
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
     (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
