@@ -24,7 +24,7 @@ export class OperatorsStrategy extends SolverStrategy {
 
         if (allCellChanges.length > 0) {
             const count = this.flatten(allCellChanges);
-            this.reportChange(`Operators around ${count} cells reduced candidates.`);
+            this.reportChange(`Operators reduced candidates in ${count} cells.`);
         }
 
         return allCellChanges.length > 0;

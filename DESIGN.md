@@ -43,15 +43,15 @@
     - [x] Naked Pairs/Triples
     - [x] Hidden Pairs/Triples
     - [x] Naked Quads
-  - [ ] add setting to display hint explanations
+  - [x] add setting to display hint explanations
     - [x] update settings modal and store in cookie
     - [x] add closable textblock to contain explanations
     - [x] move buttons from debug mode into normal game
-    - [ ] display coordinate rulers
+    - [x] display coordinate rulers
   - [x] write scanner to find matching puzzles
     - [ ] create unit tests for strategies
   - [ ] advanced solver strategies (http://www.sudokuwiki.org)
-- [ ] `?` button
+- [x] `?` button
   - Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
   - [ ] validate inputs in class members
