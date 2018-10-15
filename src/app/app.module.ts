@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from './components/root/app.component';
 import { GameComponent } from './components/game/game.component';
 import { BoardComponent } from './components/board/board.component';
 import { DigitCellComponent } from './components/digit-cell/digit-cell.component';
