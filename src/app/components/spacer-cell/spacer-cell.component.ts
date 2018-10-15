@@ -6,6 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SpacerCellComponent implements OnInit {
   @Input() boardSize!: number;
+  @Input() showRuler!: boolean;
 
   ngOnInit() {
   }

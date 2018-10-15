@@ -14,6 +14,7 @@ export class OperatorCellComponent implements OnInit {
   @Input() boardSize!: number;
   @Input() value = ComparisonOperator.None;
   @Input() isRotated = false;
+  @Input() showRuler!: boolean;
 
   ngOnInit() {
   }

@@ -23,6 +23,7 @@ export class DigitCellComponent implements Cell, OnInit {
   @Input() fixedValue: number | undefined;
   @Input() canSelect!: boolean;
   @Input() playState!: GameCompletionState;
+  @Input() showRuler!: boolean;
   @Output() cellClicked = new EventEmitter<DigitCellComponent>();
   @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 

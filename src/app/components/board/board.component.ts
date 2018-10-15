@@ -23,6 +23,7 @@ export class BoardComponent implements Board, OnInit {
   @Input() startBoard: Board | undefined;
   @Input() size = -1;
   @Input() playState!: GameCompletionState;
+  @Input() showRuler!: boolean;
   @Output() contentChanged = new EventEmitter<CellSnapshot>();
 
   get canSelect(): boolean {
@@ -62,6 +63,10 @@ export class BoardComponent implements Board, OnInit {
   private createCoordinate(rowIndex: number, columnIndex: number): Coordinate {
     const index = rowIndex * this.size + columnIndex;
     return Coordinate.fromIndex(index, this.size);
+  }
+
+  getTextForAlphaRuler(rowIndex: number) {
+    return String.fromCharCode(Coordinate.charCodeA + rowIndex);
   }
 
   reset() {

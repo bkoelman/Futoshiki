@@ -18,6 +18,7 @@ import { MenuBarComponent } from '../menu-bar/menu-bar.component';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { WinModalComponent } from '../win-modal/win-modal.component';
 import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
+import { RulerCellComponent } from '../ruler-cell/ruler-cell.component';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -43,7 +44,8 @@ describe('GameComponent', () => {
         MenuBarComponent,
         SettingsModalComponent,
         WinModalComponent,
-        HintExplanationBoxComponent
+        HintExplanationBoxComponent,
+        RulerCellComponent
       ],
       providers: [
         HttpRequestController,

@@ -1,17 +1,34 @@
 <ng-container *ngIf="startBoard">
-    <div *ngFor="let rowIndex of size | repeat">
+    <div *ngIf="showRuler">
         <ng-container *ngFor="let columnIndex of size | repeat">
-            <app-digit-cell [boardSize]="size" [canSelect]="canSelect" [playState]="playState" (cellClicked)="onCellClicked($event)"
-                (contentChanged)="onCellContentChanged($event)" [fixedValue]="getFixedValueAt(rowIndex, columnIndex)"></app-digit-cell>
+            <app-spacer-cell [boardSize]="size" [showRuler]="showRuler"></app-spacer-cell>
+            <app-ruler-cell [boardSize]="size" [label]="columnIndex + 1"></app-ruler-cell>
+        </ng-container>
+    </div>
+
+    <div *ngFor="let rowIndex of size | repeat">
+        <div *ngIf="showRuler">
+            <app-ruler-cell [boardSize]="size" [label]="getTextForAlphaRuler(rowIndex)" [isVertical]="true"></app-ruler-cell>
+        </div>
+
+        <ng-container *ngFor="let columnIndex of size | repeat">
+            <app-digit-cell [boardSize]="size" [canSelect]="canSelect" [playState]="playState" [showRuler]="showRuler"
+                (cellClicked)="onCellClicked($event)" (contentChanged)="onCellContentChanged($event)" [fixedValue]="getFixedValueAt(rowIndex, columnIndex)"></app-digit-cell>
             <ng-container *ngIf="columnIndex < size - 1">
-                <app-operator-cell [boardSize]="size" [value]="getOperatorAtRight(rowIndex, columnIndex)"></app-operator-cell>
+                <app-operator-cell [boardSize]="size" [value]="getOperatorAtRight(rowIndex, columnIndex)" [showRuler]="showRuler"></app-operator-cell>
             </ng-container>
         </ng-container>
+
+        <div *ngIf="showRuler">
+            <app-spacer-cell [boardSize]="size" [showRuler]="showRuler"></app-spacer-cell>
+        </div>
+
         <ng-container *ngIf="rowIndex < size - 1">
             <ng-container *ngFor="let columnIndex of size | repeat">
-                <app-operator-cell [boardSize]="size" [isRotated]="true" [value]="getOperatorBelow(rowIndex, columnIndex)"></app-operator-cell>
+                <app-operator-cell [boardSize]="size" [isRotated]="true" [value]="getOperatorBelow(rowIndex, columnIndex)"
+                    [showRuler]="showRuler"></app-operator-cell>
                 <ng-container *ngIf="columnIndex < size - 1">
-                    <app-spacer-cell [boardSize]="size"></app-spacer-cell>
+                    <app-spacer-cell [boardSize]="size" [showRuler]="showRuler"></app-spacer-cell>
                 </ng-container>
             </ng-container>
         </ng-container>

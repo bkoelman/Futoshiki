@@ -22,6 +22,7 @@ import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
 import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
 import { WinModalComponent } from './components/win-modal/win-modal.component';
 import { HintExplanationBoxComponent } from './components/hint-explanation-box/hint-explanation-box.component';
+import { RulerCellComponent } from './components/ruler-cell/ruler-cell.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { HintExplanationBoxComponent } from './components/hint-explanation-box/h
     MenuBarComponent,
     SettingsModalComponent,
     WinModalComponent,
-    HintExplanationBoxComponent
+    HintExplanationBoxComponent,
+    RulerCellComponent
   ],
   imports: [
     BrowserModule,

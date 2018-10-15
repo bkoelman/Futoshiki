@@ -1,4 +1,4 @@
-<div class="box-container non-clickable" [ngClass]="(isRotated ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
+<div class="box-container non-clickable" [ngClass]="(showRuler ? 'hasruler-' : 'noruler-') + (isRotated ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
   <div #flashable *ngIf="value !== ComparisonOperatorAlias.None" class="container-content fast">
     <div class="container-content-table">
       <div class="container-content-table-cell" [class.rotated-right]="isRotated" [class.auto-resize-large-text]="isRotated"

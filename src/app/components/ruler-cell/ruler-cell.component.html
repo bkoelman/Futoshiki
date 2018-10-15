@@ -1,0 +1,10 @@
+<div class="box-container non-clickable" [ngClass]="'hasruler-' + (!isVertical ? 'horizontal-bar-' : 'vertical-bar-') + boardSize">
+  <div class="container-content">
+    <div class="container-content-table">
+      <div class="container-content-table-cell text-secondary" [class.auto-resize-large-text]="!isVertical"
+        [class.auto-resize-small-text]="isVertical">
+        {{label}}
+      </div>
+    </div>
+  </div>
+</div>

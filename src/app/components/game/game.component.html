@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState"
+  <app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState" [showRuler]="settings.showHintExplanations"
     (contentChanged)="onBoardContentChanged($event)"></app-board>
 
   <div class="clearfix"></div>
