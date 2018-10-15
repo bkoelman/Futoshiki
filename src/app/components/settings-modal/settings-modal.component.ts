@@ -47,7 +47,8 @@ export class SettingsModalComponent implements OnInit, AfterViewChecked {
   setDefaults(settings: GameSettings) {
     this.settings = {
       autoCleanCandidates: settings.autoCleanCandidates,
-      notifyOnWrongMoves: settings.notifyOnWrongMoves
+      notifyOnWrongMoves: settings.notifyOnWrongMoves,
+      showHintExplanations: settings.showHintExplanations
     };
     this._initialSettings = JSON.stringify(settings);
   }
@@ -67,7 +68,8 @@ export class SettingsModalComponent implements OnInit, AfterViewChecked {
     if (this.settings) {
       this.settingsChanged.emit({
         autoCleanCandidates: this.settings.autoCleanCandidates,
-        notifyOnWrongMoves: this.settings.notifyOnWrongMoves
+        notifyOnWrongMoves: this.settings.notifyOnWrongMoves,
+        showHintExplanations: this.settings.showHintExplanations
       });
     }
   }

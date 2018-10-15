@@ -5,7 +5,8 @@ export class SettingsAdapter {
 
     toText(settings: GameSettings): string {
         return `ACC${this.formatBoolean(settings.autoCleanCandidates)}${SettingsAdapter._separator}` +
-            `NWM${this.formatBoolean(settings.notifyOnWrongMoves)}`;
+            `NWM${this.formatBoolean(settings.notifyOnWrongMoves)}${SettingsAdapter._separator}` +
+            `SHE${this.formatBoolean(settings.showHintExplanations)}`;
     }
 
     private formatBoolean(value: boolean): string {
@@ -15,6 +16,7 @@ export class SettingsAdapter {
     parseText(text: string): GameSettings | undefined {
         let autoCleanCandidates;
         let notifyOnWrongMoves;
+        let showHintExplanations;
 
         for (const setting of text.split(SettingsAdapter._separator)) {
             if (setting.length >= 4) {
@@ -25,17 +27,21 @@ export class SettingsAdapter {
                     case 'NWM':
                         notifyOnWrongMoves = this.parseBoolean(setting.substring(3));
                         break;
+                    case 'SHE':
+                        showHintExplanations = this.parseBoolean(setting.substring(3));
+                        break;
                 }
             }
         }
 
-        if (autoCleanCandidates === undefined || notifyOnWrongMoves === undefined) {
+        if (autoCleanCandidates === undefined || notifyOnWrongMoves === undefined || showHintExplanations === undefined) {
             return undefined;
         }
 
         return {
             autoCleanCandidates: autoCleanCandidates,
-            notifyOnWrongMoves: notifyOnWrongMoves
+            notifyOnWrongMoves: notifyOnWrongMoves,
+            showHintExplanations: showHintExplanations
         };
     }
 

@@ -54,6 +54,7 @@ export class GameComponent implements OnInit {
   inDebugMode = false;
   isTypingText = false;
   settings: GameSettings;
+  hintText = '';
 
   get canAcceptInput() {
     return !this._isAnimating && !this.hasRetrieveError;
@@ -119,7 +120,8 @@ export class GameComponent implements OnInit {
 
     return {
       autoCleanCandidates: true,
-      notifyOnWrongMoves: false
+      notifyOnWrongMoves: false,
+      showHintExplanations: false
     };
   }
 
@@ -330,18 +332,31 @@ export class GameComponent implements OnInit {
   onHintCellClicked() {
     this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
-      if (cell && cell.value === undefined) {
-        const coordinate = this._boardComponent.getCoordinate(cell);
-        if (coordinate) {
-          this._hintProvider.runAtCoordinate(coordinate);
+      if (cell) {
+        if (cell.value === undefined) {
+          const coordinate = this._boardComponent.getCoordinate(cell);
+          if (coordinate) {
+            if (this._hintProvider.runAtCoordinate(coordinate)) {
+              this.hintText = this._hintProvider.explanationText;
+              return;
+            }
+          }
         }
+
+        this.hintText = 'Hint is not available for selected cell.';
+      } else {
+        this.hintText = '';
       }
     });
   }
 
   onHintBoardClicked() {
     this.captureCellChanges(() => {
-      this._hintProvider.runAtBoard();
+      if (this._hintProvider.runAtBoard()) {
+        this.hintText = this._hintProvider.explanationText;
+      } else {
+        this.hintText = 'Hint is not available.';
+      }
     });
   }
 

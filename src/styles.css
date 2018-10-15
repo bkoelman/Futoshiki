@@ -12,7 +12,7 @@ body {
 
 .game-container {
     width: calc(100vw - 40px) !important;
-    max-width: calc((100vh - 60px) * .7) !important;
+    max-width: calc(100vh - 40px - 75px - (0.19 * 100vh) - 40px - 75px) !important;
 }
 
 .box-container {

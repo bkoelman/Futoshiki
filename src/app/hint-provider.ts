@@ -12,8 +12,10 @@ import { NakedQuadStrategy } from './solvers/naked-quad-strategy';
 import { HiddenPairTripleStrategy } from './solvers/hidden-pair-triple-strategy';
 
 export class HintProvider {
-    private _checker: MoveChecker;
-    private _strategies: SolverStrategy[];
+    private readonly _checker: MoveChecker;
+    private readonly _strategies: SolverStrategy[];
+
+    private _lastExplanationText = '';
 
     constructor(private _board: Board) {
         this._checker = new MoveChecker(this._board);
@@ -27,6 +29,10 @@ export class HintProvider {
             new HiddenPairTripleStrategy(this._board),
             new NakedQuadStrategy(this._board),
         ];
+    }
+
+    get explanationText(): string {
+        return this._lastExplanationText;
     }
 
     runAtBoard(): boolean {
@@ -45,15 +51,17 @@ export class HintProvider {
 
                 if (hasChanges) {
                     if (!this.isBoardValid()) {
+                        // TODO: Notify user about invalid board.
                         throw new Error('Strategy caused an invalid board.');
                     }
 
+                    this._lastExplanationText = strategy.explanationText;
                     return true;
                 }
             }
         }
 
-        console.log('Hint is not available.');
+        this._lastExplanationText = '';
         return false;
     }
 

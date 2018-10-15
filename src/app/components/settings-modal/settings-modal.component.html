@@ -23,6 +23,13 @@
               Notify on invalid moves
             </label>
           </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="settings.showHintExplanations" id="ShowHintExplanations"
+              name="ShowHintExplanations">
+            <label class="form-check-label" for="ShowHintExplanations">
+              Show hint explanations
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary" (click)="onOkButtonClicked()" [disabled]="!settingsForm.form.valid"

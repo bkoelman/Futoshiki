@@ -6,15 +6,18 @@ import { BoardSizeBasedCache } from '../boardsizebasedcache';
 const EnableVerboseLog = false;
 
 export abstract class SolverStrategy {
-    private _allCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createNumberSet(this.board.size));
-    private _rowColumnSequencesCache = new BoardSizeBasedCache(this.board, () => this.getRowColumnSequences());
-    private _powerSetForAllCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createPowerSet(this.allCellValues));
-    private _powerSetForPairsCache = new BoardSizeBasedCache(this.board, () =>
+    private readonly _allCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createNumberSet(this.board.size));
+    private readonly _rowColumnSequencesCache = new BoardSizeBasedCache(this.board, () => this.getRowColumnSequences());
+    private readonly _powerSetForAllCellValuesCache = new BoardSizeBasedCache(this.board, () =>
+        SetFacilities.createPowerSet(this.allCellValues));
+    private readonly _powerSetForPairsCache = new BoardSizeBasedCache(this.board, () =>
         SetFacilities.filterSet(this._powerSetForAllCellValuesCache.value, set => set.size === 2));
-    private _powerSetForTriplesCache = new BoardSizeBasedCache(this.board, () =>
+    private readonly _powerSetForTriplesCache = new BoardSizeBasedCache(this.board, () =>
         SetFacilities.filterSet(this._powerSetForAllCellValuesCache.value, set => set.size === 3));
-    private _powerSetForQuadsCache = new BoardSizeBasedCache(this.board, () =>
+    private readonly _powerSetForQuadsCache = new BoardSizeBasedCache(this.board, () =>
         SetFacilities.filterSet(this._powerSetForAllCellValuesCache.value, set => set.size === 4));
+
+    private _lastExplanationText = '';
 
     protected get allCellValues() {
         return this._allCellValuesCache.value;
@@ -34,6 +37,10 @@ export abstract class SolverStrategy {
 
     protected get powerSetForQuads() {
         return this._powerSetForQuadsCache.value;
+    }
+
+    get explanationText() {
+        return this._lastExplanationText;
     }
 
     protected constructor(readonly name: string, readonly board: Board) {
@@ -60,7 +67,7 @@ export abstract class SolverStrategy {
     abstract runAtCoordinate(coordinate: Coordinate): boolean;
 
     protected reportChange(message: string) {
-        console.log(`*STEP* [${this.name}] ${message}`);
+        this._lastExplanationText = message;
     }
 
     protected reportVerbose(message: string) {
