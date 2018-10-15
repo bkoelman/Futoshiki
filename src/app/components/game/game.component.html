@@ -39,5 +39,5 @@
   <app-hint-explanation-box [isEnabled]="settings.showHintExplanations"></app-hint-explanation-box>
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
-    (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
+    (dumpBoardClicked)="dumpBoard()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
 </div>

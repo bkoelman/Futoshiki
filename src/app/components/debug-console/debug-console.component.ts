@@ -10,6 +10,7 @@ export class DebugConsoleComponent implements OnInit {
   @Input() isVisible!: boolean;
   @Input() isEnabled!: boolean;
   @Output() loadClicked = new EventEmitter<string>();
+  @Output() dumpBoardClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
 
   ngOnInit() {
@@ -21,6 +22,10 @@ export class DebugConsoleComponent implements OnInit {
 
   onLoadClicked() {
     this.loadClicked.emit(this._saveText);
+  }
+
+  onDumpBoardClicked() {
+    this.dumpBoardClicked.emit();
   }
 
   textGotFocus() {

@@ -25,6 +25,7 @@ import { SettingsAdapter } from '../../settings-adapter';
 import { CandidatePromoter } from 'src/app/candidate-promoter';
 import { HintProvider } from 'src/app/hint-provider';
 import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
+import { BoardTextConverter } from 'src/app/board-text-converter';
 
 declare var $: any;
 
@@ -418,6 +419,12 @@ export class GameComponent implements OnInit {
         }
       }
     }
+  }
+
+  dumpBoard() {
+    const converter = new BoardTextConverter();
+    const text = converter.boardToText(this._boardComponent);
+    console.log(text);
   }
 
   debugIsTypingTextChanged(isTypingText: boolean) {
