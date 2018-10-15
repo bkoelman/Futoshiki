@@ -335,17 +335,10 @@ export class GameComponent implements OnInit {
     this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell) {
-        if (cell.value === undefined) {
-          const coordinate = this._boardComponent.getCoordinate(cell);
-          if (coordinate) {
-            if (this._hintProvider.runAtCoordinate(coordinate)) {
-              this._hintExplanationBoxComponent.show(this._hintProvider.explanationText);
-              return;
-            }
-          }
+        const coordinate = this._boardComponent.getCoordinate(cell);
+        if (coordinate) {
+          this.trySolveStep(() => this._hintProvider.runAtCoordinate(coordinate));
         }
-
-        this._hintExplanationBoxComponent.show('Hint is not available for selected cell.');
       } else {
         this._hintExplanationBoxComponent.hide();
       }
@@ -354,12 +347,18 @@ export class GameComponent implements OnInit {
 
   onHintBoardClicked() {
     this.captureCellChanges(() => {
-      if (this._hintProvider.runAtBoard()) {
-        this._hintExplanationBoxComponent.show(this._hintProvider.explanationText);
-      } else {
-        this._hintExplanationBoxComponent.show('Hint is not available.');
-      }
+      this.trySolveStep(() => this._hintProvider.runAtBoard());
     });
+  }
+
+  private trySolveStep(step: () => void) {
+    try {
+      step();
+      this._hintExplanationBoxComponent.show(this._hintProvider.explanationText);
+    } catch (error) {
+      this._hintExplanationBoxComponent.show('Unsolvable board.');
+      throw error;
+    }
   }
 
   onPuzzleSelectionChanged(info: PuzzleInfo) {

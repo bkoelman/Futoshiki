@@ -42,7 +42,7 @@ describe('Scanner for puzzles to find a specific board scenario to solve', () =>
                             while (provider.runAtBoard()) {
                                 beforeBoardText = converter.boardToText(board);
                             }
-                        } catch (e) {
+                        } catch (error) {
                             console.log(`Found matching scenario on board ` +
                                 `${PuzzleDifficulty[info.difficulty]} / ${info.boardSize}x${info.boardSize} / ${info.id}:`);
                             console.log(beforeBoardText);

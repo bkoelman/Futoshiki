@@ -41,8 +41,8 @@ export class UndoTracker {
     captureUndoFrame(action: () => void): boolean {
         try {
             this.captureCellChanges(action);
-        } catch (e) {
-            console.log('Auto-rollback after error: ' + e.message);
+        } catch (error) {
+            console.log('Auto-rollback after error: ' + error.message);
             this.rollbackCellChanges();
             return false;
         }

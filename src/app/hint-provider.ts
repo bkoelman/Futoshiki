@@ -36,36 +36,52 @@ export class HintProvider {
     }
 
     runAtBoard(): boolean {
-        return this.runStrategies(strategy => strategy.runAtBoard());
+        const hasChanges = this.runStrategies(strategy => strategy.runAtBoard());
+
+        if (!hasChanges) {
+            this._lastExplanationText = 'Hint is not available.';
+        }
+
+        return hasChanges;
     }
 
     runAtCoordinate(coordinate: Coordinate): boolean {
-        return this.runStrategies(strategy => strategy.runAtCoordinate(coordinate));
+        let hasChanges = false;
+
+        const cell = this._board.getCell(coordinate);
+        if (cell && cell.value === undefined) {
+            hasChanges = this.runStrategies(strategy => strategy.runAtCoordinate(coordinate));
+        }
+
+        if (!hasChanges) {
+            this._lastExplanationText = 'Hint is not available for selected cell.';
+        }
+
+        return hasChanges;
     }
 
-    private runStrategies(runStrategy: (strategy: SolverStrategy) => boolean) {
-        if (this.isBoardValid()) {
-            for (const strategy of this._strategies) {
-                console.log('[Debug] Running next strategy: ' + strategy.name);
-                const hasChanges = runStrategy(strategy);
+    private runStrategies(runStrategy: (strategy: SolverStrategy) => boolean): boolean {
+        if (!this.isBoardValid()) {
+            throw new Error('Solvers cannot run on an invalid board.');
+        }
 
-                if (hasChanges) {
-                    if (!this.isBoardValid()) {
-                        // TODO: Notify user about invalid board.
-                        throw new Error('Strategy caused an invalid board.');
-                    }
+        for (const strategy of this._strategies) {
+            const hasChanges = runStrategy(strategy);
 
-                    this._lastExplanationText = strategy.explanationText;
-                    return true;
+            if (hasChanges) {
+                if (!this.isBoardValid()) {
+                    throw new Error(`Strategy '${strategy.name}' caused an invalid board.`);
                 }
+
+                this._lastExplanationText = strategy.explanationText;
+                return true;
             }
         }
 
-        this._lastExplanationText = '';
         return false;
     }
 
-    private isBoardValid() {
+    private isBoardValid(): boolean {
         for (const coordinate of Coordinate.iterateBoard(this._board.size)) {
             const cell = this._board.getCell(coordinate);
             if (cell) {

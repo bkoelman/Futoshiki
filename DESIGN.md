@@ -44,8 +44,8 @@
     - [x] Hidden Pairs/Triples
     - [x] Naked Quads
   - [ ] add setting to display hint explanations
-    - [ ] update settings modal and store in cookie
-    - [ ] add closable textblock to contain explanations
+    - [x] update settings modal and store in cookie
+    - [x] add closable textblock to contain explanations
     - [x] move buttons from debug mode into normal game
     - [ ] display coordinate rulers
   - [x] write scanner to find matching puzzles
