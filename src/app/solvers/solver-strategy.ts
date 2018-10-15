@@ -1,7 +1,7 @@
 import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { SetFacilities } from '../set-facilities';
-import { BoardSizeBasedCache } from '../boardsizebasedcache';
+import { BoardSizeBasedCache } from '../board-size-based-cache';
 
 const EnableVerboseLog = false;
 
