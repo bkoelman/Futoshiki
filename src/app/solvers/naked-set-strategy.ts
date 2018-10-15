@@ -39,13 +39,8 @@ export abstract class NakedSetStrategy extends SolverStrategy {
         singleCoordinate: Coordinate | undefined): boolean {
         const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence);
         if (nakedSetMembers.length === digitSet.size) {
-            let otherCells = sequence.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
-
-            if (singleCoordinate !== undefined) {
-                otherCells = otherCells.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
-            }
-
-            return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequenceName);
+            const otherCells = sequence.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
+            return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequenceName, singleCoordinate);
         }
 
         return false;
@@ -71,7 +66,11 @@ export abstract class NakedSetStrategy extends SolverStrategy {
     }
 
     private removeCandidatesFromOtherCells(otherCells: Coordinate[], digitsToRemove: ReadonlySet<number>, nakedSetMembers: Coordinate[],
-        sequenceName: string): boolean {
+        sequenceName: string, singleCoordinate: Coordinate | undefined): boolean {
+
+        if (singleCoordinate !== undefined) {
+            otherCells = otherCells.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
+        }
 
         let changedCellCount = 0;
         for (const coordinate of otherCells) {
@@ -82,8 +81,10 @@ export abstract class NakedSetStrategy extends SolverStrategy {
 
         if (changedCellCount > 0) {
             const arity = this.getArityName(digitsToRemove.size);
+            const source = singleCoordinate === undefined ?
+                `${changedCellCount} other cells in that ${sequenceName}.` : `${singleCoordinate}.`;
             this.reportChange(`Naked ${arity} (${SetFacilities.formatSet(digitsToRemove)}) in cells (${nakedSetMembers}) eliminated ` +
-                `${SetFacilities.formatSet(digitsToRemove)} from ${changedCellCount} other cells in that ${sequenceName}.`);
+                `${SetFacilities.formatSet(digitsToRemove)} from ${source}`);
 
             return true;
         }

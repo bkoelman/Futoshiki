@@ -8,8 +8,8 @@ import { NakedSingleStrategy } from './solvers/naked-single-strategy';
 import { HiddenSingleStrategy } from './solvers/hidden-single-strategy';
 import { OperatorsStrategy } from './solvers/operators-strategy';
 import { NakedPairTripleStrategy } from './solvers/naked-pair-triple-strategy';
-import { NakedQuadStrategy } from './solvers/naked-quad-strategy';
 import { HiddenPairTripleStrategy } from './solvers/hidden-pair-triple-strategy';
+import { NakedQuadStrategy } from './solvers/naked-quad-strategy';
 
 export class HintProvider {
     private readonly _checker: MoveChecker;

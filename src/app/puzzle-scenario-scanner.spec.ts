@@ -45,6 +45,7 @@ describe('Scanner for puzzles to find a specific board scenario to solve', () =>
                         } catch (error) {
                             console.log(`Found matching scenario on board ` +
                                 `${PuzzleDifficulty[info.difficulty]} / ${info.boardSize}x${info.boardSize} / ${info.id}:`);
+                            console.log(error.message);
                             console.log(beforeBoardText);
                             return;
                         }

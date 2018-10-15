@@ -49,7 +49,7 @@
     - [x] move buttons from debug mode into normal game
     - [x] display coordinate rulers
   - [x] write scanner to find matching puzzles
-    - [ ] create unit tests for strategies
+    - [x] create unit tests for strategies
   - [ ] advanced solver strategies (http://www.sudokuwiki.org)
 - [x] `?` button
   - Same as `Hint` button, but apply only for selected cell
