@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-debug-console',
   templateUrl: './debug-console.component.html'
 })
-export class DebugConsoleComponent implements OnInit {
+export class DebugConsoleComponent {
   private _saveText = '';
 
   @Input() isVisible!: boolean;
@@ -12,9 +12,6 @@ export class DebugConsoleComponent implements OnInit {
   @Output() loadClicked = new EventEmitter<string>();
   @Output() dumpBoardClicked = new EventEmitter();
   @Output() isTypingTextChanged = new EventEmitter<boolean>();
-
-  ngOnInit() {
-  }
 
   updateSaveGameText(saveText: string) {
     this._saveText = saveText;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChildren, QueryList, Input, Output, EventEmitter } from '@angular/core';
 import { DigitCellComponent } from '../digit-cell/digit-cell.component';
 import { Coordinate } from '../../models/coordinate';
 import { GameSaveState } from '../../models/game-save-state';
@@ -15,7 +15,7 @@ import { GameCompletionState } from '../../models/game-completion-state.enum';
   selector: 'app-board',
   templateUrl: './board.component.html'
 })
-export class BoardComponent implements Board, OnInit {
+export class BoardComponent implements Board {
   @ViewChildren(DigitCellComponent) private _cells!: QueryList<DigitCellComponent>;
   @ViewChildren(OperatorCellComponent) private _operators!: QueryList<OperatorCellComponent>;
   private _canSelect = true;
@@ -34,9 +34,6 @@ export class BoardComponent implements Board, OnInit {
       this.clearSelection();
     }
     this._canSelect = value;
-  }
-
-  ngOnInit() {
   }
 
   getFixedValueAt(rowIndex: number, columnIndex: number): number | undefined {

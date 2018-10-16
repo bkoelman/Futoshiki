@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { CellContentSnapshot } from '../../models/cell-content-snapshot.js';
 import { Cell } from '../../models/cell.js';
 import { GameCompletionState } from '../../models/game-completion-state.enum.js';
@@ -10,7 +10,7 @@ declare var $: any;
   selector: 'app-digit-cell',
   templateUrl: './digit-cell.component.html'
 })
-export class DigitCellComponent implements Cell, OnInit {
+export class DigitCellComponent implements Cell {
   @ViewChild('flashable') private _flashableElementRef!: ElementRef;
   private _userValue: number | undefined;
   private _candidates = new Set<number>();
@@ -41,9 +41,6 @@ export class DigitCellComponent implements Cell, OnInit {
 
   get hasCandidates(): boolean {
     return this.value === undefined && this._candidates.size > 0;
-  }
-
-  ngOnInit() {
   }
 
   containsCandidate(digit: number): boolean {

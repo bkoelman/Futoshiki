@@ -1,17 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-hint-explanation-box',
   templateUrl: './hint-explanation-box.component.html'
 })
-export class HintExplanationBoxComponent implements OnInit {
+export class HintExplanationBoxComponent {
   @Input() isEnabled!: boolean;
 
   isDismissed = false;
   explanationText = '';
-
-  ngOnInit() {
-  }
 
   show(text: string) {
     this.isDismissed = false;

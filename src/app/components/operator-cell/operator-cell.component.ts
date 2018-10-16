@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { ComparisonOperator } from '../../models/comparison-operator.enum.js';
 
 declare var $: any;
@@ -7,7 +7,7 @@ declare var $: any;
   selector: 'app-operator-cell',
   templateUrl: './operator-cell.component.html'
 })
-export class OperatorCellComponent implements OnInit {
+export class OperatorCellComponent {
   @ViewChild('flashable') private _flashableElementRef!: ElementRef;
 
   ComparisonOperatorAlias = ComparisonOperator;
@@ -15,9 +15,6 @@ export class OperatorCellComponent implements OnInit {
   @Input() value = ComparisonOperator.None;
   @Input() isRotated = false;
   @Input() showRuler!: boolean;
-
-  ngOnInit() {
-  }
 
   flash(callback: () => void) {
     $(this._flashableElementRef.nativeElement).animateCss('flash', callback);

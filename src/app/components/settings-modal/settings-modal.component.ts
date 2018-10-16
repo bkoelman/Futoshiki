@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
 import { GameSettings } from '../../models/game-settings';
 
 declare var $: any;
@@ -7,7 +7,7 @@ declare var $: any;
   selector: 'app-settings',
   templateUrl: './settings-modal.component.html'
 })
-export class SettingsModalComponent implements OnInit, AfterViewChecked {
+export class SettingsModalComponent implements AfterViewChecked {
   private _bootstrapHooksRegistered = false;
   private _initialSettings: string | undefined;
 
@@ -16,9 +16,6 @@ export class SettingsModalComponent implements OnInit, AfterViewChecked {
   @Output() settingsChanged = new EventEmitter<GameSettings>();
 
   constructor(private _zone: NgZone) {
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewChecked() {

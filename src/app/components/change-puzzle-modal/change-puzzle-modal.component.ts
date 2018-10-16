@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewChecked, NgZone } from '@angular/core';
 import { PuzzleInfo } from '../../models/puzzle-info';
 import { PuzzleDifficulty } from '../../models/puzzle-difficulty.enum';
 import { ObjectFacilities } from '../../object-facilities';
@@ -9,7 +9,7 @@ declare var $: any;
   selector: 'app-change-puzzle',
   templateUrl: './change-puzzle-modal.component.html'
 })
-export class ChangePuzzleModalComponent implements OnInit, AfterViewChecked {
+export class ChangePuzzleModalComponent implements AfterViewChecked {
   private _bootstrapHooksRegistered = false;
   private _lastChangeEventData: string | undefined;
 
@@ -21,9 +21,6 @@ export class ChangePuzzleModalComponent implements OnInit, AfterViewChecked {
   @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
   constructor(private _zone: NgZone) {
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewChecked() {
