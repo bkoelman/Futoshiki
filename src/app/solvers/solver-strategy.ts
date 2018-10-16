@@ -2,6 +2,7 @@ import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { SetFacilities } from '../set-facilities';
 import { BoardSizeBasedCache } from '../board-size-based-cache';
+import { NamedSequence } from '../models/named-sequence';
 
 const EnableVerboseLog = false;
 
@@ -46,8 +47,8 @@ export abstract class SolverStrategy {
     protected constructor(readonly name: string, readonly board: Board) {
     }
 
-    private getRowColumnSequences(): { coordinates: Coordinate[], name: string }[] {
-        const sequences: { coordinates: Coordinate[], name: string }[] = [];
+    private getRowColumnSequences(): NamedSequence[] {
+        const sequences: NamedSequence[] = [];
 
         const firstCoordinate = Coordinate.fromIndex(0, this.board.size);
         for (const firstColumnInRow of firstCoordinate.iterateColumn(false)) {

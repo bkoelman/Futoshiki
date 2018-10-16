@@ -1,6 +1,7 @@
 import { SolverStrategy } from './solver-strategy';
 import { Coordinate } from '../models/coordinate';
 import { SetFacilities } from '../set-facilities';
+import { NamedSequence } from '../models/named-sequence';
 
 export abstract class NakedSetStrategy extends SolverStrategy {
     abstract readonly powerSets: ReadonlySet<ReadonlySet<number>>[];
@@ -21,11 +22,11 @@ export abstract class NakedSetStrategy extends SolverStrategy {
         return this.runAtSequences(sequences, coordinate);
     }
 
-    private runAtSequences(sequences: { coordinates: Coordinate[], name: string }[], singleCoordinate: Coordinate | undefined): boolean {
+    private runAtSequences(sequences: NamedSequence[], singleCoordinate: Coordinate | undefined): boolean {
         for (const powerSet of this.powerSets) {
             for (const digitSet of powerSet) {
                 for (const sequence of sequences) {
-                    if (this.runAtSequence(digitSet, sequence.coordinates, sequence.name, singleCoordinate)) {
+                    if (this.runAtSequence(sequence, digitSet, singleCoordinate)) {
                         return true;
                     }
                 }
@@ -35,12 +36,11 @@ export abstract class NakedSetStrategy extends SolverStrategy {
         return false;
     }
 
-    private runAtSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[], sequenceName: string,
-        singleCoordinate: Coordinate | undefined): boolean {
-        const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence);
+    private runAtSequence(sequence: NamedSequence, digitSet: ReadonlySet<number>, singleCoordinate: Coordinate | undefined): boolean {
+        const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence.coordinates);
         if (nakedSetMembers.length === digitSet.size) {
-            const otherCells = sequence.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
-            return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequenceName, singleCoordinate);
+            const otherCells = sequence.coordinates.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
+            return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequence.name, singleCoordinate);
         }
 
         return false;

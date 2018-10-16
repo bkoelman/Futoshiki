@@ -2,6 +2,7 @@ import { SolverStrategy } from './solver-strategy';
 import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 import { SetFacilities } from '../set-facilities';
+import { NamedSequence } from '../models/named-sequence';
 
 export class HiddenPairTripleStrategy extends SolverStrategy {
     constructor(board: Board) {
@@ -24,11 +25,11 @@ export class HiddenPairTripleStrategy extends SolverStrategy {
         return this.runAtSequences(sequences, coordinate);
     }
 
-    private runAtSequences(sequences: { coordinates: Coordinate[], name: string }[], singleCoordinate: Coordinate | undefined) {
+    private runAtSequences(sequences: NamedSequence[], singleCoordinate: Coordinate | undefined) {
         for (const powerSet of [this.powerSetForPairs, this.powerSetForTriples]) {
             for (const digitSet of powerSet) {
                 for (const sequence of sequences) {
-                    if (this.runAtSequence(sequence.coordinates, digitSet, sequence.name, singleCoordinate)) {
+                    if (this.runAtSequence(sequence, digitSet, singleCoordinate)) {
                         return true;
                     }
                 }
@@ -38,12 +39,11 @@ export class HiddenPairTripleStrategy extends SolverStrategy {
         return false;
     }
 
-    private runAtSequence(sequence: Coordinate[], digitSet: ReadonlySet<number>, sequenceName: string,
-        singleCoordinate: Coordinate | undefined) {
-        const cellsInHiddenSet = this.getCellsInHiddenSet(sequence, digitSet);
+    private runAtSequence(sequence: NamedSequence, digitSet: ReadonlySet<number>, singleCoordinate: Coordinate | undefined) {
+        const cellsInHiddenSet = this.getCellsInHiddenSet(sequence.coordinates, digitSet);
 
         if (cellsInHiddenSet.length === digitSet.size) {
-            return this.removeOtherCandidatesFromCells(cellsInHiddenSet, digitSet, sequenceName, singleCoordinate);
+            return this.removeOtherCandidatesFromCells(cellsInHiddenSet, digitSet, sequence.name, singleCoordinate);
         }
 
         return false;
