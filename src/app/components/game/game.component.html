@@ -20,8 +20,7 @@
   <app-board [startBoard]="puzzle?.startBoard" [size]="puzzle?.info?.boardSize" [playState]="playState" [showRuler]="settings.showHintExplanations"
     (contentChanged)="onBoardContentChanged($event)"></app-board>
 
-  <div class="clearfix"></div>
-  <p></p>
+  <div class="clearfix mt-4"></div>
 
   <app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput && playState !== GameCompletionStateAlias.Won"
     [canUndo]="canUndo" [areKeysEnabled]="areShortcutKeysEnabled" (digitClicked)="onDigitClicked($event)"

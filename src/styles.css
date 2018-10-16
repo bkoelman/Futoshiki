@@ -12,7 +12,7 @@ body {
 
 .game-container {
     width: calc(100vw - 40px) !important;
-    max-width: calc(100vh - 40px - 75px - (0.19 * 100vh) - 40px - 75px) !important;
+    max-width: calc(100vh - 40px - 75px - (0.30 * 100vh) - 75px) !important;
 }
 
 .box-container {
@@ -88,7 +88,7 @@ body {
     cursor: default;
 }
 
-.round-button-group {
+.bar-button-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;

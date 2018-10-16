@@ -158,7 +158,7 @@ export class GameComponent implements OnInit {
   }
 
   private rebindAutoResizeTexts() {
-    $(window).off('debouncedresize.fittext orientationchange.fittext');
+    $(window).off('resize.fittext orientationchange.fittext');
 
     $('.auto-resize-text').fitText(0.15);
     $('.auto-resize-large-text').fitText(0.5);

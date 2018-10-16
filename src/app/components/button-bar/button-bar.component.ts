@@ -1,10 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 
 @Component({
   selector: 'app-button-bar',
   templateUrl: './button-bar.component.html'
 })
-export class ButtonBarComponent implements OnInit {
+export class ButtonBarComponent implements OnInit, AfterViewChecked {
+  @ViewChild('rectangleButtonGroup') private _rectangleButtonGroupElementRef!: ElementRef;
+  private _firstTimeResizeCompleted = false;
+
   @Input() boardSize: number | undefined;
   @Input() isEnabled!: boolean;
   @Input() canUndo!: boolean;
@@ -17,6 +20,28 @@ export class ButtonBarComponent implements OnInit {
   @Output() hintBoardClicked = new EventEmitter();
 
   ngOnInit() {
+    $(window).resize(() => this.resizeRectangleButtonGroup());
+  }
+
+  ngAfterViewChecked() {
+    if (!this._firstTimeResizeCompleted && this.boardSize) {
+      this.resizeRectangleButtonGroup();
+      this._firstTimeResizeCompleted = true;
+    }
+  }
+
+  private resizeRectangleButtonGroup() {
+    if (this.boardSize) {
+      const containerWidth = $(this._rectangleButtonGroupElementRef.nativeElement).width();
+      if (containerWidth) {
+        const fontSizeInRem = Math.max(0.5, (containerWidth * 0.0053 - 0.1265));
+        const paddingLeftRightInRem = fontSizeInRem / 2;
+
+        const buttons = $(this._rectangleButtonGroupElementRef.nativeElement).find('.btn');
+        buttons.css('font-size', fontSizeInRem + 'rem');
+        buttons.css('padding', `0.375rem ${paddingLeftRightInRem}rem`);
+      }
+    }
   }
 
   onDigitButtonClicked(event: Event, isCandidate: boolean) {
