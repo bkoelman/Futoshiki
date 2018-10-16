@@ -29,10 +29,9 @@
 - [x] block invalid (based on rules) candidate digit entry; highlight related cells
 - [x] move `Promote` button from debug mode into normal game
 - [x] move `Undo` into button bar and enable Ctrl+Z shortcut
-- [ ] nicer styling of button bar
+- [x] nicer styling of button bar
   - [x] move `Restart`, `New game`, `Change puzzle`, `Settings` behind hamburger menu
   - [x] controls left: `Undo`, `Promote`, `Hint`
-  - [ ] move bar to side, depending on screen size (https://davidwalsh.name/orientation-change)
 - [x] `Hint` button (unrelated to selection)
   - [x] basic solver strategies (http://hodoku.sourceforge.net/en/tech_hidden.php, http://pzl.org.uk/futoshiki.html)
     - [x] Set candidates in empty cells
@@ -50,7 +49,6 @@
     - [x] display coordinate rulers
   - [x] write scanner to find matching puzzles
     - [x] create unit tests for strategies
-- [ ] additional solver strategies (http://www.sudokuwiki.org)
 - [x] `?` button
   - Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
@@ -61,13 +59,14 @@
   - [x] switch to TypeScript strict mode
   - [x] replace number arrays with read-only sets
 - [ ] option to track elapsed time
-- [ ] add menu option to show game rules and strategies
+- [x] add menu option to show game rules and strategies
 - [ ] cleanup README.md
 - [ ] consider to use "prettier" code-formatter
 - [ ] optimize performance
   - [ ] try table layout instead of divs for board
   - [ ] replace storage of cell/candidate values with bitmask
 - [ ] have some automated (unit) tests (using real puzzles)
+- [ ] additional solver strategies (http://www.sudokuwiki.org)
 
 # Links for inspiration
 https://sudoku.game/
