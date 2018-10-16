@@ -49,8 +49,7 @@
     - [x] display coordinate rulers
   - [x] write scanner to find matching puzzles
     - [x] create unit tests for strategies
-- [x] `?` button
-  - Same as `Hint` button, but apply only for selected cell
+  - [x] `?` button: Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
   - [ ] validate inputs in class members
   - [x] split parsing and rendering of downloaded puzzle in BoardComponent
