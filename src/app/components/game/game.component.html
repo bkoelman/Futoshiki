@@ -24,17 +24,9 @@
   <p></p>
 
   <app-button-bar [boardSize]="puzzle?.info?.boardSize" [isEnabled]="canAcceptInput && playState !== GameCompletionStateAlias.Won"
-    [areKeysEnabled]="areShortcutKeysEnabled" (digitClicked)="onDigitClicked($event)" (clearClicked)="onClearClicked()"
-    (hintClicked)="onHintCellClicked()"></app-button-bar>
-
-  <p></p>
-  <div *ngIf="puzzle !== undefined">
-    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canUndo" (click)="undo()">Undo</button>
-    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won"
-      (click)="promoteCandidates()">Promote</button>
-    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!canAcceptInput || playState === GameCompletionStateAlias.Won"
-      (click)="onHintBoardClicked()">Hint</button>
-  </div>
+    [canUndo]="canUndo" [areKeysEnabled]="areShortcutKeysEnabled" (digitClicked)="onDigitClicked($event)"
+    (clearClicked)="onClearClicked()" (hintCellClicked)="onHintCellClicked()" (undoClicked)="onUndoClicked()"
+    (promoteClicked)="onPromoteClicked()" (hintBoardClicked)="onHintBoardClicked()"></app-button-bar>
 
   <app-hint-explanation-box [isEnabled]="settings.showHintExplanations"></app-hint-explanation-box>
 

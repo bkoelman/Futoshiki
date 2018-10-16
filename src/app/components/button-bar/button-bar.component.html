@@ -13,7 +13,7 @@
             </div>
           </div>
         </div>
-        <div (click)="onClearButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
+        <div (click)="onClearClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
           [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.gray]="isEnabled" [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div (click)="onHintButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
+        <div (click)="onHintCellClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
           [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
@@ -54,5 +54,12 @@
       </div>
     </div>
     <div class="col-1"></div>
+  </div>
+
+  <p></p>
+  <div>
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!isEnabled || !canUndo" (click)="onUndoClicked()">Undo</button>
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!isEnabled" (click)="onPromoteClicked()">Promote</button>
+    <button type="button" class="btn btn-secondary mr-2 mb-2" [disabled]="!isEnabled" (click)="onHintBoardClicked()">Hint</button>
   </div>
 </div>

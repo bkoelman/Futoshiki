@@ -7,10 +7,14 @@ import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@a
 export class ButtonBarComponent implements OnInit {
   @Input() boardSize: number | undefined;
   @Input() isEnabled!: boolean;
+  @Input() canUndo!: boolean;
   @Input() areKeysEnabled!: boolean;
   @Output() digitClicked = new EventEmitter<{ digit: number, isCandidate: boolean }>();
   @Output() clearClicked = new EventEmitter();
-  @Output() hintClicked = new EventEmitter();
+  @Output() hintCellClicked = new EventEmitter();
+  @Output() undoClicked = new EventEmitter();
+  @Output() promoteClicked = new EventEmitter();
+  @Output() hintBoardClicked = new EventEmitter();
 
   ngOnInit() {
   }
@@ -26,25 +30,47 @@ export class ButtonBarComponent implements OnInit {
     }
   }
 
-  onClearButtonClicked() {
+  onClearClicked() {
     if (this.isEnabled) {
       this.clearClicked.emit();
     }
   }
 
-  onHintButtonClicked() {
+  onHintCellClicked() {
     if (this.isEnabled) {
-      this.hintClicked.emit();
+      this.hintCellClicked.emit();
+    }
+  }
+
+  onUndoClicked() {
+    if (this.isEnabled && this.canUndo) {
+      this.undoClicked.emit();
+    }
+  }
+
+  onPromoteClicked() {
+    if (this.isEnabled) {
+      this.promoteClicked.emit();
+    }
+  }
+
+  onHintBoardClicked() {
+    if (this.isEnabled) {
+      this.hintBoardClicked.emit();
     }
   }
 
   @HostListener('window:keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
     if (this.isEnabled && this.areKeysEnabled && this.boardSize) {
-      if (event.code === 'Delete' || event.key === 'Del' || event.code === 'Backspace' || event.key === 'Backspace') {
+      if (event.key === 'Delete' || event.key === 'Del' || event.key === 'Backspace') {
         event.preventDefault();
         this.clearClicked.emit();
       } else if (event.key === '?') {
-        this.hintClicked.emit();
+        this.hintCellClicked.emit();
+      } else if (event.ctrlKey && event.key === 'z') {
+        if (this.canUndo) {
+          this.undoClicked.emit();
+        }
       } else {
         const digit = parseInt(event.key, 10);
         if (!isNaN(digit) && digit > 0 && digit <= this.boardSize) {

@@ -68,7 +68,7 @@ export class GameComponent implements OnInit {
   }
 
   get canUndo() {
-    return this.canAcceptInput && this._undoTracker.canUndo() && this.playState !== GameCompletionState.Won;
+    return this._undoTracker.canUndo();
   }
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
@@ -196,7 +196,7 @@ export class GameComponent implements OnInit {
     this._settingsModalComponent.setDefaults(this.settings);
   }
 
-  undo() {
+  onUndoClicked() {
     if (this._undoTracker.undo()) {
       this._boardComponent.clearSelection();
       this.afterBoardChanged();
@@ -326,7 +326,7 @@ export class GameComponent implements OnInit {
     this.playState = GameCompletionState.Playing;
   }
 
-  promoteCandidates() {
+  onPromoteClicked() {
     this.captureCellChanges(() => {
       this._candidatePromoter.promoteSingleCandidates(this.settings.autoCleanCandidates);
     });

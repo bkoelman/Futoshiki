@@ -28,12 +28,12 @@
 - [x] block invalid (based on rules) digit entry; highlight related cells
 - [x] block invalid (based on rules) candidate digit entry; highlight related cells
 - [x] move `Promote` button from debug mode into normal game
-- [ ] move `Undo` into button bar and enable Ctrl+Z shortcut
+- [x] move `Undo` into button bar and enable Ctrl+Z shortcut
 - [ ] nicer styling of button bar
   - [x] move `Restart`, `New game`, `Change puzzle`, `Settings` behind hamburger menu
-  - [ ] controls left: `Undo`, `Promote`, `Hint`
+  - [x] controls left: `Undo`, `Promote`, `Hint`
   - [ ] move bar to side, depending on screen size (https://davidwalsh.name/orientation-change)
-- [ ] `Hint` button (unrelated to selection)
+- [x] `Hint` button (unrelated to selection)
   - [x] basic solver strategies (http://hodoku.sourceforge.net/en/tech_hidden.php, http://pzl.org.uk/futoshiki.html)
     - [x] Set candidates in empty cells
     - [x] Promote all single candidates
@@ -50,7 +50,7 @@
     - [x] display coordinate rulers
   - [x] write scanner to find matching puzzles
     - [x] create unit tests for strategies
-  - [ ] advanced solver strategies (http://www.sudokuwiki.org)
+- [ ] additional solver strategies (http://www.sudokuwiki.org)
 - [x] `?` button
   - Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
