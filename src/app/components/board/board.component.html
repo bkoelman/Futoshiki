@@ -19,11 +19,11 @@
             </ng-container>
         </ng-container>
 
-        <div *ngIf="showRuler">
-            <app-spacer-cell [boardSize]="size" [showRuler]="showRuler"></app-spacer-cell>
-        </div>
-
         <ng-container *ngIf="rowIndex < size - 1">
+            <div *ngIf="showRuler">
+                <app-spacer-cell [boardSize]="size" [showRuler]="showRuler"></app-spacer-cell>
+            </div>
+
             <ng-container *ngFor="let columnIndex of size | repeat">
                 <app-operator-cell [boardSize]="size" [isRotated]="true" [value]="getOperatorBelow(rowIndex, columnIndex)"
                     [showRuler]="showRuler"></app-operator-cell>
