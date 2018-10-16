@@ -77,6 +77,16 @@ export abstract class SolverStrategy {
         }
     }
 
+    protected getSequencesForCoordinate(coordinate: Coordinate, skipSelf: boolean) {
+        return [{
+            coordinates: coordinate.iterateRow(skipSelf),
+            name: 'row'
+        }, {
+            coordinates: coordinate.iterateColumn(skipSelf),
+            name: 'column'
+        }];
+    }
+
     protected getPossibleDigitsForCell(coordinate: Coordinate): ReadonlySet<number> {
         const cell = this.board.getCell(coordinate);
         if (cell) {

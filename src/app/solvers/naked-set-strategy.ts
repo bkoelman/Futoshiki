@@ -11,14 +11,7 @@ export abstract class NakedSetStrategy extends SolverStrategy {
     }
 
     runAtCoordinate(coordinate: Coordinate): boolean {
-        const sequences = [{
-            coordinates: coordinate.iterateRow(false),
-            name: 'row'
-        }, {
-            coordinates: coordinate.iterateColumn(false),
-            name: 'column'
-        }];
-
+        const sequences = this.getSequencesForCoordinate(coordinate, false);
         return this.runAtSequences(sequences, coordinate);
     }
 

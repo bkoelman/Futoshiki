@@ -24,13 +24,7 @@ export class HiddenSingleStrategy extends SolverStrategy {
         const cell = this.board.getCell(coordinate);
         if (cell) {
             for (const digit of cell.getCandidates()) {
-                const sequences = [{
-                    coordinates: coordinate.iterateRow(true),
-                    name: 'row'
-                }, {
-                    coordinates: coordinate.iterateColumn(true),
-                    name: 'column'
-                }];
+                const sequences = this.getSequencesForCoordinate(coordinate, true);
 
                 for (const sequence of sequences) {
                     if (!this.sequenceContainsDigit(sequence.coordinates, digit)) {
