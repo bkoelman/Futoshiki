@@ -1,10 +1,10 @@
 <div *ngIf="boardSize">
   <div class="row">
     <div class="col-12">
-      <div class="rounded-button-group">
+      <div class="round-button-group">
         <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, false)" class="box-container rounded-button"
           [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.green]="isEnabled"
-          [ngClass]="'button-' + boardSize">
+          [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
@@ -14,7 +14,7 @@
           </div>
         </div>
         <div (click)="onClearButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
-          [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.gray]="isEnabled" [ngClass]="'button-' + boardSize">
+          [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.gray]="isEnabled" [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
@@ -29,10 +29,10 @@
   <div class="row">
     <div class="col-1"></div>
     <div class="col-10">
-      <div class="rounded-button-group mt-1">
+      <div class="round-button-group mt-1">
         <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, true)" class="box-container rounded-button"
           [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled"
-          [ngClass]="'button-' + boardSize">
+          [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div (click)="onHintButtonClicked()" class="box-container rounded-button" [class.clickable]="isEnabled"
-          [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'button-' + boardSize">
+          [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled" [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
             <div class="container-content-table">
               <div class="container-content-table-cell auto-resize-text">
