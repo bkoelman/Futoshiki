@@ -163,16 +163,17 @@ export class GameComponent implements OnInit {
     } else {
       this.afterBoardChanged();
     }
-
-    setTimeout(this.rebindAutoResizeTexts);
   }
 
-  private rebindAutoResizeTexts() {
+  private rebindAutoResizeElements() {
     $(window).off('resize.fittext orientationchange.fittext');
+    $(window).off('resize.fitbuttons orientationchange.fitbuttons');
 
     $('.auto-resize-text').fitText(0.15);
     $('.auto-resize-large-text').fitText(0.5);
     $('.auto-resize-small-text').fitText(0.125);
+
+    $('.auto-resize-buttons').fitButtons('.btn');
   }
 
   private onPuzzleDownloadFailed(err: any) {
@@ -231,7 +232,7 @@ export class GameComponent implements OnInit {
   private afterBoardChanged() {
     this.verifyIsBoardSolved();
     this.storeGameSaveStateInCookie();
-    setTimeout(() => this.rebindAutoResizeTexts());
+    setTimeout(() => this.rebindAutoResizeElements());
   }
 
   onDigitClicked(data: { digit: number; isCandidate: boolean }) {
@@ -291,7 +292,7 @@ export class GameComponent implements OnInit {
       cell.setError(undefined);
     }
 
-    setTimeout(() => this.rebindAutoResizeTexts());
+    setTimeout(() => this.rebindAutoResizeElements());
 
     for (const offendingCoordinate of result.offendingCells) {
       const offendingCell = this._boardComponent.getCell(offendingCoordinate);

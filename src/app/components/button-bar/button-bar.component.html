@@ -56,7 +56,7 @@
     <div class="col-1 p-0"></div>
   </div>
 
-  <div #rectangleButtonGroup class="bar-button-group mt-3">
+  <div class="bar-button-group mt-3 auto-resize-buttons">
     <button type="button" class="btn btn-secondary" [disabled]="!isEnabled || !canUndo" (click)="onUndoClicked()">Undo</button>
     <button type="button" class="btn btn-secondary" [disabled]="!isEnabled" (click)="onPromoteClicked()">Promote</button>
     <button type="button" class="btn btn-secondary" [disabled]="!isEnabled" (click)="onHintBoardClicked()">Hint</button>
