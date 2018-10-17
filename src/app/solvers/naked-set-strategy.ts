@@ -30,57 +30,79 @@ export abstract class NakedSetStrategy extends SolverStrategy {
   }
 
   private runAtSequence(sequence: NamedSequence, digitSet: ReadonlySet<number>, singleCoordinate: Coordinate | undefined): boolean {
-    const nakedSetMembers = this.getMembersOfNakedSetInSequence(digitSet, sequence.coordinates);
-    if (nakedSetMembers.length === digitSet.size) {
-      const otherCells = sequence.coordinates.filter(coordinate => !nakedSetMembers.some(member => member.isEqualTo(coordinate)));
-      return this.removeCandidatesFromOtherCells(otherCells, digitSet, nakedSetMembers, sequence.name, singleCoordinate);
+    const cellsInNakedSet = this.getCellsInNakedSet(sequence.coordinates, digitSet);
+    if (cellsInNakedSet.length === digitSet.size) {
+      const cellsNotInNakedSet = sequence.coordinates.filter(coordinate => !cellsInNakedSet.some(cell => cell.isEqualTo(coordinate)));
+      const nakedSetInfo = new NakedSetInfo(cellsInNakedSet, cellsNotInNakedSet, digitSet, sequence.name, singleCoordinate);
+      return this.removeCandidatesFromOtherCells(nakedSetInfo);
     }
 
     return false;
   }
 
-  private getMembersOfNakedSetInSequence(digitSet: ReadonlySet<number>, sequence: Coordinate[]): Coordinate[] {
-    const memberCoordinates: Coordinate[] = [];
+  private getCellsInNakedSet(sequence: Coordinate[], digitSet: ReadonlySet<number>): Coordinate[] {
+    const cellsInNakedSet: Coordinate[] = [];
 
     for (const coordinate of sequence) {
-      const cell = this.board.getCell(coordinate);
-      if (cell) {
-        const candidates = cell.getCandidates();
-        const digitsInsideSet = SetFacilities.filterSet(candidates, digit => digitSet.has(digit));
-        const digitsOutsideSet = SetFacilities.filterSet(candidates, digit => !digitSet.has(digit));
-
-        if (digitsInsideSet.size > 0 && digitsOutsideSet.size === 0) {
-          memberCoordinates.push(coordinate);
-        }
+      const isInSet = this.isCellInNakedSet(coordinate, digitSet);
+      if (isInSet) {
+        cellsInNakedSet.push(coordinate);
       }
     }
 
-    return memberCoordinates;
+    return cellsInNakedSet;
   }
 
-  private removeCandidatesFromOtherCells(
-    otherCells: Coordinate[],
-    digitsToRemove: ReadonlySet<number>,
-    nakedSetMembers: Coordinate[],
-    sequenceName: string,
-    singleCoordinate: Coordinate | undefined
-  ): boolean {
-    if (singleCoordinate !== undefined) {
-      otherCells = otherCells.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
+  private isCellInNakedSet(coordinate: Coordinate, digitSet: ReadonlySet<number>): boolean {
+    const cell = this.board.getCell(coordinate);
+    if (cell) {
+      const candidates = cell.getCandidates();
+      const digitsInsideSet = SetFacilities.filterSet(candidates, digit => digitSet.has(digit));
+      const digitsOutsideSet = SetFacilities.filterSet(candidates, digit => !digitSet.has(digit));
+
+      if (digitsInsideSet.size > 0 && digitsOutsideSet.size === 0) {
+        return true;
+      }
     }
 
-    const changedCellCount = this.removeCandidatesFromCells(otherCells, digitsToRemove);
+    return false;
+  }
+
+  private removeCandidatesFromOtherCells(info: NakedSetInfo): boolean {
+    const changedCellCount = this.removeCandidatesFromCells(info.cellsToUpdate, info.digitsToRemove);
+
     if (changedCellCount > 0) {
-      const arity = this.getArityName(digitsToRemove.size);
-      const source = singleCoordinate === undefined ? `${changedCellCount} other cells in that ${sequenceName}.` : `${singleCoordinate}.`;
-      this.reportChange(
-        `Naked ${arity} (${SetFacilities.formatSet(digitsToRemove)}) in cells (${nakedSetMembers}) eliminated ` +
-          `${SetFacilities.formatSet(digitsToRemove)} from ${source}`
-      );
+      const setArity = this.getArityName(info.digitsToRemove.size);
+      const message = info.getMessage(changedCellCount, setArity);
+      this.reportChange(message);
 
       return true;
     }
 
     return false;
+  }
+}
+
+class NakedSetInfo {
+  get cellsToUpdate(): Coordinate[] {
+    if (this.singleCoordinate !== undefined) {
+      const singleCoordinate = this.singleCoordinate;
+      return this.cellsNotInNakedSet.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
+    }
+    return this.cellsNotInNakedSet;
+  }
+
+  constructor(
+    readonly cellsInNakedSet: Coordinate[],
+    readonly cellsNotInNakedSet: Coordinate[],
+    readonly digitsToRemove: ReadonlySet<number>,
+    readonly sequenceName: string,
+    readonly singleCoordinate: Coordinate | undefined
+  ) {}
+
+  getMessage(changedCellCount: number, setArity: string): string {
+    const digitsNotInSet = SetFacilities.formatSet(this.digitsToRemove);
+    const target = this.singleCoordinate === undefined ? `${changedCellCount} other cells in that ${this.sequenceName}` : `${this.singleCoordinate}`;
+    return `Naked ${setArity} (${digitsNotInSet}) in cells (${this.cellsInNakedSet}) eliminated ${digitsNotInSet} from ${target}.`;
   }
 }

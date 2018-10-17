@@ -36,14 +36,15 @@ export class HiddenPairTripleStrategy extends SolverStrategy {
     const cellsInHiddenSet = this.getCellsInHiddenSet(sequence.coordinates, digitSet);
 
     if (cellsInHiddenSet.length === digitSet.size) {
-      return this.removeOtherCandidatesFromCells(cellsInHiddenSet, digitSet, sequence.name, singleCoordinate);
+      const hiddenSetInfo = new HiddenSetInfo(cellsInHiddenSet, digitSet, sequence.name, singleCoordinate);
+      return this.removeOtherCandidatesFromCells(hiddenSetInfo);
     }
 
     return false;
   }
 
   private getCellsInHiddenSet(sequence: Coordinate[], digitSet: ReadonlySet<number>): Coordinate[] {
-    const cellsInHiddenSet = [];
+    const cellsInHiddenSet: Coordinate[] = [];
 
     for (const coordinate of sequence) {
       const isInSet = this.isCellInHiddenSet(coordinate, digitSet);
@@ -76,29 +77,41 @@ export class HiddenPairTripleStrategy extends SolverStrategy {
     }
   }
 
-  private removeOtherCandidatesFromCells(
-    cellsInHiddenSet: Coordinate[],
-    digitsToKeep: ReadonlySet<number>,
-    sequenceName: string,
-    singleCoordinate: Coordinate | undefined
-  ): boolean {
-    const digitsToRemove = SetFacilities.filterSet(this.allCellValues, digit => !digitsToKeep.has(digit));
+  private removeOtherCandidatesFromCells(info: HiddenSetInfo): boolean {
+    const digitsToRemove = SetFacilities.filterSet(this.allCellValues, digit => !info.digitsToKeep.has(digit));
+    const changedCellCount = this.removeCandidatesFromCells(info.cellsToUpdate, digitsToRemove);
 
-    const cellsToUpdate =
-      singleCoordinate === undefined ? cellsInHiddenSet : cellsInHiddenSet.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
-
-    const changedCellCount = this.removeCandidatesFromCells(cellsToUpdate, digitsToRemove);
     if (changedCellCount > 0) {
-      const arity = this.getArityName(digitsToKeep.size);
-      const target = singleCoordinate === undefined ? 'these cells' : `${singleCoordinate}`;
-      this.reportChange(
-        `Hidden ${arity} (${SetFacilities.formatSet(digitsToKeep)}) in ${sequenceName}` +
-          ` of cells (${cellsInHiddenSet}) eliminated others in ${target}.`
-      );
+      const setArity = this.getArityName(info.digitsToKeep.size);
+      const message = info.getMessage(setArity);
+      this.reportChange(message);
 
       return true;
     }
 
     return false;
+  }
+}
+
+class HiddenSetInfo {
+  get cellsToUpdate(): Coordinate[] {
+    if (this.singleCoordinate !== undefined) {
+      const singleCoordinate = this.singleCoordinate;
+      return this.cellsInHiddenSet.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
+    }
+    return this.cellsInHiddenSet;
+  }
+
+  constructor(
+    readonly cellsInHiddenSet: Coordinate[],
+    readonly digitsToKeep: ReadonlySet<number>,
+    readonly sequenceName: string,
+    readonly singleCoordinate: Coordinate | undefined
+  ) {}
+
+  getMessage(setArity: string): string {
+    const digitsInSet = SetFacilities.formatSet(this.digitsToKeep);
+    const target = this.singleCoordinate === undefined ? 'these cells' : `${this.singleCoordinate}`;
+    return `Hidden ${setArity} (${digitsInSet}) in ${this.sequenceName} of cells (${this.cellsInHiddenSet}) eliminated others in ${target}.`;
   }
 }
