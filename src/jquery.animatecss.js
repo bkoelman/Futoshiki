@@ -1,13 +1,13 @@
 // https://github.com/daneden/animate.css/
 
 $.fn.extend({
-  animateCss: function (animationName, callback) {
-    var animationEnd = (function (el) {
+  animateCss: function(animationName, callback) {
+    var animationEnd = (function(el) {
       var animations = {
         animation: 'animationend',
         OAnimation: 'oAnimationEnd',
         MozAnimation: 'mozAnimationEnd',
-        WebkitAnimation: 'webkitAnimationEnd',
+        WebkitAnimation: 'webkitAnimationEnd'
       };
 
       for (var t in animations) {
@@ -17,12 +17,12 @@ $.fn.extend({
       }
     })(document.createElement('div'));
 
-    this.addClass('animated ' + animationName).one(animationEnd, function () {
+    this.addClass('animated ' + animationName).one(animationEnd, function() {
       $(this).removeClass('animated ' + animationName);
 
       if (typeof callback === 'function') callback();
     });
 
     return this;
-  },
+  }
 });

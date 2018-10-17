@@ -1,4 +1,5 @@
 # Futoshiki initial
+
 - [x] fixed board size 4x4
 - [x] hardcoded puzzle without operators
 - [x] enable cell digit entry and clear via buttonbar
@@ -7,6 +8,7 @@
 - [x] restart current puzzle
 
 # Futoshiki basics
+
 - [x] puzzle including operators
 - [x] dynamic board size (4x4 .. 9x9)
 - [x] add puzzle picker and dynamically load puzzle from server
@@ -18,6 +20,7 @@
 - [x] undo last move(s)
 
 # Enhancements
+
 - [x] puzzle selection: pick a random puzzle
 - [x] save game progress in cookie
 - [x] print puzzle
@@ -68,6 +71,7 @@
 - [ ] additional solver strategies (http://www.sudokuwiki.org)
 
 # Links for inspiration
+
 https://sudoku.game/
 http://www.sudoku.com/
 https://www.sudokukingdom.com/

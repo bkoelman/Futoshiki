@@ -1,57 +1,56 @@
 @mixin board-sizing-list {
-    @for $boardSize from 4 to 10 {
+  @for $boardSize from 4 to 10 {
+    $noruler-cell-width-n: percentage(4 / (5 * $boardSize - 1));
+    $hasruler-cell-width-n: percentage(4 / (5 * $boardSize));
+    $noruler-spacer-width-n: percentage(1 / (5 * $boardSize - 1));
+    $hasruler-spacer-width-n: percentage(1 / (5 * $boardSize));
+    $button-width-n: percentage(2 / (2 * $boardSize + 5));
 
-        $noruler-cell-width-n: percentage(4 / (5 * $boardSize - 1));
-        $hasruler-cell-width-n: percentage(4 / (5 * $boardSize));
-        $noruler-spacer-width-n: percentage(1 / (5 * $boardSize - 1));
-        $hasruler-spacer-width-n: percentage(1 / (5 * $boardSize));
-        $button-width-n: percentage(2 / (2 * $boardSize + 5));
-
-        .noruler-square-#{$boardSize} {
-            width: $noruler-cell-width-n;
-            padding-bottom: $noruler-cell-width-n;
-        }
-
-        .hasruler-square-#{$boardSize} {
-            width: $hasruler-cell-width-n;
-            padding-bottom: $hasruler-cell-width-n;
-        }
-
-        .noruler-vertical-bar-#{$boardSize} {
-            width: $noruler-spacer-width-n;
-            padding-bottom: $noruler-cell-width-n;
-        }
-
-        .hasruler-vertical-bar-#{$boardSize} {
-            width: $hasruler-spacer-width-n;
-            padding-bottom: $hasruler-cell-width-n;
-        }
-
-        .noruler-horizontal-bar-#{$boardSize} {
-            width: $noruler-cell-width-n;
-            padding-bottom: $noruler-spacer-width-n;
-        }
-
-        .hasruler-horizontal-bar-#{$boardSize} {
-            width: $hasruler-cell-width-n;
-            padding-bottom: $hasruler-spacer-width-n;
-        }
-
-        .noruler-spacer-#{$boardSize} {
-            width: $noruler-spacer-width-n;
-            padding-bottom: $noruler-spacer-width-n;
-        }
-
-        .hasruler-spacer-#{$boardSize} {
-            width: $hasruler-spacer-width-n;
-            padding-bottom: $hasruler-spacer-width-n;
-        }
-
-        .round-button-#{$boardSize} {
-            width: $button-width-n;
-            padding-bottom: $button-width-n;
-        }
+    .noruler-square-#{$boardSize} {
+      width: $noruler-cell-width-n;
+      padding-bottom: $noruler-cell-width-n;
     }
+
+    .hasruler-square-#{$boardSize} {
+      width: $hasruler-cell-width-n;
+      padding-bottom: $hasruler-cell-width-n;
+    }
+
+    .noruler-vertical-bar-#{$boardSize} {
+      width: $noruler-spacer-width-n;
+      padding-bottom: $noruler-cell-width-n;
+    }
+
+    .hasruler-vertical-bar-#{$boardSize} {
+      width: $hasruler-spacer-width-n;
+      padding-bottom: $hasruler-cell-width-n;
+    }
+
+    .noruler-horizontal-bar-#{$boardSize} {
+      width: $noruler-cell-width-n;
+      padding-bottom: $noruler-spacer-width-n;
+    }
+
+    .hasruler-horizontal-bar-#{$boardSize} {
+      width: $hasruler-cell-width-n;
+      padding-bottom: $hasruler-spacer-width-n;
+    }
+
+    .noruler-spacer-#{$boardSize} {
+      width: $noruler-spacer-width-n;
+      padding-bottom: $noruler-spacer-width-n;
+    }
+
+    .hasruler-spacer-#{$boardSize} {
+      width: $hasruler-spacer-width-n;
+      padding-bottom: $hasruler-spacer-width-n;
+    }
+
+    .round-button-#{$boardSize} {
+      width: $button-width-n;
+      padding-bottom: $button-width-n;
+    }
+  }
 }
 
 @include board-sizing-list;

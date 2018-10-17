@@ -1,14 +1,10 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     basePath: '',
-    files: [
-      "../node_modules/jquery/dist/jquery.min.js",
-      "../node_modules/bootstrap/dist/js/bootstrap.min.js",
-      "jquery.fittext.js"
-    ],
+    files: ['../node_modules/jquery/dist/jquery.min.js', '../node_modules/bootstrap/dist/js/bootstrap.min.js', 'jquery.fittext.js'],
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
