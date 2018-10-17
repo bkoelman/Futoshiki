@@ -27,7 +27,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-1"></div>
+    <div class="col-1 p-0"></div>
     <div class="col-10">
       <div class="bar-button-group mt-1">
         <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, true)" class="box-container rounded-button"
@@ -53,7 +53,7 @@
         </div>
       </div>
     </div>
-    <div class="col-1"></div>
+    <div class="col-1 p-0"></div>
   </div>
 
   <div #rectangleButtonGroup class="bar-button-group mt-3">
