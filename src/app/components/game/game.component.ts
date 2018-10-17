@@ -69,14 +69,11 @@ export class GameComponent implements OnInit {
   }
 
   get areShortcutKeysEnabled(): boolean {
-    return (
-      this.canAcceptInput &&
-      !this._changePuzzleModalComponent.isModalVisible &&
-      !this._settingsModalComponent.isModalVisible &&
-      !this.isTypingText &&
-      !this._isMenuOpen &&
-      this.playState !== GameCompletionState.Won
-    );
+    return this.canAcceptInput && !this.isModalOpen && !this.isTypingText && !this._isMenuOpen && this.playState !== GameCompletionState.Won;
+  }
+
+  private get isModalOpen() {
+    return this._changePuzzleModalComponent.isModalVisible || this._settingsModalComponent.isModalVisible;
   }
 
   get canUndo() {

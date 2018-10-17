@@ -87,13 +87,7 @@ export class HiddenPairTripleStrategy extends SolverStrategy {
     const cellsToUpdate =
       singleCoordinate === undefined ? cellsInHiddenSet : cellsInHiddenSet.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
 
-    let changedCellCount = 0;
-    for (const coordinate of cellsToUpdate) {
-      if (this.removeCandidatesFromCell(coordinate, digitsToRemove)) {
-        changedCellCount++;
-      }
-    }
-
+    const changedCellCount = this.removeCandidatesFromCells(cellsToUpdate, digitsToRemove);
     if (changedCellCount > 0) {
       const arity = this.getArityName(digitsToKeep.size);
       const target = singleCoordinate === undefined ? 'these cells' : `${singleCoordinate}`;

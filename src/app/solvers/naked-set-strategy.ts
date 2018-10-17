@@ -69,13 +69,7 @@ export abstract class NakedSetStrategy extends SolverStrategy {
       otherCells = otherCells.filter(coordinate => coordinate.isEqualTo(singleCoordinate));
     }
 
-    let changedCellCount = 0;
-    for (const coordinate of otherCells) {
-      if (this.removeCandidatesFromCell(coordinate, digitsToRemove) > 0) {
-        changedCellCount++;
-      }
-    }
-
+    const changedCellCount = this.removeCandidatesFromCells(otherCells, digitsToRemove);
     if (changedCellCount > 0) {
       const arity = this.getArityName(digitsToRemove.size);
       const source = singleCoordinate === undefined ? `${changedCellCount} other cells in that ${sequenceName}.` : `${singleCoordinate}.`;

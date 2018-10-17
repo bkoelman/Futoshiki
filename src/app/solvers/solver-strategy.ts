@@ -140,14 +140,26 @@ export abstract class SolverStrategy {
   }
 
   protected removeCandidatesFromCell(coordinate: Coordinate, digitsToRemove: ReadonlySet<number>): number {
-    let removeCount = 0;
+    let removedCandidateCount = 0;
 
     for (const digitToRemove of digitsToRemove) {
       if (this.removeCandidateFromCell(coordinate, digitToRemove)) {
-        removeCount++;
+        removedCandidateCount++;
       }
     }
 
-    return removeCount;
+    return removedCandidateCount;
+  }
+
+  protected removeCandidatesFromCells(coordinates: Coordinate[], digitsToRemove: ReadonlySet<number>): number {
+    let changedCellCount = 0;
+
+    for (const coordinate of coordinates) {
+      if (this.removeCandidatesFromCell(coordinate, digitsToRemove) > 0) {
+        changedCellCount++;
+      }
+    }
+
+    return changedCellCount;
   }
 }
