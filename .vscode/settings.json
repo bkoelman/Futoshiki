@@ -3,5 +3,8 @@
         "puzzles/**/*": true,
     },
     "javascript.preferences.quoteStyle": "single",
-    "typescript.preferences.quoteStyle": "single"
+    "typescript.preferences.quoteStyle": "single",
+    "editor.formatOnSave": true,
+    "files.insertFinalNewline": true,
+    "html.format.endWithNewline": true
 }
