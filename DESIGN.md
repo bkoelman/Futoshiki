@@ -63,7 +63,7 @@
 - [ ] option to track elapsed time
 - [x] add menu option to show game rules and strategies
 - [ ] cleanup README.md
-- [ ] consider to use "prettier" code-formatter
+- [x] consider to use "prettier" code-formatter
 - [ ] optimize performance
   - [ ] try table layout instead of divs for board
   - [ ] replace storage of cell/candidate values with bitmask
