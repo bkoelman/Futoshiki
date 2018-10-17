@@ -7,16 +7,16 @@ describe('MoveChecker', () => {
   describe('checkIsMoveAllowed', () => {
     it('should allow a valid move', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+-----+----+
-                |    |    |     |    |
-                +----+----+-----+----+
-                |    |    | 123 |    |
-                +-^--+----+-----+----+
-                | !2 | !1 |     > !3 |
-                +----+----+-----+-v--+
-                |    >    | !1  <    |
-                +----+----+-----+----+
-                `);
+        +----+----+-----+----+
+        |    |    |     |    |
+        +----+----+-----+----+
+        |    |    | 123 |    |
+        +-^--+----+-----+----+
+        | !2 | !1 |     > !3 |
+        +----+----+-----+-v--+
+        |    >    | !1  <    |
+        +----+----+-----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(4, Coordinate.fromText('C3', 4));
 
@@ -27,16 +27,16 @@ describe('MoveChecker', () => {
 
     it('should block on existing value in row', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                |    |    |    |    |
-                +-^--+----+----+----+
-                | !2 |    |    >    |
-                +----+----+----+-v--+
-                |    >    | !1 <    |
-                +----+----+----+----+
-                `);
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        |    |    |    |    |
+        +-^--+----+----+----+
+        | !2 |    |    >    |
+        +----+----+----+-v--+
+        |    >    | !1 <    |
+        +----+----+----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(2, Coordinate.fromText('C3', 4));
 
@@ -48,16 +48,16 @@ describe('MoveChecker', () => {
 
     it('should block on existing values in column', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+----+----+
-                |    |    | !3 |    |
-                +----+----+----+----+
-                |    |    | !3 |    |
-                +-^--+----+----+----+
-                | !2 |    |    >    |
-                +----+----+----+-v--+
-                |    >    | !1 <    |
-                +----+----+----+----+
-                `);
+        +----+----+----+----+
+        |    |    | !3 |    |
+        +----+----+----+----+
+        |    |    | !3 |    |
+        +-^--+----+----+----+
+        | !2 |    |    >    |
+        +----+----+----+-v--+
+        |    >    | !1 <    |
+        +----+----+----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(3, Coordinate.fromText('C3', 4));
 
@@ -70,16 +70,16 @@ describe('MoveChecker', () => {
 
     it('should block on less-than operator mismatches', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+----+----+
-                |    | !3 |    |    |
-                +----+-v--+----+----+
-                | !2 >    <    |    |
-                +----+-^--+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                `);
+        +----+----+----+----+
+        |    | !3 |    |    |
+        +----+-v--+----+----+
+        | !2 >    <    |    |
+        +----+-^--+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(4, Coordinate.fromText('B2', 4));
 
@@ -94,16 +94,16 @@ describe('MoveChecker', () => {
 
     it('should block on greater-than operator mismatches', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+-^--+----+----+
-                | 12 <    > !3 |    |
-                +----+-v--+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                `);
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+-^--+----+----+
+        | 12 <    > !3 |    |
+        +----+-v--+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(1, Coordinate.fromText('B2', 4));
 
@@ -118,16 +118,16 @@ describe('MoveChecker', () => {
 
     it('should block on less-than operator pair mismatch', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                |    >    < 3  |    |
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                `);
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        |    >    < 3  |    |
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(3, Coordinate.fromText('B2', 4));
 
@@ -140,16 +140,16 @@ describe('MoveChecker', () => {
 
     it('should block on greater-than operator pair mismatch', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+-^--+----+----+
-                |    |    |    |    |
-                +----+-v--+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                |    |    |    |    |
-                +----+----+----+----+
-                `);
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+-^--+----+----+
+        |    |    |    |    |
+        +----+-v--+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        |    |    |    |    |
+        +----+----+----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(2, Coordinate.fromText('B2', 4));
 
@@ -162,16 +162,16 @@ describe('MoveChecker', () => {
 
     it('should block on mixed mismatches', () => {
       const checker = createMoveCheckerForBoard(`
-                +----+----+-----+----+
-                |    |    |     |    |
-                +----+----+-----+----+
-                |    |    | 123 |    |
-                +-^--+----+-----+----+
-                | !2 | !1 |     > !3 |
-                +----+----+-----+-v--+
-                |    >    | !1  <    |
-                +----+----+-----+----+
-                `);
+        +----+----+-----+----+
+        |    |    |     |    |
+        +----+----+-----+----+
+        |    |    | 123 |    |
+        +-^--+----+-----+----+
+        | !2 | !1 |     > !3 |
+        +----+----+-----+-v--+
+        |    >    | !1  <    |
+        +----+----+-----+----+
+        `);
 
       const result = checker.checkIsMoveAllowed(1, Coordinate.fromText('C3', 4));
 
