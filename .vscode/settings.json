@@ -1,6 +1,6 @@
 {
     "search.exclude": {
-        "puzzles/**/*": true,
+        "puzzles/**/*": true
     },
     "javascript.preferences.quoteStyle": "single",
     "typescript.preferences.quoteStyle": "single",
