@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "format": "node node_modules/prettier/bin-prettier.js **/*.ts --write"
+    "format": "node node_modules/prettier/bin-prettier.js \"{,!(puzzles|dist)/**/}*.{css,less,scss,ts,tsx,graphql,gql,json,js,jsx,md}\" --write"
   },
   "private": true,
   "dependencies": {
