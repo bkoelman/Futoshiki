@@ -27,7 +27,7 @@
     (clearClicked)="onClearClicked()" (hintCellClicked)="onHintCellClicked()" (undoClicked)="onUndoClicked()"
     (promoteClicked)="onPromoteClicked()" (hintBoardClicked)="onHintBoardClicked()"></app-button-bar>
 
-  <app-hint-explanation-box [isEnabled]="settings.showHintExplanations"></app-hint-explanation-box>
+  <app-hint-explanation-box [isEnabled]="puzzle !== undefined && settings.showHintExplanations"></app-hint-explanation-box>
 
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
     (dumpBoardClicked)="dumpBoard()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
