@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class RepeatPipe implements PipeTransform {
   transform(value: number): any {
     return {
-      [Symbol.iterator]: function* () {
+      [Symbol.iterator]: function*() {
         let index = 0;
         while (index < value) {
           yield index++;

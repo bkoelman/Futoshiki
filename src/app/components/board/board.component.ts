@@ -16,15 +16,23 @@ import { GameCompletionState } from '../../models/game-completion-state.enum';
   templateUrl: './board.component.html'
 })
 export class BoardComponent implements Board {
-  @ViewChildren(DigitCellComponent) private _cells!: QueryList<DigitCellComponent>;
-  @ViewChildren(OperatorCellComponent) private _operators!: QueryList<OperatorCellComponent>;
+  @ViewChildren(DigitCellComponent)
+  private _cells!: QueryList<DigitCellComponent>;
+  @ViewChildren(OperatorCellComponent)
+  private _operators!: QueryList<OperatorCellComponent>;
+
   private _canSelect = true;
 
-  @Input() startBoard: Board | undefined;
-  @Input() size = -1;
-  @Input() playState!: GameCompletionState;
-  @Input() showRuler!: boolean;
-  @Output() contentChanged = new EventEmitter<CellSnapshot>();
+  @Input()
+  startBoard: Board | undefined;
+  @Input()
+  size = -1;
+  @Input()
+  playState!: GameCompletionState;
+  @Input()
+  showRuler!: boolean;
+  @Output()
+  contentChanged = new EventEmitter<CellSnapshot>();
 
   get canSelect(): boolean {
     return this._canSelect;
@@ -73,7 +81,7 @@ export class BoardComponent implements Board {
   }
 
   clearSelection() {
-    this._cells.forEach(cell => cell.isSelected = false);
+    this._cells.forEach(cell => (cell.isSelected = false));
   }
 
   getSelectedCell(): DigitCellComponent | undefined {
@@ -166,7 +174,7 @@ export class BoardComponent implements Board {
     }
   }
 
-  onCellContentChanged(event: { sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }) {
+  onCellContentChanged(event: { sender: DigitCellComponent; snapshotBefore: CellContentSnapshot }) {
     const coordinate = this.getCoordinate(event.sender);
     if (coordinate) {
       this.contentChanged.emit({

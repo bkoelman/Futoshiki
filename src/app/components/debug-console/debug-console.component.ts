@@ -7,11 +7,16 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class DebugConsoleComponent {
   private _saveText = '';
 
-  @Input() isVisible!: boolean;
-  @Input() isEnabled!: boolean;
-  @Output() loadClicked = new EventEmitter<string>();
-  @Output() dumpBoardClicked = new EventEmitter();
-  @Output() isTypingTextChanged = new EventEmitter<boolean>();
+  @Input()
+  isVisible!: boolean;
+  @Input()
+  isEnabled!: boolean;
+  @Output()
+  loadClicked = new EventEmitter<string>();
+  @Output()
+  dumpBoardClicked = new EventEmitter();
+  @Output()
+  isTypingTextChanged = new EventEmitter<boolean>();
 
   updateSaveGameText(saveText: string) {
     this._saveText = saveText;

@@ -13,15 +13,16 @@ export class ChangePuzzleModalComponent implements AfterViewChecked {
   private _bootstrapHooksRegistered = false;
   private _lastChangeEventData: string | undefined;
 
+  @Output()
+  puzzleChanged = new EventEmitter<PuzzleInfo>();
+
   readonly maxPuzzleId = 9999;
   PuzzleDifficultyAlias = PuzzleDifficulty;
   info: PuzzleInfo | undefined;
   isModalVisible = false;
   isLoaderVisible = false;
-  @Output() puzzleChanged = new EventEmitter<PuzzleInfo>();
 
-  constructor(private _zone: NgZone) {
-  }
+  constructor(private _zone: NgZone) {}
 
   ngAfterViewChecked() {
     this.registerBootstrapHooks();

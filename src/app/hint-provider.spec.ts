@@ -5,9 +5,9 @@ import { Board } from './models/board';
 import { Coordinate } from './models/coordinate';
 
 describe('HintProvider', () => {
-    describe('SetCandidatesStrategy', () => {
-        it('should set candidates in all non-empty cells on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('SetCandidatesStrategy', () => {
+    it('should set candidates in all non-empty cells on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-----+------+-----+----+
                 |     | 1234 | 123 |    |
                 +-----+------+-----+----+
@@ -18,11 +18,13 @@ describe('HintProvider', () => {
                 |     >  3   | !1  <    |
                 +-----+------+-----+----+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Placed candidates in 6 empty cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Placed candidates in 6 empty cells.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-----+------+
                 | 1234 | 1234 | 123 | 1234 |
                 +------+------+-----+------+
@@ -31,11 +33,12 @@ describe('HintProvider', () => {
                 |  !2  |  12  | !4  >  !3  |
                 +------+------+-----+--v---+
                 | 1234 >  3   | !1  < 1234 |
-                +------+------+-----+------+`);
-        });
+                +------+------+-----+------+`
+      );
+    });
 
-        it('should set candidates in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should set candidates in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-----+------+-----+----+
                 |     | 1234 | 123 |    |
                 +-----+------+-----+----+
@@ -46,11 +49,13 @@ describe('HintProvider', () => {
                 |     >  3   | !1  <    |
                 +-----+------+-----+----+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B4', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B4', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Placed candidates in empty cell B4.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Placed candidates in empty cell B4.`);
+      expectBoard(
+        board,
+        `
                 +-----+------+-----+------+
                 |     | 1234 | 123 |      |
                 +-----+------+-----+------+
@@ -59,13 +64,14 @@ describe('HintProvider', () => {
                 | !2  |  12  | !4  >  !3  |
                 +-----+------+-----+--v---+
                 |     >  3   | !1  <      |
-                +-----+------+-----+------+`);
-        });
+                +-----+------+-----+------+`
+      );
     });
+  });
 
-    describe('PromoteStrategy', () => {
-        it('should promote single-digit candidates in all cells on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('PromoteStrategy', () => {
+    it('should promote single-digit candidates in all cells on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-----+------+------+
                 | 234  > 123  | 234 >  12  |  #5  |
                 +------+------+-----+------+------+
@@ -78,11 +84,13 @@ describe('HintProvider', () => {
                 | 2345 |  34  | !1  | 245  |  2   |
                 +------+------+-----+------+------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Promoted 5 single-candidate cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Promoted 5 single-candidate cells.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-----+------+------+
                 | 234  > 123  | 234 >  12  |  #5  |
                 +------+------+-----+------+------+
@@ -93,11 +101,12 @@ describe('HintProvider', () => {
                 |  !1  <  !2  | !5  |  #3  | 124  |
                 +------+--^---+-----+------+------+
                 | 2345 |  34  | !1  | 245  |  !2  |
-                +------+------+-----+------+------+`);
-        });
+                +------+------+-----+------+------+`
+      );
+    });
 
-        it('should promote single-digit candidate in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should promote single-digit candidate in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-----+------+------+
                 | 234  > 123  | 234 >  12  |  #5  |
                 +------+------+-----+------+------+
@@ -110,11 +119,13 @@ describe('HintProvider', () => {
                 | 2345 |  34  | !1  | 245  |  2   |
                 +------+------+-----+------+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('E5', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('E5', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Promoted single-candidate cell E5.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Promoted single-candidate cell E5.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-----+------+------+
                 | 234  > 123  | 234 >  12  |  #5  |
                 +------+------+-----+------+------+
@@ -125,13 +136,14 @@ describe('HintProvider', () => {
                 |  1   <  2   | !5  |  #3  | 124  |
                 +------+--^---+-----+------+------+
                 | 2345 |  34  | !1  | 245  |  !2  |
-                +------+------+-----+------+------+`);
-        });
+                +------+------+-----+------+------+`
+      );
     });
+  });
 
-    describe('NakedSingleStrategy', () => {
-        it('should eliminate single candidate in all cells on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('NakedSingleStrategy', () => {
+    it('should eliminate single candidate in all cells on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-----+------+------+
                 | 234  > 123  | 234 >  12  |  #5  |
                 +------+------+-----+------+------+
@@ -144,12 +156,13 @@ describe('HintProvider', () => {
                 | 2345 |  34  | !1  | 245  |  !2  |
                 +------+------+-----+------+------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(
-                `Naked single (2) in cell C1 eliminated '2' from 6 other cells in related row and column.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked single (2) in cell C1 eliminated '2' from 6 other cells in related row and column.`);
+      expectBoard(
+        board,
+        `
                 +-----+-----+-----+-----+------+
                 | 34  > 123 | 234 > 12  |  #5  |
                 +-----+-----+-----+-----+------+
@@ -160,11 +173,12 @@ describe('HintProvider', () => {
                 | !1  < !2  | !5  | #3  | 124  |
                 +-----+--^--+-----+-----+------+
                 | 345 | 34  | !1  | 245 |  !2  |
-                +-----+-----+-----+-----+------+`);
-        });
+                +-----+-----+-----+-----+------+`
+      );
+    });
 
-        it('should eliminate single candidate from row in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate single candidate from row in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-----+-----+------+
                 |  34  > 123  | 234 > 12  |  #5  |
                 +------+------+-----+-----+------+
@@ -177,11 +191,13 @@ describe('HintProvider', () => {
                 | 345  |  34  | !1  | 245 |  !2  |
                 +------+------+-----+-----+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A2', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A2', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked single (2) in cell D2 eliminated '2' from A2.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked single (2) in cell D2 eliminated '2' from A2.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-----+-----+------+
                 |  34  >  13  | 234 > 12  |  #5  |
                 +------+------+-----+-----+------+
@@ -192,11 +208,12 @@ describe('HintProvider', () => {
                 |  !1  <  !2  | !5  | #3  |  24  |
                 +------+--^---+-----+-----+------+
                 | 345  |  34  | !1  | 245 |  !2  |
-                +------+------+-----+-----+------+`);
-        });
+                +------+------+-----+-----+------+`
+      );
+    });
 
-        it('should eliminate single candidate from column in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate single candidate from column in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-----+-----+------+
                 |  34  > 123  | 234 > 12  |  #5  |
                 +------+------+-----+-----+------+
@@ -209,11 +226,13 @@ describe('HintProvider', () => {
                 | 345  |  34  | !1  | 245 |  !2  |
                 +------+------+-----+-----+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('D5', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('D5', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked single (2) in cell D2 eliminated '2' from D5.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked single (2) in cell D2 eliminated '2' from D5.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-----+-----+------+
                 |  34  > 123  | 234 > 12  |  #5  |
                 +------+------+-----+-----+------+
@@ -224,13 +243,14 @@ describe('HintProvider', () => {
                 |  !1  <  !2  | !5  | #3  |  4   |
                 +------+--^---+-----+-----+------+
                 | 345  |  34  | !1  | 245 |  !2  |
-                +------+------+-----+-----+------+`);
-        });
+                +------+------+-----+-----+------+`
+      );
     });
+  });
 
-    describe('HiddenSingleStrategy', () => {
-        it('should find hidden single in row on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('HiddenSingleStrategy', () => {
+    it('should find hidden single in row on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-----+------+-------+-------+------+
                 | 345 > 1234 |  345  | 1234  < 2345 |
                 +-----+------+---v---+-------+------+
@@ -243,11 +263,13 @@ describe('HintProvider', () => {
                 | 345 | 123  | 12345 | 2345  > 1234 |
                 +-----+------+-------+-------+------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden single (5) in row of cell D3 eliminated others in this cell.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden single (5) in row of cell D3 eliminated others in this cell.`);
+      expectBoard(
+        board,
+        `
                 +-----+------+-------+-------+------+
                 | 345 > 1234 |  345  | 1234  < 2345 |
                 +-----+------+---v---+-------+------+
@@ -258,11 +280,12 @@ describe('HintProvider', () => {
                 | #2  |  34  <   5   >  134  | 134  |
                 +--^--+--v---+-------+-------+------+
                 | 345 | 123  | 12345 | 2345  > 1234 |
-                +-----+------+-------+-------+------+`);
-        });
+                +-----+------+-------+-------+------+`
+      );
+    });
 
-        it('should find hidden single in row for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden single in row for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-----+------+-------+-------+------+
                 | 345 > 1234 |  345  | 1234  < 2345 |
                 +-----+------+---v---+-------+------+
@@ -275,11 +298,13 @@ describe('HintProvider', () => {
                 | 345 | 123  | 12345 | 2345  > 1234 |
                 +-----+------+-------+-------+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('D3', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('D3', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden single (5) in row of cell D3 eliminated others in this cell.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden single (5) in row of cell D3 eliminated others in this cell.`);
+      expectBoard(
+        board,
+        `
                 +-----+------+-------+-------+------+
                 | 345 > 1234 |  345  | 1234  < 2345 |
                 +-----+------+---v---+-------+------+
@@ -290,77 +315,84 @@ describe('HintProvider', () => {
                 | #2  |  34  <   5   >  134  | 134  |
                 +--^--+--v---+-------+-------+------+
                 | 345 | 123  | 12345 | 2345  > 1234 |
-                +-----+------+-------+-------+------+`);
-        });
-
-        it('should find hidden single in column on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
-                +------+-------+-------+-------+-------+
-                | 345  > 1234  |  345  | 1234  < 2345  |
-                +------+-------+---v---+-------+-------+
-                | 1345 | 12345 |  234  >  123  | 12345 |
-                +------+-------+-------+-------+-------+
-                |  34  <  45   | 12345 | 12345 | 2345  |
-                +--v---+-------+-------+-------+---v---+
-                |  #2  |  34   <  45   >  134  |  134  |
-                +--^---+---v---+-------+-------+-------+
-                | 345  |  123  | 12345 | 2345  > 1234  |
-                +------+-------+-------+-------+-------+`);
-
-            const hasChanges = provider.runAtBoard();
-
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden single (1) in column of cell B1 eliminated others in this cell.`);
-            expectBoard(board, `
-                +-----+-------+-------+-------+-------+
-                | 345 > 1234  |  345  | 1234  < 2345  |
-                +-----+-------+---v---+-------+-------+
-                |  1  | 12345 |  234  >  123  | 12345 |
-                +-----+-------+-------+-------+-------+
-                | 34  <  45   | 12345 | 12345 | 2345  |
-                +--v--+-------+-------+-------+---v---+
-                | #2  |  34   <  45   >  134  |  134  |
-                +--^--+---v---+-------+-------+-------+
-                | 345 |  123  | 12345 | 2345  > 1234  |
-                +-----+-------+-------+-------+-------+`);
-        });
-
-        it('should find hidden single in column for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
-                +------+-------+-------+-------+-------+
-                | 345  > 1234  |  345  | 1234  < 2345  |
-                +------+-------+---v---+-------+-------+
-                | 1345 | 12345 |  234  >  123  | 12345 |
-                +------+-------+-------+-------+-------+
-                |  34  <  45   | 12345 | 12345 | 2345  |
-                +--v---+-------+-------+-------+---v---+
-                |  #2  |  34   <  45   >  134  |  134  |
-                +--^---+---v---+-------+-------+-------+
-                | 345  |  123  | 12345 | 2345  > 1234  |
-                +------+-------+-------+-------+-------+`);
-
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B1', board.size));
-
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden single (1) in column of cell B1 eliminated others in this cell.`);
-            expectBoard(board, `
-                +-----+-------+-------+-------+-------+
-                | 345 > 1234  |  345  | 1234  < 2345  |
-                +-----+-------+---v---+-------+-------+
-                |  1  | 12345 |  234  >  123  | 12345 |
-                +-----+-------+-------+-------+-------+
-                | 34  <  45   | 12345 | 12345 | 2345  |
-                +--v--+-------+-------+-------+---v---+
-                | #2  |  34   <  45   >  134  |  134  |
-                +--^--+---v---+-------+-------+-------+
-                | 345 |  123  | 12345 | 2345  > 1234  |
-                +-----+-------+-------+-------+-------+`);
-        });
+                +-----+------+-------+-------+------+`
+      );
     });
 
-    describe('OperatorsStrategy', () => {
-        it('should find all operators on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden single in column on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
+                +------+-------+-------+-------+-------+
+                | 345  > 1234  |  345  | 1234  < 2345  |
+                +------+-------+---v---+-------+-------+
+                | 1345 | 12345 |  234  >  123  | 12345 |
+                +------+-------+-------+-------+-------+
+                |  34  <  45   | 12345 | 12345 | 2345  |
+                +--v---+-------+-------+-------+---v---+
+                |  #2  |  34   <  45   >  134  |  134  |
+                +--^---+---v---+-------+-------+-------+
+                | 345  |  123  | 12345 | 2345  > 1234  |
+                +------+-------+-------+-------+-------+`);
+
+      const hasChanges = provider.runAtBoard();
+
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden single (1) in column of cell B1 eliminated others in this cell.`);
+      expectBoard(
+        board,
+        `
+                +-----+-------+-------+-------+-------+
+                | 345 > 1234  |  345  | 1234  < 2345  |
+                +-----+-------+---v---+-------+-------+
+                |  1  | 12345 |  234  >  123  | 12345 |
+                +-----+-------+-------+-------+-------+
+                | 34  <  45   | 12345 | 12345 | 2345  |
+                +--v--+-------+-------+-------+---v---+
+                | #2  |  34   <  45   >  134  |  134  |
+                +--^--+---v---+-------+-------+-------+
+                | 345 |  123  | 12345 | 2345  > 1234  |
+                +-----+-------+-------+-------+-------+`
+      );
+    });
+
+    it('should find hidden single in column for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
+                +------+-------+-------+-------+-------+
+                | 345  > 1234  |  345  | 1234  < 2345  |
+                +------+-------+---v---+-------+-------+
+                | 1345 | 12345 |  234  >  123  | 12345 |
+                +------+-------+-------+-------+-------+
+                |  34  <  45   | 12345 | 12345 | 2345  |
+                +--v---+-------+-------+-------+---v---+
+                |  #2  |  34   <  45   >  134  |  134  |
+                +--^---+---v---+-------+-------+-------+
+                | 345  |  123  | 12345 | 2345  > 1234  |
+                +------+-------+-------+-------+-------+`);
+
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B1', board.size));
+
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden single (1) in column of cell B1 eliminated others in this cell.`);
+      expectBoard(
+        board,
+        `
+                +-----+-------+-------+-------+-------+
+                | 345 > 1234  |  345  | 1234  < 2345  |
+                +-----+-------+---v---+-------+-------+
+                |  1  | 12345 |  234  >  123  | 12345 |
+                +-----+-------+-------+-------+-------+
+                | 34  <  45   | 12345 | 12345 | 2345  |
+                +--v--+-------+-------+-------+---v---+
+                | #2  |  34   <  45   >  134  |  134  |
+                +--^--+---v---+-------+-------+-------+
+                | 345 |  123  | 12345 | 2345  > 1234  |
+                +-----+-------+-------+-------+-------+`
+      );
+    });
+  });
+
+  describe('OperatorsStrategy', () => {
+    it('should find all operators on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+------+
                 | 12345 | 12345 | 12345 > 12345 | 1235 |
                 +---v---+---v---+-------+-------+--^---+
@@ -373,11 +405,13 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 < 1235 |
                 +-------+-------+-------+-------+------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators reduced candidates in 17 cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators reduced candidates in 17 cells.`);
+      expectBoard(
+        board,
+        `
                 +------+-------+-------+-------+-----+
                 | 2345 | 2345  | 2345  > 1234  | 123 |
                 +--v---+---v---+-------+-------+--^--+
@@ -388,11 +422,12 @@ describe('HintProvider', () => {
                 | 2345 | 1234  < 2345  | 2345  |  5  |
                 +--v---+-------+-------+---v---+-----+
                 | 1234 | 12345 | 12345 | 1234  < 235 |
-                +------+-------+-------+-------+-----+`);
-        });
+                +------+-------+-------+-------+-----+`
+      );
+    });
 
-        it('should find vertical less-than operator pair for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find vertical less-than operator pair for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+------+
                 | 12345 | 12345 | 12345 > 12345 | 1235 |
                 +---v---+---v---+-------+-------+--^---+
@@ -405,11 +440,13 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 < 1235 |
                 +-------+-------+-------+-------+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B2', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B2', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around B2 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around B2 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+------+
                 | 12345 | 12345 | 12345 > 12345 | 1235 |
                 +---v---+---v---+-------+-------+--^---+
@@ -420,11 +457,12 @@ describe('HintProvider', () => {
                 | 12345 | 12345 < 12345 | 12345 | 1235 |
                 +---v---+-------+-------+---v---+------+
                 | 12345 | 12345 | 12345 | 12345 < 1235 |
-                +-------+-------+-------+-------+------+`);
-        });
+                +-------+-------+-------+-------+------+`
+      );
+    });
 
-        it('should find vertical greater-than operator pair for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find vertical greater-than operator pair for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+-------+
                 | 12345 > 12345 | 12345 | 12345 | 12345 |
                 +---^---+-------+-------+-------+---^---+
@@ -437,11 +475,13 @@ describe('HintProvider', () => {
                 | 12345 | 12345 < 12345 | 12345 > 12345 |
                 +-------+-------+-------+-------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B5', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B5', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around B5 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around B5 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+-------+
                 | 12345 > 12345 | 12345 | 12345 | 12345 |
                 +---^---+-------+-------+-------+---^---+
@@ -452,11 +492,12 @@ describe('HintProvider', () => {
                 | 12345 |  #3   < 12345 | 12345 > 12345 |
                 +---v---+-------+-------+-------+-------+
                 | 12345 | 12345 < 12345 | 12345 > 12345 |
-                +-------+-------+-------+-------+-------+`);
-        });
+                +-------+-------+-------+-------+-------+`
+      );
+    });
 
-        it('should find horizontal less-than operator pair for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find horizontal less-than operator pair for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+-------+
                 | 12345 | 12345 | 12345 > 12345 | 12345 |
                 +---v---+-------+---^---+---v---+-------+
@@ -469,11 +510,13 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 |  #2   |
                 +-------+-------+-------+-------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C4', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C4', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around C4 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around C4 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+-------+
                 | 12345 | 12345 | 12345 > 12345 | 12345 |
                 +---v---+-------+---^---+---v---+-------+
@@ -484,11 +527,12 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 | 12345 |
                 +---^---+---^---+-------+-------+-------+
                 | 12345 | 12345 | 12345 | 12345 |  #2   |
-                +-------+-------+-------+-------+-------+`);
-        });
+                +-------+-------+-------+-------+-------+`
+      );
+    });
 
-        it('should find horizontal greater-than operator pair for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find horizontal greater-than operator pair for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+-------+
                 |  #3   | 12345 | 12345 < 1245  > 12345 |
                 +-------+---v---+-------+-------+-------+
@@ -501,11 +545,13 @@ describe('HintProvider', () => {
                 | 12345 |  #2   | 12345 | 12345 |  #3   |
                 +-------+-------+-------+-------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A4', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A4', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around A4 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around A4 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+-------+
                 |  #3   | 12345 | 12345 <  45   > 12345 |
                 +-------+---v---+-------+-------+-------+
@@ -516,11 +562,12 @@ describe('HintProvider', () => {
                 | 12345 | 12345 < 12345 < 12345 | 12345 |
                 +-------+-------+-------+-------+-------+
                 | 12345 |  #2   | 12345 | 12345 |  #3   |
-                +-------+-------+-------+-------+-------+`);
-        });
+                +-------+-------+-------+-------+-------+`
+      );
+    });
 
-        it('should find vertical less-than operator for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find vertical less-than operator for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+-------+
                 | 12345 > 12345 | 12345 > 12345 < 12345 |
                 +-------+---v---+-------+-------+-------+
@@ -533,11 +580,13 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 < 12345 |
                 +-------+-------+-------+-------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B2', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B2', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around B2 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around B2 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+-------+
                 | 12345 > 12345 | 12345 > 12345 < 12345 |
                 +-------+---v---+-------+-------+-------+
@@ -548,11 +597,12 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 |  #2   |
                 +-------+-------+-------+-------+-------+
                 | 12345 | 12345 | 12345 | 12345 < 12345 |
-                +-------+-------+-------+-------+-------+`);
-        });
+                +-------+-------+-------+-------+-------+`
+      );
+    });
 
-        it('should find vertical greater-than operator for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find vertical greater-than operator for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+-------+
                 | 12345 | 12345 | 12345 | 12345 | 12345 |
                 +-------+-------+---v---+-------+-------+
@@ -565,11 +615,13 @@ describe('HintProvider', () => {
                 | 12345 < 12345 | 12345 | 12345 | 12345 |
                 +-------+-------+-------+-------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A3', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A3', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around A3 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around A3 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+-------+
                 | 12345 | 12345 |  345  | 12345 | 12345 |
                 +-------+-------+---v---+-------+-------+
@@ -580,11 +632,12 @@ describe('HintProvider', () => {
                 |  #3   | 12345 | 12345 | 12345 | 12345 |
                 +-------+-------+-------+-------+-------+
                 | 12345 < 12345 | 12345 | 12345 | 12345 |
-                +-------+-------+-------+-------+-------+`);
-        });
+                +-------+-------+-------+-------+-------+`
+      );
+    });
 
-        it('should find horizontal less-than operator for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find horizontal less-than operator for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+-------+-------+-------+-------+
                 | 12345 < 12345 | 12345 | 12345 | 12345 |
                 +-------+-------+---^---+-------+---^---+
@@ -597,11 +650,13 @@ describe('HintProvider', () => {
                 | 12345 | 12345 | 12345 | 12345 | 12345 |
                 +-------+-------+-------+-------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('D3', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('D3', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around D3 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around D3 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-------+-------+-------+-------+-------+
                 | 12345 < 12345 | 12345 | 12345 | 12345 |
                 +-------+-------+---^---+-------+---^---+
@@ -612,11 +667,12 @@ describe('HintProvider', () => {
                 | 12345 | 12345 |  12   <  23   <  345  |
                 +---^---+-------+-------+-------+-------+
                 | 12345 | 12345 | 12345 | 12345 | 12345 |
-                +-------+-------+-------+-------+-------+`);
-        });
+                +-------+-------+-------+-------+-------+`
+      );
+    });
 
-        it('should find horizontal greater-than operator for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find horizontal greater-than operator for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+----+--+----+--+
                 |      |    |  <    |  |
                 +------+-^--+--+-^--+--+
@@ -629,11 +685,13 @@ describe('HintProvider', () => {
                 |      <    |  <    |  |
                 +------+----+--+----+--+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C1', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C1', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Operators around C1 reduced candidates.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Operators around C1 reduced candidates.`);
+      expectBoard(
+        board,
+        `
                 +-----+----+--+----+--+
                 |     |    |  <    |  |
                 +-----+-^--+--+-^--+--+
@@ -644,13 +702,14 @@ describe('HintProvider', () => {
                 |     |    |  |    |  |
                 +-----+----+--+----+--+
                 |     <    |  <    |  |
-                +-----+----+--+----+--+`);
-        });
+                +-----+----+--+----+--+`
+      );
     });
+  });
 
-    describe('NakedPairTripleStrategy', () => {
-        it('should eliminate candidate pair from row on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('NakedPairTripleStrategy', () => {
+    it('should eliminate candidate pair from row on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-------+-------+----+
                 | 2345 | 345  |  345  >  234  | !1 |
                 +--v---+--v---+-------+-------+-^--+
@@ -663,11 +722,13 @@ describe('HintProvider', () => {
                 | 123  | 2345 | 12345 |  12   < 23 |
                 +------+------+-------+-------+----+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked pair (2,3) in cells (B2,B5) eliminated 2,3 from 3 other cells in that row.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked pair (2,3) in cells (B2,B5) eliminated 2,3 from 3 other cells in that row.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-------+------+----+
                 | 2345 | 345  |  345  > 234  | !1 |
                 +--v---+--v---+-------+------+-^--+
@@ -678,11 +739,12 @@ describe('HintProvider', () => {
                 | 234  |  !1  <  234  | 234  | !5 |
                 +--v---+------+-------+--v---+----+
                 | 123  | 2345 | 12345 |  12  < 23 |
-                +------+------+-------+------+----+`);
-        });
+                +------+------+-------+------+----+`
+      );
+    });
 
-        it('should eliminate candidate pair from row in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate pair from row in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-------+-------+----+
                 | 2345 | 345  |  345  >  234  | !1 |
                 +--v---+--v---+-------+-------+-^--+
@@ -695,11 +757,13 @@ describe('HintProvider', () => {
                 | 123  | 2345 | 12345 |  12   < 23 |
                 +------+------+-------+-------+----+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B4', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('B4', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked pair (2,3) in cells (B2,B5) eliminated 2,3 from B4.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked pair (2,3) in cells (B2,B5) eliminated 2,3 from B4.`);
+      expectBoard(
+        board,
+        `
                 +------+------+-------+------+----+
                 | 2345 | 345  |  345  > 234  | !1 |
                 +--v---+--v---+-------+------+-^--+
@@ -710,11 +774,12 @@ describe('HintProvider', () => {
                 | 234  |  !1  <  234  | 234  | !5 |
                 +--v---+------+-------+--v---+----+
                 | 123  | 2345 | 12345 |  12  < 23 |
-                +------+------+-------+------+----+`);
-        });
+                +------+------+-------+------+----+`
+      );
+    });
 
-        it('should eliminate candidate pair from column on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate pair from column on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +--------+-----+------+------+--------+-------+
                 |   34   | !1  <  #2  |  #5  |   34   <  !6   |
                 +---^----+-----+------+------+--------+-------+
@@ -729,11 +794,13 @@ describe('HintProvider', () => {
                 | 123456 | 245 | 1346 | 123  | 123456 | 12345 |
                 +--------+-----+------+------+--------+-------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked pair (3,4) in cells (A1,E1) eliminated 3,4 from 3 other cells in that column.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked pair (3,4) in cells (A1,E1) eliminated 3,4 from 3 other cells in that column.`);
+      expectBoard(
+        board,
+        `
                 +------+-----+------+------+--------+-------+
                 |  34  | !1  <  #2  |  #5  |   34   <  !6   |
                 +--^---+-----+------+------+--------+-------+
@@ -746,11 +813,12 @@ describe('HintProvider', () => {
                 |  34  < 45  | 1346 | 234  |  3456  | 12345 |
                 +------+-----+------+--v---+--------+-------+
                 | 1256 | 245 | 1346 | 123  | 123456 | 12345 |
-                +------+-----+------+------+--------+-------+`);
-        });
+                +------+-----+------+------+--------+-------+`
+      );
+    });
 
-        it('should eliminate candidate pair from column in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate pair from column in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +--------+-----+------+------+--------+-------+
                 |   34   | !1  <  #2  |  #5  |   34   <  !6   |
                 +---^----+-----+------+------+--------+-------+
@@ -765,11 +833,13 @@ describe('HintProvider', () => {
                 | 123456 | 245 | 1346 | 123  | 123456 | 12345 |
                 +--------+-----+------+------+--------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('F1', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('F1', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked pair (3,4) in cells (A1,E1) eliminated 3,4 from F1.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked pair (3,4) in cells (A1,E1) eliminated 3,4 from F1.`);
+      expectBoard(
+        board,
+        `
                 +------+-----+------+------+--------+-------+
                 |  34  | !1  <  #2  |  #5  |   34   <  !6   |
                 +--^---+-----+------+------+--------+-------+
@@ -782,11 +852,12 @@ describe('HintProvider', () => {
                 |  34  < 45  | 1346 | 234  |  3456  | 12345 |
                 +------+-----+------+--v---+--------+-------+
                 | 1256 | 245 | 1346 | 123  | 123456 | 12345 |
-                +------+-----+------+------+--------+-------+`);
-        });
+                +------+-----+------+------+--------+-------+`
+      );
+    });
 
-        it('should eliminate candidate triple from row on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate triple from row on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-------+------+----+
                 | 2345 | 345  |  345  > 234  | !1 |
                 +--v---+--v---+-------+------+-^--+
@@ -799,12 +870,13 @@ describe('HintProvider', () => {
                 | 123  | 2345 | 12345 |  12  < 23 |
                 +------+------+-------+------+----+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(
-                `Naked triple (1,2,3) in cells (E1,E4,E5) eliminated 1,2,3 from 2 other cells in that row.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked triple (1,2,3) in cells (E1,E4,E5) eliminated 1,2,3 from 2 other cells in that row.`);
+      expectBoard(
+        board,
+        `
                 +------+-----+------+------+----+
                 | 2345 | 345 | 345  > 234  | !1 |
                 +--v---+--v--+------+------+-^--+
@@ -815,11 +887,12 @@ describe('HintProvider', () => {
                 | 234  | !1  < 234  | 234  | !5 |
                 +--v---+-----+------+--v---+----+
                 | 123  | 45  |  45  |  12  < 23 |
-                +------+-----+------+------+----+`);
-        });
+                +------+-----+------+------+----+`
+      );
+    });
 
-        it('should eliminate candidate triple from row in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate triple from row in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+------+-------+------+----+
                 | 2345 | 345  |  345  > 234  | !1 |
                 +--v---+--v---+-------+------+-^--+
@@ -832,11 +905,13 @@ describe('HintProvider', () => {
                 | 123  | 2345 | 12345 |  12  < 23 |
                 +------+------+-------+------+----+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('E3', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('E3', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked triple (1,2,3) in cells (E1,E4,E5) eliminated 1,2,3 from E3.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked triple (1,2,3) in cells (E1,E4,E5) eliminated 1,2,3 from E3.`);
+      expectBoard(
+        board,
+        `
                 +------+------+------+------+----+
                 | 2345 | 345  | 345  > 234  | !1 |
                 +--v---+--v---+------+------+-^--+
@@ -847,11 +922,12 @@ describe('HintProvider', () => {
                 | 234  |  !1  < 234  | 234  | !5 |
                 +--v---+------+------+--v---+----+
                 | 123  | 2345 |  45  |  12  < 23 |
-                +------+------+------+------+----+`);
-        });
+                +------+------+------+------+----+`
+      );
+    });
 
-        it('should eliminate candidate triple from column on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate triple from column on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+-------+----+-------+----+------+--------+
                 |  #3  >  !2   | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-------+-v--+-------+----+------+--------+
@@ -868,12 +944,13 @@ describe('HintProvider', () => {
                 | 467  |  134  < #5 | 1346  | #2 | 3467 >  1346  |
                 +------+-------+----+-------+----+------+--------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(
-                `Naked triple (3,4,5) in cells (C2,D2,F2) eliminated 3,4,5 from 3 other cells in that column.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked triple (3,4,5) in cells (C2,D2,F2) eliminated 3,4,5 from 3 other cells in that column.`);
+      expectBoard(
+        board,
+        `
                 +------+-----+----+-------+----+------+--------+
                 |  #3  > !2  | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-----+-v--+-------+----+------+--------+
@@ -888,11 +965,12 @@ describe('HintProvider', () => {
                 | 456  > 345 | !7 | 3456  | !1 |  !2  |  3456  |
                 +------+-----+----+-------+-^--+------+--------+
                 | 467  |  1  < #5 | 1346  | #2 | 3467 >  1346  |
-                +------+-----+----+-------+----+------+--------+`);
-        });
+                +------+-----+----+-------+----+------+--------+`
+      );
+    });
 
-        it('should eliminate candidate triple from column in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate triple from column in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+-------+----+-------+----+------+--------+
                 |  #3  >  !2   | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-------+-v--+-------+----+------+--------+
@@ -909,11 +987,13 @@ describe('HintProvider', () => {
                 | 467  |  134  < #5 | 1346  | #2 | 3467 >  1346  |
                 +------+-------+----+-------+----+------+--------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('G2', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('G2', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked triple (3,4,5) in cells (C2,D2,F2) eliminated 3,4,5 from G2.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked triple (3,4,5) in cells (C2,D2,F2) eliminated 3,4,5 from G2.`);
+      expectBoard(
+        board,
+        `
                 +------+-------+----+-------+----+------+--------+
                 |  #3  >  !2   | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-------+-v--+-------+----+------+--------+
@@ -928,13 +1008,14 @@ describe('HintProvider', () => {
                 | 456  >  345  | !7 | 3456  | !1 |  !2  |  3456  |
                 +------+-------+----+-------+-^--+------+--------+
                 | 467  |   1   < #5 | 1346  | #2 | 3467 >  1346  |
-                +------+-------+----+-------+----+------+--------+`);
-        });
+                +------+-------+----+-------+----+------+--------+`
+      );
     });
+  });
 
-    describe('HiddenPairTripleStrategy', () => {
-        it('should find hidden pair in row on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('HiddenPairTripleStrategy', () => {
+    it('should find hidden pair in row on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+-----+----+-------+----+------+--------+
                 |  #3  > !2  | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-----+-v--+-------+----+------+--------+
@@ -951,11 +1032,13 @@ describe('HintProvider', () => {
                 | 467  | !1  < #5 |  346  | #2 | 467  >  346   |
                 +------+-----+----+-------+----+------+--------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden pair (1,2) in row of cells (E4,E7) eliminated others in these cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden pair (1,2) in row of cells (E4,E7) eliminated others in these cells.`);
+      expectBoard(
+        board,
+        `
                 +------+-----+----+-------+----+------+--------+
                 |  #3  > !2  | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-----+-v--+-------+----+------+--------+
@@ -970,11 +1053,12 @@ describe('HintProvider', () => {
                 | 456  > 345 | !7 | 3456  | !1 |  !2  |  3456  |
                 +------+-----+----+-------+-^--+------+--------+
                 | 467  | !1  < #5 |  346  | #2 | 467  >  346   |
-                +------+-----+----+-------+----+------+--------+`);
-        });
+                +------+-----+----+-------+----+------+--------+`
+      );
+    });
 
-        it('should find hidden pair in row for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden pair in row for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +------+-----+----+-------+----+------+--------+
                 |  #3  > !2  | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-----+-v--+-------+----+------+--------+
@@ -991,11 +1075,13 @@ describe('HintProvider', () => {
                 | 467  | !1  < #5 |  346  | #2 | 467  >  346   |
                 +------+-----+----+-------+----+------+--------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('E7', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('E7', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden pair (1,2) in row of cells (E4,E7) eliminated others in E7.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden pair (1,2) in row of cells (E4,E7) eliminated others in E7.`);
+      expectBoard(
+        board,
+        `
                 +------+-----+----+-------+----+------+--------+
                 |  #3  > !2  | 46 |  456  | !7 |  !1  |  456   |
                 +--v---+-----+-v--+-------+----+------+--------+
@@ -1010,11 +1096,12 @@ describe('HintProvider', () => {
                 | 456  > 345 | !7 | 3456  | !1 |  !2  |  3456  |
                 +------+-----+----+-------+-^--+------+--------+
                 | 467  | !1  < #5 |  346  | #2 | 467  >  346   |
-                +------+-----+----+-------+----+------+--------+`);
-        });
+                +------+-----+----+-------+----+------+--------+`
+      );
+    });
 
-        it('should find hidden pair in column on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden pair in column on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +---------+--------+---------+-----+--------+---------+------+
                 | 123456  < 23467  | 1234567 | 56  >  345   >   234   > 123  |
                 +---------+--------+---------+--^--+--------+---------+------+
@@ -1031,11 +1118,13 @@ describe('HintProvider', () => {
                 |   23    |   67   >   56    > !4  <  567   |   123   | 123  |
                 +---------+--------+---------+-----+--------+---------+------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden pair (1,2) in column of cells (A7,G7) eliminated others in these cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden pair (1,2) in column of cells (A7,G7) eliminated others in these cells.`);
+      expectBoard(
+        board,
+        `
                 +---------+--------+---------+-----+--------+---------+------+
                 | 123456  < 23467  | 1234567 | 56  >  345   >   234   >  12  |
                 +---------+--------+---------+--^--+--------+---------+------+
@@ -1050,11 +1139,12 @@ describe('HintProvider', () => {
                 |   12    |   #5   |   12    < !3  |  467   |   467   | 467  |
                 +----^----+--------+---------+--^--+--------+---------+------+
                 |   23    |   67   >   56    > !4  <  567   |   123   |  12  |
-                +---------+--------+---------+-----+--------+---------+------+`);
-        });
+                +---------+--------+---------+-----+--------+---------+------+`
+      );
+    });
 
-        it('should find hidden pair in column for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden pair in column for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +---------+--------+---------+-----+--------+---------+------+
                 | 123456  < 23467  | 1234567 | 56  >  345   >   234   > 123  |
                 +---------+--------+---------+--^--+--------+---------+------+
@@ -1071,11 +1161,13 @@ describe('HintProvider', () => {
                 |   23    |   67   >   56    > !4  <  567   |   123   | 123  |
                 +---------+--------+---------+-----+--------+---------+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A7', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('A7', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden pair (1,2) in column of cells (A7,G7) eliminated others in A7.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden pair (1,2) in column of cells (A7,G7) eliminated others in A7.`);
+      expectBoard(
+        board,
+        `
                 +---------+--------+---------+-----+--------+---------+------+
                 | 123456  < 23467  | 1234567 | 56  >  345   >   234   >  12  |
                 +---------+--------+---------+--^--+--------+---------+------+
@@ -1090,11 +1182,12 @@ describe('HintProvider', () => {
                 |   12    |   #5   |   12    < !3  |  467   |   467   | 467  |
                 +----^----+--------+---------+--^--+--------+---------+------+
                 |   23    |   67   >   56    > !4  <  567   |   123   | 123  |
-                +---------+--------+---------+-----+--------+---------+------+`);
-        });
+                +---------+--------+---------+-----+--------+---------+------+`
+      );
+    });
 
-        it('should find hidden triple in row on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden triple in row on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +--------+-------+---------+----+-----+----+------+-----+-----+
                 |   #3   |  !7   |   145   | #9 | 14  | #8 |  45  > !2  | !6  |
                 +--------+---v---+---------+----+-----+----+------+--v--+--v--+
@@ -1115,11 +1208,13 @@ describe('HintProvider', () => {
                 | 245689 | 23489 | 2345689 | 68 | 349 | !1 | 2345 | 56  < !7  |
                 +--------+-------+---------+----+-----+----+------+-----+-----+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden triple (5,6,7) in row of cells (F1,F3,F8) eliminated others in these cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden triple (5,6,7) in row of cells (F1,F3,F8) eliminated others in these cells.`);
+      expectBoard(
+        board,
+        `
                 +--------+-------+---------+----+-----+----+------+-----+-----+
                 |   #3   |  !7   |   145   | #9 | 14  | #8 |  45  > !2  | !6  |
                 +--------+---v---+---------+----+-----+----+------+--v--+--v--+
@@ -1138,11 +1233,12 @@ describe('HintProvider', () => {
                 |   68   >  12   |   68    | 12 < #5  > !3 |  !7  > #4  | !9  |
                 +--------+-------+---------+----+-----+-v--+------+-----+--v--+
                 | 245689 | 23489 | 2345689 | 68 | 349 | !1 | 2345 | 56  < !7  |
-                +--------+-------+---------+----+-----+----+------+-----+-----+`);
-        });
+                +--------+-------+---------+----+-----+----+------+-----+-----+`
+      );
+    });
 
-        it('should find hidden triple in row for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden triple in row for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +--------+-------+---------+----+-----+----+------+-----+-----+
                 |   #3   |  !7   |   145   | #9 | 14  | #8 |  45  > !2  | !6  |
                 +--------+---v---+---------+----+-----+----+------+--v--+--v--+
@@ -1163,11 +1259,13 @@ describe('HintProvider', () => {
                 | 245689 | 23489 | 2345689 | 68 | 349 | !1 | 2345 | 56  < !7  |
                 +--------+-------+---------+----+-----+----+------+-----+-----+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('F1', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('F1', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden triple (5,6,7) in row of cells (F1,F3,F8) eliminated others in F1.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden triple (5,6,7) in row of cells (F1,F3,F8) eliminated others in F1.`);
+      expectBoard(
+        board,
+        `
                 +--------+-------+---------+----+-----+----+------+-----+-----+
                 |   #3   |  !7   |   145   | #9 | 14  | #8 |  45  > !2  | !6  |
                 +--------+---v---+---------+----+-----+----+------+--v--+--v--+
@@ -1186,11 +1284,12 @@ describe('HintProvider', () => {
                 |   68   >  12   |   68    | 12 < #5  > !3 |  !7  > #4  | !9  |
                 +--------+-------+---------+----+-----+-v--+------+-----+--v--+
                 | 245689 | 23489 | 2345689 | 68 | 349 | !1 | 2345 | 56  < !7  |
-                +--------+-------+---------+----+-----+----+------+-----+-----+`);
-        });
+                +--------+-------+---------+----+-----+----+------+-----+-----+`
+      );
+    });
 
-        it('should find hidden triple in column on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden triple in column on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +--------+--------+----------+-------+---------+----------+--------+------+
                 | 123567 | 234567 >  123456  | 4567  |   567   | 1234567  | 34567  <  !8  |
                 +--------+--------+----------+-------+----v----+----------+---v----+------+
@@ -1209,11 +1308,13 @@ describe('HintProvider', () => {
                 |  678   |  123   <   234    | 45678 | 1235678 |   5678   >  4567  > 3456 |
                 +--------+--------+----------+-------+---------+----------+--------+------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden triple (1,2,3) in column of cells (D5,G5,H5) eliminated others in these cells.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden triple (1,2,3) in column of cells (D5,G5,H5) eliminated others in these cells.`);
+      expectBoard(
+        board,
+        `
                 +--------+--------+----------+-------+------+----------+--------+------+
                 | 123567 | 234567 >  123456  | 4567  | 567  | 1234567  | 34567  <  !8  |
                 +--------+--------+----------+-------+--v---+----------+---v----+------+
@@ -1230,11 +1331,12 @@ describe('HintProvider', () => {
                 |  567   >  456   >   345    | 45678 | 123  < 2345678  |  1234  < 2345 |
                 +---^----+--------+----v-----+-------+------+----------+--------+--^---+
                 |  678   |  123   <   234    | 45678 | 123  |   5678   >  4567  > 3456 |
-                +--------+--------+----------+-------+------+----------+--------+------+`);
-        });
+                +--------+--------+----------+-------+------+----------+--------+------+`
+      );
+    });
 
-        it('should find hidden triple in column for single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should find hidden triple in column for single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +--------+--------+----------+-------+---------+----------+--------+------+
                 | 123567 | 234567 >  123456  | 4567  |   567   | 1234567  | 34567  <  !8  |
                 +--------+--------+----------+-------+----v----+----------+---v----+------+
@@ -1253,11 +1355,13 @@ describe('HintProvider', () => {
                 |  678   |  123   <   234    | 45678 | 1235678 |   5678   >  4567  > 3456 |
                 +--------+--------+----------+-------+---------+----------+--------+------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('H5', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('H5', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Hidden triple (1,2,3) in column of cells (D5,G5,H5) eliminated others in H5.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Hidden triple (1,2,3) in column of cells (D5,G5,H5) eliminated others in H5.`);
+      expectBoard(
+        board,
+        `
                 +--------+--------+----------+-------+---------+----------+--------+------+
                 | 123567 | 234567 >  123456  | 4567  |   567   | 1234567  | 34567  <  !8  |
                 +--------+--------+----------+-------+----v----+----------+---v----+------+
@@ -1274,13 +1378,14 @@ describe('HintProvider', () => {
                 |  567   >  456   >   345    | 45678 | 123567  < 2345678  |  1234  < 2345 |
                 +---^----+--------+----v-----+-------+---------+----------+--------+--^---+
                 |  678   |  123   <   234    | 45678 |   123   |   5678   >  4567  > 3456 |
-                +--------+--------+----------+-------+---------+----------+--------+------+`);
-        });
+                +--------+--------+----------+-------+---------+----------+--------+------+`
+      );
     });
+  });
 
-    describe('NakedQuadStrategy', () => {
-        it('should eliminate candidate quad from row on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+  describe('NakedQuadStrategy', () => {
+    it('should eliminate candidate quad from row on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+--------+---------+--------+-----+--------+-----------+----------+----------+
                 | 34567 | 356789 > 2345678 > 123456 | 78  | 345678 <  456789   | 12356789 | 23456789 |
                 +-------+--------+---------+--------+--v--+--------+-----v-----+----------+----------+
@@ -1301,12 +1406,13 @@ describe('HintProvider', () => {
                 |  #8   | 123567 |   123   <  2356  | !9  |  3567  |    123    <    #4    |  23567   |
                 +-------+--------+---------+--------+-----+--------+-----------+----------+----------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(
-                `Naked quad (3,4,5,6) in cells (C1,C4,C5,C6) eliminated 3,4,5,6 from 5 other cells in that row.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked quad (3,4,5,6) in cells (C1,C4,C5,C6) eliminated 3,4,5,6 from 5 other cells in that row.`);
+      expectBoard(
+        board,
+        `
                 +-------+--------+---------+--------+-----+--------+---------+----------+----------+
                 | 34567 | 356789 > 2345678 > 123456 | 78  | 345678 < 456789  | 12356789 | 23456789 |
                 +-------+--------+---------+--------+--v--+--------+----v----+----------+----------+
@@ -1325,11 +1431,12 @@ describe('HintProvider', () => {
                 |  !1   < 235678 |  2345   <  3456  < 78  |   !9   >   678   >   567    | 2345678  |
                 +-------+--------+----v----+--------+--^--+--------+---------+----v-----+----------+
                 |  #8   | 123567 |   123   <  2356  | !9  |  3567  |   123   <    #4    |  23567   |
-                +-------+--------+---------+--------+-----+--------+---------+----------+----------+`);
-        });
+                +-------+--------+---------+--------+-----+--------+---------+----------+----------+`
+      );
+    });
 
-        it('should eliminate candidate quad from row in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate quad from row in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+--------+---------+--------+-----+--------+-----------+----------+----------+
                 | 34567 | 356789 > 2345678 > 123456 | 78  | 345678 <  456789   | 12356789 | 23456789 |
                 +-------+--------+---------+--------+--v--+--------+-----v-----+----------+----------+
@@ -1350,11 +1457,13 @@ describe('HintProvider', () => {
                 |  #8   | 123567 |   123   <  2356  | !9  |  3567  |    123    <    #4    |  23567   |
                 +-------+--------+---------+--------+-----+--------+-----------+----------+----------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C7', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C7', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked quad (3,4,5,6) in cells (C1,C4,C5,C6) eliminated 3,4,5,6 from C7.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked quad (3,4,5,6) in cells (C1,C4,C5,C6) eliminated 3,4,5,6 from C7.`);
+      expectBoard(
+        board,
+        `
                 +-------+--------+---------+--------+-----+--------+---------+----------+----------+
                 | 34567 | 356789 > 2345678 > 123456 | 78  | 345678 < 456789  | 12356789 | 23456789 |
                 +-------+--------+---------+--------+--v--+--------+----v----+----------+----------+
@@ -1373,11 +1482,12 @@ describe('HintProvider', () => {
                 |  !1   < 235678 |  2345   <  3456  < 78  |   !9   >   678   >   567    | 2345678  |
                 +-------+--------+----v----+--------+--^--+--------+---------+----v-----+----------+
                 |  #8   | 123567 |   123   <  2356  | !9  |  3567  |   123   <    #4    |  23567   |
-                +-------+--------+---------+--------+-----+--------+---------+----------+----------+`);
-        });
+                +-------+--------+---------+--------+-----+--------+---------+----------+----------+`
+      );
+    });
 
-        it('should eliminate candidate quad from column on the board', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate quad from column on the board', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+---------+---------+-------+---------+---------+-------+
                 |  567  | 1234567 | 1234567 | 12367 | 123456  < 234567  | 12346 |
                 +---v---+---------+---------+-------+---------+---------+---^---+
@@ -1394,12 +1504,13 @@ describe('HintProvider', () => {
                 | 12456 < 234567  |   23    >  12   | 1234567 | 123456  < 23467 |
                 +-------+---------+---------+-------+---------+---------+-------+`);
 
-            const hasChanges = provider.runAtBoard();
+      const hasChanges = provider.runAtBoard();
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(
-                `Naked quad (1,2,3,4) in cells (B3,D3,F3,G3) eliminated 1,2,3,4 from 3 other cells in that column.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked quad (1,2,3,4) in cells (B3,D3,F3,G3) eliminated 1,2,3,4 from 3 other cells in that column.`);
+      expectBoard(
+        board,
+        `
                 +-------+---------+------+-------+---------+---------+-------+
                 |  567  | 1234567 | 567  | 12367 | 123456  < 234567  | 12346 |
                 +---v---+---------+------+-------+---------+---------+---^---+
@@ -1414,11 +1525,12 @@ describe('HintProvider', () => {
                 |  124  <  2346   |  34  <  #5   | 123467  | 123467  | 1234  |
                 +-------+---------+--v---+-------+---------+---------+-------+
                 | 12456 < 234567  |  23  >  12   | 1234567 | 123456  < 23467 |
-                +-------+---------+------+-------+---------+---------+-------+`);
-        });
+                +-------+---------+------+-------+---------+---------+-------+`
+      );
+    });
 
-        it('should eliminate candidate quad from column in single cell', () => {
-            const { provider, board } = createHintProviderForBoard(`
+    it('should eliminate candidate quad from column in single cell', () => {
+      const { provider, board } = createHintProviderForBoard(`
                 +-------+---------+---------+-------+---------+---------+-------+
                 |  567  | 1234567 | 1234567 | 12367 | 123456  < 234567  | 12346 |
                 +---v---+---------+---------+-------+---------+---------+---^---+
@@ -1435,11 +1547,13 @@ describe('HintProvider', () => {
                 | 12456 < 234567  |   23    >  12   | 1234567 | 123456  < 23467 |
                 +-------+---------+---------+-------+---------+---------+-------+`);
 
-            const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C3', board.size));
+      const hasChanges = provider.runAtCoordinate(Coordinate.fromText('C3', board.size));
 
-            expect(hasChanges).toBeTruthy();
-            expect(provider.explanationText).toBe(`Naked quad (1,2,3,4) in cells (B3,D3,F3,G3) eliminated 1,2,3,4 from C3.`);
-            expectBoard(board, `
+      expect(hasChanges).toBeTruthy();
+      expect(provider.explanationText).toBe(`Naked quad (1,2,3,4) in cells (B3,D3,F3,G3) eliminated 1,2,3,4 from C3.`);
+      expectBoard(
+        board,
+        `
                 +-------+---------+---------+-------+---------+---------+-------+
                 |  567  | 1234567 | 1234567 | 12367 | 123456  < 234567  | 12346 |
                 +---v---+---------+---------+-------+---------+---------+---^---+
@@ -1454,16 +1568,17 @@ describe('HintProvider', () => {
                 |  124  <  2346   |   34    <  #5   | 123467  | 123467  | 1234  |
                 +-------+---------+----v----+-------+---------+---------+-------+
                 | 12456 < 234567  |   23    >  12   | 1234567 | 123456  < 23467 |
-                +-------+---------+---------+-------+---------+---------+-------+`);
-        });
+                +-------+---------+---------+-------+---------+---------+-------+`
+      );
     });
+  });
 
-    function createHintProviderForBoard(boardText: string): { provider: HintProvider, board: Board } {
-        const converter = new BoardTextConverter();
-        const board = converter.textToBoard(boardText);
-        return {
-            provider: new HintProvider(board),
-            board: board
-        };
-    }
+  function createHintProviderForBoard(boardText: string): { provider: HintProvider; board: Board } {
+    const converter = new BoardTextConverter();
+    const board = converter.textToBoard(boardText);
+    return {
+      provider: new HintProvider(board),
+      board: board
+    };
+  }
 });

@@ -6,23 +6,31 @@ import * as $ from 'jquery';
   templateUrl: './menu-bar.component.html'
 })
 export class MenuBarComponent implements OnInit {
-  @Input() restartEnabled!: boolean;
-  @Input() newGameEnabled!: boolean;
-  @Input() changePuzzleEnabled!: boolean;
-  @Input() settingsEnabled!: boolean;
-  @Output() restartClicked = new EventEmitter();
-  @Output() newGameClicked = new EventEmitter();
-  @Output() changePuzzleClicked = new EventEmitter();
-  @Output() settingsClicked = new EventEmitter();
-  @Output() isOpenChanged = new EventEmitter<boolean>();
+  @Input()
+  restartEnabled!: boolean;
+  @Input()
+  newGameEnabled!: boolean;
+  @Input()
+  changePuzzleEnabled!: boolean;
+  @Input()
+  settingsEnabled!: boolean;
+  @Output()
+  restartClicked = new EventEmitter();
+  @Output()
+  newGameClicked = new EventEmitter();
+  @Output()
+  changePuzzleClicked = new EventEmitter();
+  @Output()
+  settingsClicked = new EventEmitter();
+  @Output()
+  isOpenChanged = new EventEmitter<boolean>();
 
   get isMenuOpened(): boolean {
     const isClosed = $('.navbar-toggler').hasClass('collapsed');
     return !isClosed;
   }
 
-  constructor(private _zone: NgZone) {
-  }
+  constructor(private _zone: NgZone) {}
 
   ngOnInit() {
     $(document).ready(() => {

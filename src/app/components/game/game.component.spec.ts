@@ -26,10 +26,7 @@ describe('GameComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        FormsModule
-      ],
+      imports: [HttpClientModule, FormsModule],
       declarations: [
         GameComponent,
         BoardComponent,
@@ -47,12 +44,8 @@ describe('GameComponent', () => {
         HintExplanationBoxComponent,
         RulerCellComponent
       ],
-      providers: [
-        HttpRequestController,
-        PuzzleDataService
-      ]
-    })
-      .compileComponents();
+      providers: [HttpRequestController, PuzzleDataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

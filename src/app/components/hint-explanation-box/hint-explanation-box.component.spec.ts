@@ -9,8 +9,7 @@ describe('HintExplanationBoxComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HintExplanationBoxComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

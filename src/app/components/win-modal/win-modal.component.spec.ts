@@ -9,8 +9,7 @@ describe('WinModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [WinModalComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

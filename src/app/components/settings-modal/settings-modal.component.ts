@@ -13,10 +13,11 @@ export class SettingsModalComponent implements AfterViewChecked {
 
   settings: GameSettings | undefined;
   isModalVisible = false;
-  @Output() settingsChanged = new EventEmitter<GameSettings>();
 
-  constructor(private _zone: NgZone) {
-  }
+  @Output()
+  settingsChanged = new EventEmitter<GameSettings>();
+
+  constructor(private _zone: NgZone) {}
 
   ngAfterViewChecked() {
     this.registerBootstrapHooks();

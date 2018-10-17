@@ -6,94 +6,93 @@ import { Coordinate } from './models/coordinate';
 import { BoardComponent } from './components/board/board.component';
 
 export class UndoTracker {
-    private _isCapturingCellChanges = false;
-    private _cellChangesCaptured: { [index: number]: CellContentSnapshot } = {};
-    private _undoStack: UndoFrame[] = [];
+  private _isCapturingCellChanges = false;
+  private _cellChangesCaptured: { [index: number]: CellContentSnapshot } = {};
+  private _undoStack: UndoFrame[] = [];
 
-    constructor(private _board: BoardComponent) {
-    }
+  constructor(private _board: BoardComponent) {}
 
-    reset() {
-        this._undoStack = [];
-    }
+  reset() {
+    this._undoStack = [];
+  }
 
-    canUndo(): boolean {
-        return this._undoStack.length > 0;
-    }
+  canUndo(): boolean {
+    return this._undoStack.length > 0;
+  }
 
-    undo(): boolean {
-        let madeChanges = false;
+  undo(): boolean {
+    let madeChanges = false;
 
-        const undoFrame = this._undoStack.pop();
-        if (undoFrame) {
-            for (const snapshot of undoFrame.cells) {
-                const cell = this._board.getCell(snapshot.coordinate);
-                if (cell) {
-                    cell.restoreContentSnapshot(snapshot.content);
-                    madeChanges = true;
-                }
-            }
+    const undoFrame = this._undoStack.pop();
+    if (undoFrame) {
+      for (const snapshot of undoFrame.cells) {
+        const cell = this._board.getCell(snapshot.coordinate);
+        if (cell) {
+          cell.restoreContentSnapshot(snapshot.content);
+          madeChanges = true;
         }
-
-        return madeChanges;
+      }
     }
 
-    captureUndoFrame(action: () => void): boolean {
-        try {
-            this.captureCellChanges(action);
-        } catch (error) {
-            console.log('Auto-rollback after error: ' + error.message);
-            this.rollbackCellChanges();
-            return false;
-        }
+    return madeChanges;
+  }
 
-        const snapshots = this.getSnapshotsForCapturedCellChanges();
-        if (snapshots.length > 0) {
-            this._undoStack.push({ cells: snapshots });
-            return true;
-        }
-
-        return false;
+  captureUndoFrame(action: () => void): boolean {
+    try {
+      this.captureCellChanges(action);
+    } catch (error) {
+      console.log('Auto-rollback after error: ' + error.message);
+      this.rollbackCellChanges();
+      return false;
     }
 
-    private captureCellChanges(action: () => void) {
-        this._cellChangesCaptured = {};
-        this._isCapturingCellChanges = true;
-
-        try {
-            action();
-        } finally {
-            this._isCapturingCellChanges = false;
-        }
+    const snapshots = this.getSnapshotsForCapturedCellChanges();
+    if (snapshots.length > 0) {
+      this._undoStack.push({ cells: snapshots });
+      return true;
     }
 
-    private rollbackCellChanges() {
-        ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._cellChangesCaptured, (index, contentSnapshot) => {
-            const coordinate = Coordinate.fromIndex(parseInt(index, 10), this._board.size);
-            const cell = this._board.getCell(coordinate);
-            if (cell) {
-                cell.restoreContentSnapshot(contentSnapshot);
-            }
-        });
+    return false;
+  }
+
+  private captureCellChanges(action: () => void) {
+    this._cellChangesCaptured = {};
+    this._isCapturingCellChanges = true;
+
+    try {
+      action();
+    } finally {
+      this._isCapturingCellChanges = false;
     }
+  }
 
-    private getSnapshotsForCapturedCellChanges() {
-        const snapshots: CellSnapshot[] = [];
+  private rollbackCellChanges() {
+    ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._cellChangesCaptured, (index, contentSnapshot) => {
+      const coordinate = Coordinate.fromIndex(parseInt(index, 10), this._board.size);
+      const cell = this._board.getCell(coordinate);
+      if (cell) {
+        cell.restoreContentSnapshot(contentSnapshot);
+      }
+    });
+  }
 
-        ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._cellChangesCaptured, (index, contentSnapshot) => {
-            const coordinate = Coordinate.fromIndex(parseInt(index, 10), this._board.size);
-            snapshots.push({ coordinate: coordinate, content: contentSnapshot });
-        });
+  private getSnapshotsForCapturedCellChanges() {
+    const snapshots: CellSnapshot[] = [];
 
-        return snapshots;
+    ObjectFacilities.iterateObjectProperties<CellContentSnapshot>(this._cellChangesCaptured, (index, contentSnapshot) => {
+      const coordinate = Coordinate.fromIndex(parseInt(index, 10), this._board.size);
+      snapshots.push({ coordinate: coordinate, content: contentSnapshot });
+    });
+
+    return snapshots;
+  }
+
+  registerCellChange(snapshot: CellSnapshot) {
+    if (this._isCapturingCellChanges) {
+      const index = snapshot.coordinate.toIndex();
+      if (!this._cellChangesCaptured[index]) {
+        this._cellChangesCaptured[index] = snapshot.content;
+      }
     }
-
-    registerCellChange(snapshot: CellSnapshot) {
-        if (this._isCapturingCellChanges) {
-            const index = snapshot.coordinate.toIndex();
-            if (!this._cellChangesCaptured[index]) {
-                this._cellChangesCaptured[index] = snapshot.content;
-            }
-        }
-    }
+  }
 }

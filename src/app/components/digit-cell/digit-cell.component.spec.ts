@@ -9,12 +9,8 @@ describe('DigitCellComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        DigitCellComponent,
-        RepeatPipe
-      ]
-    })
-      .compileComponents();
+      declarations: [DigitCellComponent, RepeatPipe]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

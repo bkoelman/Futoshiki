@@ -8,13 +8,19 @@ declare var $: any;
   templateUrl: './operator-cell.component.html'
 })
 export class OperatorCellComponent {
-  @ViewChild('flashable') private _flashableElementRef!: ElementRef;
+  @ViewChild('flashable')
+  private _flashableElementRef!: ElementRef;
 
   ComparisonOperatorAlias = ComparisonOperator;
-  @Input() boardSize!: number;
-  @Input() value = ComparisonOperator.None;
-  @Input() isRotated = false;
-  @Input() showRuler!: boolean;
+
+  @Input()
+  boardSize!: number;
+  @Input()
+  value = ComparisonOperator.None;
+  @Input()
+  isRotated = false;
+  @Input()
+  showRuler!: boolean;
 
   flash(callback: () => void) {
     $(this._flashableElementRef.nativeElement).animateCss('flash', callback);

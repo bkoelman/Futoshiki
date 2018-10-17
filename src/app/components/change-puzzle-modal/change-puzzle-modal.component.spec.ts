@@ -10,15 +10,9 @@ describe('ChangePuzzleModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule
-      ],
-      declarations: [
-        ChangePuzzleModalComponent,
-        EnumNamesToArrayPipe
-      ]
-    })
-      .compileComponents();
+      imports: [FormsModule],
+      declarations: [ChangePuzzleModalComponent, EnumNamesToArrayPipe]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

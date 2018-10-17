@@ -11,21 +11,31 @@ declare var $: any;
   templateUrl: './digit-cell.component.html'
 })
 export class DigitCellComponent implements Cell {
-  @ViewChild('flashable') private _flashableElementRef!: ElementRef;
+  @ViewChild('flashable')
+  private _flashableElementRef!: ElementRef;
+
   private _userValue: number | undefined;
   private _candidates = new Set<number>();
 
   GameCompletionStateAlias = GameCompletionState;
 
+  @Input()
+  boardSize!: number;
+  @Input()
+  fixedValue: number | undefined;
+  @Input()
+  canSelect!: boolean;
+  @Input()
+  playState!: GameCompletionState;
+  @Input()
+  showRuler!: boolean;
+  @Output()
+  cellClicked = new EventEmitter<DigitCellComponent>();
+  @Output()
+  contentChanged = new EventEmitter<{ sender: DigitCellComponent; snapshotBefore: CellContentSnapshot }>();
+
   isSelected = false;
   errorDigit: number | undefined = undefined;
-  @Input() boardSize!: number;
-  @Input() fixedValue: number | undefined;
-  @Input() canSelect!: boolean;
-  @Input() playState!: GameCompletionState;
-  @Input() showRuler!: boolean;
-  @Output() cellClicked = new EventEmitter<DigitCellComponent>();
-  @Output() contentChanged = new EventEmitter<{ sender: DigitCellComponent, snapshotBefore: CellContentSnapshot }>();
 
   get value(): number | undefined {
     return this.fixedValue || this._userValue;

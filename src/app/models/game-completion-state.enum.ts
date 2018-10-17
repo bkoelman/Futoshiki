@@ -1,5 +1,5 @@
 export enum GameCompletionState {
-    Playing,
-    Won,
-    Lost,
+  Playing,
+  Won,
+  Lost
 }

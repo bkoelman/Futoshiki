@@ -9,14 +9,9 @@ describe('SettingsModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule
-      ],
-      declarations: [
-        SettingsModalComponent
-      ]
-    })
-      .compileComponents();
+      imports: [FormsModule],
+      declarations: [SettingsModalComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

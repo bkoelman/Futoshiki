@@ -34,11 +34,17 @@ declare var $: any;
   templateUrl: './game.component.html'
 })
 export class GameComponent implements OnInit {
-  @ViewChild(BoardComponent) private _boardComponent!: BoardComponent;
-  @ViewChild(ChangePuzzleModalComponent) private _changePuzzleModalComponent!: ChangePuzzleModalComponent;
-  @ViewChild(SettingsModalComponent) private _settingsModalComponent!: SettingsModalComponent;
-  @ViewChild(DebugConsoleComponent) private _debugConsoleComponent!: DebugConsoleComponent;
-  @ViewChild(HintExplanationBoxComponent) private _hintExplanationBoxComponent!: HintExplanationBoxComponent;
+  @ViewChild(BoardComponent)
+  private _boardComponent!: BoardComponent;
+  @ViewChild(ChangePuzzleModalComponent)
+  private _changePuzzleModalComponent!: ChangePuzzleModalComponent;
+  @ViewChild(SettingsModalComponent)
+  private _settingsModalComponent!: SettingsModalComponent;
+  @ViewChild(DebugConsoleComponent)
+  private _debugConsoleComponent!: DebugConsoleComponent;
+  @ViewChild(HintExplanationBoxComponent)
+  private _hintExplanationBoxComponent!: HintExplanationBoxComponent;
+
   private _undoTracker!: UndoTracker;
   private _autoCleaner!: CandidateCleaner;
   private _candidatePromoter!: CandidatePromoter;
@@ -63,8 +69,14 @@ export class GameComponent implements OnInit {
   }
 
   get areShortcutKeysEnabled(): boolean {
-    return this.canAcceptInput && !this._changePuzzleModalComponent.isModalVisible && !this._settingsModalComponent.isModalVisible &&
-      !this.isTypingText && !this._isMenuOpen && this.playState !== GameCompletionState.Won;
+    return (
+      this.canAcceptInput &&
+      !this._changePuzzleModalComponent.isModalVisible &&
+      !this._settingsModalComponent.isModalVisible &&
+      !this.isTypingText &&
+      !this._isMenuOpen &&
+      this.playState !== GameCompletionState.Won
+    );
   }
 
   get canUndo() {
@@ -129,11 +141,12 @@ export class GameComponent implements OnInit {
 
   private retrievePuzzle(request: PuzzleInfo, downloadCompletedAsyncCallback?: () => void) {
     this.hasRetrieveError = false;
-    this.puzzleDownloadController.startRequest(request,
+    this.puzzleDownloadController.startRequest(
+      request,
       () => this._dataService.getPuzzle(request),
-      (isVisible) => this.onPuzzleLoaderVisibilityChanged(isVisible),
-      (data) => this.onPuzzleDownloadSucceeded(data, downloadCompletedAsyncCallback),
-      (err) => this.onPuzzleDownloadFailed(err)
+      isVisible => this.onPuzzleLoaderVisibilityChanged(isVisible),
+      data => this.onPuzzleDownloadSucceeded(data, downloadCompletedAsyncCallback),
+      err => this.onPuzzleDownloadFailed(err)
     );
   }
 
@@ -224,7 +237,7 @@ export class GameComponent implements OnInit {
     setTimeout(() => this.rebindAutoResizeTexts());
   }
 
-  onDigitClicked(data: { digit: number, isCandidate: boolean }) {
+  onDigitClicked(data: { digit: number; isCandidate: boolean }) {
     this.captureCellChanges(() => {
       const cell = this._boardComponent.getSelectedCell();
       if (cell) {
@@ -257,8 +270,9 @@ export class GameComponent implements OnInit {
   private verifyMoveAllowed(cell: DigitCellComponent, digit: number, isCandidate: boolean): boolean {
     const coordinate = this._boardComponent.getCoordinate(cell);
     if (coordinate) {
-      const moveCheckResult = this.settings.notifyOnWrongMoves ?
-        this._moveChecker.checkIsMoveAllowed(digit, coordinate) : MoveCheckResult.createValid();
+      const moveCheckResult = this.settings.notifyOnWrongMoves
+        ? this._moveChecker.checkIsMoveAllowed(digit, coordinate)
+        : MoveCheckResult.createValid();
       if (!moveCheckResult.isValid) {
         this.startErrorForMove(cell, coordinate, moveCheckResult, digit, isCandidate);
         return false;
@@ -268,8 +282,7 @@ export class GameComponent implements OnInit {
     return true;
   }
 
-  private startErrorForMove(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number,
-    isCandidate: boolean) {
+  private startErrorForMove(cell: DigitCellComponent, coordinate: Coordinate, result: MoveCheckResult, digit: number, isCandidate: boolean) {
     const snapshot = cell.getContentSnapshot();
     this._isAnimating = true;
 
@@ -380,8 +393,7 @@ export class GameComponent implements OnInit {
 
   private storeGameSaveStateInCookie() {
     if (this.puzzle) {
-      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent,
-        this.playState !== GameCompletionState.Playing);
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent, this.playState !== GameCompletionState.Playing);
       Cookies.set('save', gameStateText, {
         expires: 30
       });

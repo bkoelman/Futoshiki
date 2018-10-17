@@ -9,8 +9,7 @@ describe('MenuBarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MenuBarComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

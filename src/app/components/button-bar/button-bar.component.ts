@@ -5,19 +5,31 @@ import { Component, OnInit, Input, Output, EventEmitter, HostListener, ElementRe
   templateUrl: './button-bar.component.html'
 })
 export class ButtonBarComponent implements OnInit, AfterViewChecked {
-  @ViewChild('rectangleButtonGroup') private _rectangleButtonGroupElementRef!: ElementRef;
+  @ViewChild('rectangleButtonGroup')
+  private _rectangleButtonGroupElementRef!: ElementRef;
+
   private _firstTimeResizeCompleted = false;
 
-  @Input() boardSize: number | undefined;
-  @Input() isEnabled!: boolean;
-  @Input() canUndo!: boolean;
-  @Input() areKeysEnabled!: boolean;
-  @Output() digitClicked = new EventEmitter<{ digit: number, isCandidate: boolean }>();
-  @Output() clearClicked = new EventEmitter();
-  @Output() hintCellClicked = new EventEmitter();
-  @Output() undoClicked = new EventEmitter();
-  @Output() promoteClicked = new EventEmitter();
-  @Output() hintBoardClicked = new EventEmitter();
+  @Input()
+  boardSize: number | undefined;
+  @Input()
+  isEnabled!: boolean;
+  @Input()
+  canUndo!: boolean;
+  @Input()
+  areKeysEnabled!: boolean;
+  @Output()
+  digitClicked = new EventEmitter<{ digit: number; isCandidate: boolean }>();
+  @Output()
+  clearClicked = new EventEmitter();
+  @Output()
+  hintCellClicked = new EventEmitter();
+  @Output()
+  undoClicked = new EventEmitter();
+  @Output()
+  promoteClicked = new EventEmitter();
+  @Output()
+  hintBoardClicked = new EventEmitter();
 
   ngOnInit() {
     $(window).resize(() => this.resizeRectangleButtonGroup());
@@ -34,7 +46,7 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
     if (this.boardSize) {
       const containerWidth = $(this._rectangleButtonGroupElementRef.nativeElement).width();
       if (containerWidth) {
-        const fontSizeInRem = Math.max(0.5, (containerWidth * 0.0053 - 0.1265));
+        const fontSizeInRem = Math.max(0.5, containerWidth * 0.0053 - 0.1265);
         const paddingLeftRightInRem = fontSizeInRem / 2;
 
         const buttons = $(this._rectangleButtonGroupElementRef.nativeElement).find('.btn');
@@ -85,7 +97,8 @@ export class ButtonBarComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  @HostListener('window:keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
     if (this.isEnabled && this.areKeysEnabled && this.boardSize) {
       if (event.key === 'Delete' || event.key === 'Del' || event.key === 'Backspace') {
         event.preventDefault();

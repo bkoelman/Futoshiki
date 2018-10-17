@@ -5,6 +5,8 @@ import { Component, Input } from '@angular/core';
   templateUrl: './spacer-cell.component.html'
 })
 export class SpacerCellComponent {
-  @Input() boardSize!: number;
-  @Input() showRuler!: boolean;
+  @Input()
+  boardSize!: number;
+  @Input()
+  showRuler!: boolean;
 }

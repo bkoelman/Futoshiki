@@ -9,8 +9,7 @@ describe('OperatorCellComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [OperatorCellComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

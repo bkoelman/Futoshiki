@@ -9,8 +9,7 @@ describe('SpacerCellComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SpacerCellComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

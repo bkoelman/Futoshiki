@@ -5,7 +5,10 @@ import { Component, Input } from '@angular/core';
   templateUrl: './ruler-cell.component.html'
 })
 export class RulerCellComponent {
-  @Input() boardSize!: number;
-  @Input() label!: string;
-  @Input() isVertical!: boolean;
+  @Input()
+  boardSize!: number;
+  @Input()
+  label!: string;
+  @Input()
+  isVertical!: boolean;
 }

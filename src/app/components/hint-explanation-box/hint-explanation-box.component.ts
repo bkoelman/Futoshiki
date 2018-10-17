@@ -5,7 +5,8 @@ import { Component, Input } from '@angular/core';
   templateUrl: './hint-explanation-box.component.html'
 })
 export class HintExplanationBoxComponent {
-  @Input() isEnabled!: boolean;
+  @Input()
+  isEnabled!: boolean;
 
   isDismissed = false;
   explanationText = '';

@@ -3,43 +3,43 @@ import { Coordinate } from '../models/coordinate';
 import { Board } from '../models/board';
 
 export class SetCandidatesStrategy extends SolverStrategy {
-    constructor(board: Board) {
-        super('Set Candidates', board);
+  constructor(board: Board) {
+    super('Set Candidates', board);
+  }
+
+  runAtBoard(): boolean {
+    let changeCount = 0;
+
+    for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
+      if (this.innerRunAtCoordinate(coordinate)) {
+        changeCount++;
+      }
     }
 
-    runAtBoard(): boolean {
-        let changeCount = 0;
-
-        for (const coordinate of Coordinate.iterateBoard(this.board.size)) {
-            if (this.innerRunAtCoordinate(coordinate)) {
-                changeCount++;
-            }
-        }
-
-        if (changeCount > 0) {
-            this.reportChange(`Placed candidates in ${changeCount} empty cells.`);
-        }
-
-        return changeCount > 0;
+    if (changeCount > 0) {
+      this.reportChange(`Placed candidates in ${changeCount} empty cells.`);
     }
 
-    runAtCoordinate(coordinate: Coordinate): boolean {
-        const hasChanges = this.innerRunAtCoordinate(coordinate);
+    return changeCount > 0;
+  }
 
-        if (hasChanges) {
-            this.reportChange(`Placed candidates in empty cell ${coordinate}.`);
-        }
+  runAtCoordinate(coordinate: Coordinate): boolean {
+    const hasChanges = this.innerRunAtCoordinate(coordinate);
 
-        return hasChanges;
+    if (hasChanges) {
+      this.reportChange(`Placed candidates in empty cell ${coordinate}.`);
     }
 
-    private innerRunAtCoordinate(coordinate: Coordinate): boolean {
-        const cell = this.board.getCell(coordinate);
-        if (cell && cell.isEmpty) {
-            cell.setCandidates(this.allCellValues);
-            return true;
-        }
+    return hasChanges;
+  }
 
-        return false;
+  private innerRunAtCoordinate(coordinate: Coordinate): boolean {
+    const cell = this.board.getCell(coordinate);
+    if (cell && cell.isEmpty) {
+      cell.setCandidates(this.allCellValues);
+      return true;
     }
+
+    return false;
+  }
 }

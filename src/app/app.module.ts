@@ -43,18 +43,8 @@ import { RulerCellComponent } from './components/ruler-cell/ruler-cell.component
     HintExplanationBoxComponent,
     RulerCellComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule
-  ],
-  providers: [
-    HttpRequestController,
-    HttpCacheService,
-    PuzzleDataService,
-    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
-  ],
+  imports: [BrowserModule, HttpClientModule, FormsModule],
+  providers: [HttpRequestController, HttpCacheService, PuzzleDataService, { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

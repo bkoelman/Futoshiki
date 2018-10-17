@@ -24,10 +24,7 @@ import { RulerCellComponent } from '../ruler-cell/ruler-cell.component';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        FormsModule
-      ],
+      imports: [HttpClientModule, FormsModule],
       declarations: [
         AppComponent,
         GameComponent,
@@ -46,10 +43,7 @@ describe('AppComponent', () => {
         HintExplanationBoxComponent,
         RulerCellComponent
       ],
-      providers: [
-        HttpRequestController,
-        PuzzleDataService
-      ]
+      providers: [HttpRequestController, PuzzleDataService]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

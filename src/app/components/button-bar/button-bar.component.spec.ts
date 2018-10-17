@@ -9,12 +9,8 @@ describe('ButtonBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ButtonBarComponent,
-        RepeatPipe
-      ]
-    })
-      .compileComponents();
+      declarations: [ButtonBarComponent, RepeatPipe]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

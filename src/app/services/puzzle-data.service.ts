@@ -9,21 +9,18 @@ import { PuzzleTextParser } from '../puzzle-text-parser';
 
 @Injectable()
 export class PuzzleDataService {
-  constructor(private _httpClient: HttpClient) {
-  }
+  constructor(private _httpClient: HttpClient) {}
 
   getPuzzle(request: PuzzleInfo): Observable<PuzzleData> {
     const requestUrl = this.formatPuzzleUrl(request);
     console.log('Loading puzzle from URL: ' + requestUrl);
 
-    return this._httpClient.get(requestUrl, { responseType: 'text' })
-      .pipe(
-        map(responseText => {
-          return PuzzleTextParser.parseText(responseText, request);
-        })
-      )
-      // .pipe(delay(5000)) // Uncomment to simulate slow network
-      ;
+    return this._httpClient.get(requestUrl, { responseType: 'text' }).pipe(
+      map(responseText => {
+        return PuzzleTextParser.parseText(responseText, request);
+      })
+    );
+    // .pipe(delay(5000)) // Uncomment to simulate slow network
   }
 
   private formatPuzzleUrl(request: PuzzleInfo): string {

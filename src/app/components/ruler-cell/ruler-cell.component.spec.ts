@@ -8,8 +8,7 @@ describe('RulerCellComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [RulerCellComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

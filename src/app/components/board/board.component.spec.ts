@@ -13,16 +13,8 @@ describe('BoardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        BoardComponent,
-        DigitCellComponent,
-        OperatorCellComponent,
-        SpacerCellComponent,
-        RepeatPipe,
-        RulerCellComponent
-      ]
-    })
-      .compileComponents();
+      declarations: [BoardComponent, DigitCellComponent, OperatorCellComponent, SpacerCellComponent, RepeatPipe, RulerCellComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

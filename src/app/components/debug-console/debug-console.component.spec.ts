@@ -11,8 +11,7 @@ describe('DebugConsoleComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [DebugConsoleComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
