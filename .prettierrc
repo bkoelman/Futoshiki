@@ -6,8 +6,5 @@
   "bracketSpacing": true,
   "semi": true,
   "useTabs": false,
-  "arrowParens": "avoid",
-  "eslintIntegration": true,
-  "tslintIntegration": true,
-  "stylelintIntegration": true
+  "arrowParens": "avoid"
 }
