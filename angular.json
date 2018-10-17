@@ -27,18 +27,8 @@
               { "glob": "site.webmanifest", "input": "src/", "output": "/" },
               { "glob": "game-rules.html", "input": "", "output": "/" }
             ],
-            "styles": [
-              "src/styles.css",
-              "src/sass/styles.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/animate.css/animate.min.css"
-            ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "src/jquery.animatecss.js",
-              "src/jquery.fittext.js"
-            ]
+            "styles": ["src/styles.css", "src/sass/styles.scss", "node_modules/animate.css/animate.min.css"],
+            "scripts": ["src/jquery.animatecss.js"]
           },
           "configurations": {
             "production": {
