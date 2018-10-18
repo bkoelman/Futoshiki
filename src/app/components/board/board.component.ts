@@ -74,27 +74,13 @@ export class BoardComponent implements Board {
     return String.fromCharCode(Coordinate.charCodeA + rowIndex);
   }
 
-  reset() {
-    this._cells.forEach(cell => cell.clear());
-    this.clearSelection();
-    this.canSelect = true;
-  }
-
-  clearSelection() {
-    this._cells.forEach(cell => (cell.isSelected = false));
+  getCell(coordinate: Coordinate): DigitCellComponent | undefined {
+    const arrayIndex = coordinate.toIndex();
+    return this._cells.find((item, index) => index === arrayIndex);
   }
 
   getSelectedCell(): DigitCellComponent | undefined {
     return this._cells.find(cell => cell.isSelected);
-  }
-
-  hasIncompleteCells() {
-    return this._cells.some(cell => cell.value === undefined);
-  }
-
-  getCell(coordinate: Coordinate): DigitCellComponent | undefined {
-    const arrayIndex = coordinate.toIndex();
-    return this._cells.find((item, index) => index === arrayIndex);
   }
 
   getCoordinate(cell: DigitCellComponent): Coordinate | undefined {
@@ -142,12 +128,26 @@ export class BoardComponent implements Board {
     }
   }
 
+  hasIncompleteCells() {
+    return this._cells.some(cell => cell.value === undefined);
+  }
+
   getAnswerDigits() {
     let answerDigits = '';
     this._cells.forEach(cell => {
       answerDigits += cell.value || '.';
     });
     return answerDigits;
+  }
+
+  reset() {
+    this._cells.forEach(cell => cell.clear());
+    this.clearSelection();
+    this.canSelect = true;
+  }
+
+  clearSelection() {
+    this._cells.forEach(cell => (cell.isSelected = false));
   }
 
   loadGame(saveState: GameSaveState) {

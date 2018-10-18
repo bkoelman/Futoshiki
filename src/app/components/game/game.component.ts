@@ -96,6 +96,24 @@ export class GameComponent implements OnInit {
     this.settings = this.getSettingsFromCookie();
   }
 
+  private getSettingsFromCookie(): GameSettings {
+    const settingsText = Cookies.get('settings');
+    if (settingsText) {
+      Logger.write(LogCategory.Cookies, 'Settings cookie detected.');
+
+      const settings = this._settingsAdapter.parseText(settingsText);
+      if (settings) {
+        return settings;
+      }
+    }
+
+    return {
+      autoCleanCandidates: true,
+      notifyOnWrongMoves: false,
+      showHintExplanations: false
+    };
+  }
+
   ngOnInit() {
     this._undoTracker = new UndoTracker(this._boardComponent);
     this._autoCleaner = new CandidateCleaner(this._boardComponent);
@@ -151,24 +169,6 @@ export class GameComponent implements OnInit {
     };
   }
 
-  private getSettingsFromCookie(): GameSettings {
-    const settingsText = Cookies.get('settings');
-    if (settingsText) {
-      Logger.write(LogCategory.Cookies, 'Settings cookie detected.');
-
-      const settings = this._settingsAdapter.parseText(settingsText);
-      if (settings) {
-        return settings;
-      }
-    }
-
-    return {
-      autoCleanCandidates: true,
-      notifyOnWrongMoves: false,
-      showHintExplanations: false
-    };
-  }
-
   private retrievePuzzle(request: PuzzleInfo, downloadCompletedAsyncCallback?: () => void) {
     this.hasRetrieveError = false;
     this.puzzleDownloadController.startRequest(
@@ -198,22 +198,6 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private rebindAutoResizeElements() {
-    $(window).off('resize.fittext orientationchange.fittext');
-    $(window).off('resize.fitbuttons orientationchange.fitbuttons');
-
-    $('.auto-resize-text').fitText(0.15);
-    $('.auto-resize-large-text').fitText(0.5);
-    $('.auto-resize-small-text').fitText(0.125);
-
-    $('.auto-resize-buttons').fitButtons('.btn');
-  }
-
-  private onPuzzleDownloadFailed(err: any) {
-    this.hasRetrieveError = true;
-    console.error(err);
-  }
-
   restart(updateGameSaveState: boolean) {
     this.playState = GameCompletionState.Playing;
 
@@ -230,46 +214,119 @@ export class GameComponent implements OnInit {
     }
   }
 
-  startRandomGame() {
-    const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
-    this._changePuzzleModalComponent.selectRandomGame(puzzleInfo);
-  }
-
-  showChangePuzzleModal() {
-    const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
-    this._changePuzzleModalComponent.setDefaults(puzzleInfo);
-  }
-
-  showSettings() {
-    this._settingsModalComponent.setDefaults(this.settings);
-  }
-
-  onUndoClicked() {
-    if (this._undoTracker.undo()) {
-      this._boardComponent.clearSelection();
-      this.afterBoardChanged();
-    }
-  }
-
-  onClearClicked() {
-    const cell = this._boardComponent.getSelectedCell();
-    if (cell && !cell.isEmpty) {
-      this.captureCellChanges(() => {
-        cell.clear();
+  private storeGameSaveStateInCookie() {
+    if (this.puzzle) {
+      const isPlaying = this.playState === GameCompletionState.Playing;
+      const playTimeInSeconds = isPlaying ? this.getPlayTimeInSeconds() : 0;
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._boardComponent, !isPlaying);
+      Cookies.set('save', gameStateText, {
+        expires: 30
       });
+
+      Logger.write(LogCategory.Cookies, 'Save cookie updated.');
+
+      if (this.inDebugMode) {
+        this._debugConsoleComponent.updateSaveGameText(gameStateText);
+      }
     }
   }
 
-  private captureCellChanges(action: () => void) {
-    if (this._undoTracker.captureUndoFrame(action)) {
-      this.afterBoardChanged();
-    }
+  private getPlayTimeInSeconds() {
+    return this._earlierPlayTimeInSeconds + TimeMe.getTimeOnPageInSeconds(GameComponent._timeMePageName);
   }
 
   private afterBoardChanged() {
     this.verifyIsBoardSolved();
     this.storeGameSaveStateInCookie();
     setTimeout(() => this.rebindAutoResizeElements());
+  }
+
+  private verifyIsBoardSolved() {
+    if (this.puzzle) {
+      const isBoardCompleted = !this._boardComponent.hasIncompleteCells();
+      if (isBoardCompleted) {
+        const boardAnswerDigits = this._boardComponent.getAnswerDigits();
+        if (boardAnswerDigits.length > 0) {
+          if (this.puzzle.answerDigits === boardAnswerDigits) {
+            this.playState = GameCompletionState.Won;
+            this._boardComponent.canSelect = false;
+
+            const finishTimeInSeconds = this.getPlayTimeInSeconds();
+            this._winModalComponent.setFinishTime(finishTimeInSeconds);
+            $('#winModal').modal('show');
+          } else {
+            this.playState = GameCompletionState.Lost;
+          }
+
+          return;
+        }
+      }
+    }
+
+    this.playState = GameCompletionState.Playing;
+  }
+
+  private rebindAutoResizeElements() {
+    $(window).off('resize.fittext orientationchange.fittext');
+    $(window).off('resize.fitbuttons orientationchange.fitbuttons');
+
+    $('.auto-resize-text').fitText(0.15);
+    $('.auto-resize-large-text').fitText(0.5);
+    $('.auto-resize-small-text').fitText(0.125);
+
+    $('.auto-resize-buttons').fitButtons('.btn');
+  }
+
+  private onPuzzleDownloadFailed(err: any) {
+    this.hasRetrieveError = true;
+    console.error(err);
+  }
+
+  onRestartClicked() {
+    this.restart(true);
+  }
+
+  onNewGameClicked() {
+    const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
+    this._changePuzzleModalComponent.selectRandomGame(puzzleInfo);
+  }
+
+  onChangePuzzleClicked() {
+    const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
+    this._changePuzzleModalComponent.setDefaults(puzzleInfo);
+  }
+
+  onSettingsClicked() {
+    this._settingsModalComponent.setDefaults(this.settings);
+  }
+
+  onMenuBarIsOpenChanged(isOpened: boolean) {
+    this._isMenuOpen = isOpened;
+  }
+
+  onPuzzleChanged(info: PuzzleInfo) {
+    this.puzzle = undefined;
+    this.retrievePuzzle(info);
+  }
+
+  onSettingsChanged(settings: GameSettings) {
+    this.settings = settings;
+    this.storeSettingsInCookie();
+  }
+
+  private storeSettingsInCookie() {
+    const gameStateText = this._settingsAdapter.toText(this.settings);
+    Cookies.set('settings', gameStateText, {
+      expires: 30
+    });
+
+    Logger.write(LogCategory.Cookies, 'Settings cookie updated.');
+  }
+
+  onBoardContentChanged(event: CellSnapshot) {
+    if (this.canAcceptInput) {
+      this._undoTracker.registerCellChange(event);
+    }
   }
 
   onDigitClicked(data: { digit: number; isCandidate: boolean }) {
@@ -300,6 +357,12 @@ export class GameComponent implements OnInit {
         }
       }
     });
+  }
+
+  private captureCellChanges(action: () => void) {
+    if (this._undoTracker.captureUndoFrame(action)) {
+      this.afterBoardChanged();
+    }
   }
 
   private verifyMoveAllowed(cell: DigitCellComponent, digit: number, isCandidate: boolean): boolean {
@@ -352,39 +415,13 @@ export class GameComponent implements OnInit {
     cell.restoreContentSnapshot(snapshot);
   }
 
-  private verifyIsBoardSolved() {
-    if (this.puzzle) {
-      const isBoardCompleted = !this._boardComponent.hasIncompleteCells();
-      if (isBoardCompleted) {
-        const boardAnswerDigits = this._boardComponent.getAnswerDigits();
-        if (boardAnswerDigits.length > 0) {
-          if (this.puzzle.answerDigits === boardAnswerDigits) {
-            this.playState = GameCompletionState.Won;
-            this._boardComponent.canSelect = false;
-
-            const finishTimeInSeconds = this.getPlayTimeInSeconds();
-            this._winModalComponent.setFinishTime(finishTimeInSeconds);
-            $('#winModal').modal('show');
-          } else {
-            this.playState = GameCompletionState.Lost;
-          }
-
-          return;
-        }
-      }
+  onClearClicked() {
+    const cell = this._boardComponent.getSelectedCell();
+    if (cell && !cell.isEmpty) {
+      this.captureCellChanges(() => {
+        cell.clear();
+      });
     }
-
-    this.playState = GameCompletionState.Playing;
-  }
-
-  private getPlayTimeInSeconds() {
-    return this._earlierPlayTimeInSeconds + TimeMe.getTimeOnPageInSeconds(GameComponent._timeMePageName);
-  }
-
-  onPromoteClicked() {
-    this.captureCellChanges(() => {
-      this._candidatePromoter.promoteSingleCandidates(this.settings.autoCleanCandidates);
-    });
   }
 
   onHintCellClicked() {
@@ -401,12 +438,6 @@ export class GameComponent implements OnInit {
     });
   }
 
-  onHintBoardClicked() {
-    this.captureCellChanges(() => {
-      this.trySolveStep(() => this._hintProvider.runAtBoard());
-    });
-  }
-
   private trySolveStep(step: () => void) {
     try {
       step();
@@ -417,49 +448,26 @@ export class GameComponent implements OnInit {
     }
   }
 
-  onPuzzleSelectionChanged(info: PuzzleInfo) {
-    this.puzzle = undefined;
-    this.retrievePuzzle(info);
-  }
-
-  onSettingsChanged(settings: GameSettings) {
-    this.settings = settings;
-    this.storeSettingsInCookie();
-  }
-
-  onBoardContentChanged(event: CellSnapshot) {
-    if (this.canAcceptInput) {
-      this._undoTracker.registerCellChange(event);
+  onUndoClicked() {
+    if (this._undoTracker.undo()) {
+      this._boardComponent.clearSelection();
+      this.afterBoardChanged();
     }
   }
 
-  private storeGameSaveStateInCookie() {
-    if (this.puzzle) {
-      const isPlaying = this.playState === GameCompletionState.Playing;
-      const playTimeInSeconds = isPlaying ? this.getPlayTimeInSeconds() : 0;
-      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._boardComponent, !isPlaying);
-      Cookies.set('save', gameStateText, {
-        expires: 30
-      });
-
-      Logger.write(LogCategory.Cookies, 'Save cookie updated.');
-
-      if (this.inDebugMode) {
-        this._debugConsoleComponent.updateSaveGameText(gameStateText);
-      }
-    }
-  }
-
-  private storeSettingsInCookie() {
-    const gameStateText = this._settingsAdapter.toText(this.settings);
-    Cookies.set('settings', gameStateText, {
-      expires: 30
+  onPromoteClicked() {
+    this.captureCellChanges(() => {
+      this._candidatePromoter.promoteSingleCandidates(this.settings.autoCleanCandidates);
     });
-
-    Logger.write(LogCategory.Cookies, 'Settings cookie updated.');
   }
 
-  loadGame(gameStateText: string) {
+  onHintBoardClicked() {
+    this.captureCellChanges(() => {
+      this.trySolveStep(() => this._hintProvider.runAtBoard());
+    });
+  }
+
+  onLoadClicked(gameStateText: string) {
     if (this.puzzle) {
       const saveState = this._saveGameAdapter.parseText(gameStateText);
       if (saveState) {
@@ -477,17 +485,13 @@ export class GameComponent implements OnInit {
     }
   }
 
-  dumpBoard() {
+  onDumpBoardClicked() {
     const converter = new BoardTextConverter();
     const text = converter.boardToText(this._boardComponent);
     console.log(text);
   }
 
-  debugIsTypingTextChanged(isTypingText: boolean) {
+  onDebugIsTypingTextChanged(isTypingText: boolean) {
     this.isTypingText = isTypingText;
-  }
-
-  menuBarOpenChanged(isOpened: boolean) {
-    this._isMenuOpen = isOpened;
   }
 }

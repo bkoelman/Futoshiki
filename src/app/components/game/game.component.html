@@ -1,12 +1,12 @@
-<app-menu-bar [restartEnabled]="puzzle !== undefined && canAcceptInput" (restartClicked)="restart(true)"
-  [newGameEnabled]="canAcceptInput || hasRetrieveError" (newGameClicked)="startRandomGame()" [changePuzzleEnabled]="canAcceptInput || hasRetrieveError"
-  (changePuzzleClicked)="showChangePuzzleModal()" [settingsEnabled]="canAcceptInput || hasRetrieveError"
-  (settingsClicked)="showSettings()" (isOpenChanged)="menuBarOpenChanged($event)"></app-menu-bar>
+<app-menu-bar [restartEnabled]="puzzle !== undefined && canAcceptInput" (restartClicked)="onRestartClicked()"
+  [newGameEnabled]="canAcceptInput || hasRetrieveError" (newGameClicked)="onNewGameClicked()" [changePuzzleEnabled]="canAcceptInput || hasRetrieveError"
+  (changePuzzleClicked)="onChangePuzzleClicked()" [settingsEnabled]="canAcceptInput || hasRetrieveError"
+  (settingsClicked)="onSettingsClicked()" (isOpenChanged)="onMenuBarIsOpenChanged($event)"></app-menu-bar>
 
 <div class="container game-container">
-  <app-change-puzzle (puzzleChanged)="onPuzzleSelectionChanged($event)"></app-change-puzzle>
+  <app-change-puzzle (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
   <app-settings (settingsChanged)="onSettingsChanged($event)"></app-settings>
-  <app-win-modal (newGameClicked)="startRandomGame()" (restartClicked)="restart(true)" (changePuzzleClicked)="showChangePuzzleModal()"></app-win-modal>
+  <app-win-modal (newGameClicked)="onNewGameClicked()" (restartClicked)="onRestartClicked()" (changePuzzleClicked)="onChangePuzzleClicked()"></app-win-modal>
   <app-about-modal></app-about-modal>
 
   <div *ngIf="puzzle === undefined">
@@ -30,6 +30,6 @@
 
   <app-hint-explanation-box [isEnabled]="puzzle !== undefined && settings.showHintExplanations"></app-hint-explanation-box>
 
-  <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="loadGame($event)"
-    (dumpBoardClicked)="dumpBoard()" (isTypingTextChanged)="debugIsTypingTextChanged($event)"></app-debug-console>
+  <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="onLoadClicked($event)"
+    (dumpBoardClicked)="onDumpBoardClicked()" (isTypingTextChanged)="onDebugIsTypingTextChanged($event)"></app-debug-console>
 </div>
