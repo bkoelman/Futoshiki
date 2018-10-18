@@ -31,17 +31,15 @@ import { WinModalComponent } from '../win-modal/win-modal.component';
 import { Logger } from 'src/app/logger';
 import { LogCategory } from 'src/app/models/log-category.enum';
 import { environment } from 'src/environments/environment';
+import { PlayTimeTracker } from 'src/app/play-time-tracker';
 
 declare var $: any;
-declare var TimeMe: any;
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html'
 })
 export class GameComponent implements OnInit {
-  private static readonly _timeMePageName = 'Futoshiki';
-
   @ViewChild(BoardComponent)
   private _board!: BoardComponent;
   @ViewChild(ChangePuzzleModalComponent)
@@ -64,9 +62,9 @@ export class GameComponent implements OnInit {
   private _hintProvider!: HintProvider;
   private _saveGameAdapter = new SaveGameAdapter();
   private _settingsAdapter = new SettingsAdapter();
+  private _playTimeTracker: PlayTimeTracker;
   private _isAnimating = false;
   private _isMenuOpen = false;
-  private _earlierPlayTimeInSeconds = 0;
 
   GameCompletionStateAlias = GameCompletionState;
 
@@ -95,6 +93,7 @@ export class GameComponent implements OnInit {
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
     this.settings = this.getSettingsFromCookie();
+    this._playTimeTracker = new PlayTimeTracker(() => this.storeGameSaveStateInCookie());
   }
 
   private getSettingsFromCookie(): GameSettings {
@@ -122,29 +121,12 @@ export class GameComponent implements OnInit {
     this._moveChecker = new MoveChecker(this._board);
     this._hintProvider = new HintProvider(this._board);
 
-    this.initializePlayTime();
-
     this.inDebugMode = !environment.production && location.search.indexOf('debug') > -1;
     const saveState = this.getGameSaveStateFromCookie();
 
     this.retrievePuzzle(saveState.info, () => {
       this._board.loadGame(saveState);
-      this._earlierPlayTimeInSeconds = saveState.playTimeInSeconds;
-    });
-  }
-
-  private initializePlayTime() {
-    TimeMe.initialize({
-      idleTimeoutInSeconds: 5 * 60
-    });
-
-    TimeMe.callWhenUserLeaves(() => {
-      TimeMe.stopTimer(GameComponent._timeMePageName);
-      this.storeGameSaveStateInCookie();
-    });
-
-    TimeMe.callWhenUserReturns(function() {
-      TimeMe.startTimer(GameComponent._timeMePageName);
+      this._playTimeTracker.setEarlierPlayTime(saveState.playTimeInSeconds);
     });
   }
 
@@ -205,10 +187,7 @@ export class GameComponent implements OnInit {
     this._undoTracker.reset();
     this._board.reset();
     this._hintExplanationBox.hide();
-
-    this._earlierPlayTimeInSeconds = 0;
-    TimeMe.resetRecordedPageTime(GameComponent._timeMePageName);
-    TimeMe.startTimer(GameComponent._timeMePageName);
+    this._playTimeTracker.reset();
 
     if (updateGameSaveState) {
       this.storeGameSaveStateInCookie();
@@ -218,7 +197,7 @@ export class GameComponent implements OnInit {
   private storeGameSaveStateInCookie() {
     if (this.puzzle) {
       const isPlaying = this.playState === GameCompletionState.Playing;
-      const playTimeInSeconds = isPlaying ? this.getPlayTimeInSeconds() : 0;
+      const playTimeInSeconds = isPlaying ? this._playTimeTracker.getPlayTimeInSeconds() : 0;
       const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._board, !isPlaying);
       Cookies.set('save', gameStateText, {
         expires: 30
@@ -230,10 +209,6 @@ export class GameComponent implements OnInit {
         this._debugConsole.updateSaveGameText(gameStateText);
       }
     }
-  }
-
-  private getPlayTimeInSeconds() {
-    return this._earlierPlayTimeInSeconds + TimeMe.getTimeOnPageInSeconds(GameComponent._timeMePageName);
   }
 
   private afterBoardChanged() {
@@ -248,7 +223,7 @@ export class GameComponent implements OnInit {
       if (this.playState === GameCompletionState.Won) {
         this._board.canSelect = false;
 
-        const finishTimeInSeconds = this.getPlayTimeInSeconds();
+        const finishTimeInSeconds = this._playTimeTracker.getPlayTimeInSeconds();
         this._winModal.setFinishTime(finishTimeInSeconds);
         $('#winModal').modal('show');
       }

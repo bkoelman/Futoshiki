@@ -3,5 +3,6 @@ export enum LogCategory {
   Caching,
   Cookies,
   Solvers,
-  Capture
+  Capture,
+  PlayTime
 }

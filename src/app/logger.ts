@@ -3,7 +3,7 @@ import { environment } from '.././environments/environment';
 
 const activeLogCategories: LogCategory[] = [];
 if (!environment.production) {
-  activeLogCategories.push(LogCategory.Download, /* LogCategory.Caching, */ LogCategory.Cookies, /* LogCategory.Solvers, */ LogCategory.Capture);
+  activeLogCategories.push(LogCategory.Download, LogCategory.Cookies, LogCategory.Capture, LogCategory.PlayTime);
 }
 
 export class Logger {
