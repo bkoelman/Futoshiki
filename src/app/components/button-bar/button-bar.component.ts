@@ -26,10 +26,8 @@ export class ButtonBarComponent {
   @Output()
   hintBoardClicked = new EventEmitter();
 
-  onDigitButtonClicked(event: Event, isCandidate: boolean) {
+  onDigitButtonClicked(digit: number, isCandidate: boolean) {
     if (this.isEnabled) {
-      const button = <HTMLElement>event.target;
-      const digit = parseInt(button.innerText, 10);
       this.digitClicked.emit({
         digit: digit,
         isCandidate: isCandidate

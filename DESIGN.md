@@ -58,7 +58,7 @@
   - [x] reorder members in components
   - [x] split parsing and rendering of downloaded puzzle in BoardComponent
   - [x] extract undo tracking into separate class
-  - [ ] review components and extract non-UI logic into separate classes
+  - [x] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
   - [x] replace number arrays with read-only sets
 - [x] display elapsed time on solve

@@ -42,22 +42,22 @@ export class GameComponent implements OnInit {
   private static readonly _timeMePageName = 'Futoshiki';
 
   @ViewChild(BoardComponent)
-  private _boardComponent!: BoardComponent;
+  private _board!: BoardComponent;
   @ViewChild(ChangePuzzleModalComponent)
-  private _changePuzzleModalComponent!: ChangePuzzleModalComponent;
+  private _changePuzzleModal!: ChangePuzzleModalComponent;
   @ViewChild(SettingsModalComponent)
-  private _settingsModalComponent!: SettingsModalComponent;
+  private _settingsModal!: SettingsModalComponent;
   @ViewChild(AboutModalComponent)
-  private _aboutModalComponent!: AboutModalComponent;
+  private _aboutModal!: AboutModalComponent;
   @ViewChild(DebugConsoleComponent)
-  private _debugConsoleComponent!: DebugConsoleComponent;
+  private _debugConsole!: DebugConsoleComponent;
   @ViewChild(HintExplanationBoxComponent)
-  private _hintExplanationBoxComponent!: HintExplanationBoxComponent;
+  private _hintExplanationBox!: HintExplanationBoxComponent;
   @ViewChild(WinModalComponent)
-  private _winModalComponent!: WinModalComponent;
+  private _winModal!: WinModalComponent;
 
   private _undoTracker!: UndoTracker;
-  private _autoCleaner!: CandidateCleaner;
+  private _candidateCleaner!: CandidateCleaner;
   private _candidatePromoter!: CandidatePromoter;
   private _moveChecker!: MoveChecker;
   private _hintProvider!: HintProvider;
@@ -85,7 +85,7 @@ export class GameComponent implements OnInit {
   }
 
   private get isModalOpen() {
-    return this._changePuzzleModalComponent.isModalVisible || this._settingsModalComponent.isModalVisible || this._aboutModalComponent.isModalVisible;
+    return this._changePuzzleModal.isModalVisible || this._settingsModal.isModalVisible || this._aboutModal.isModalVisible;
   }
 
   get canUndo() {
@@ -115,11 +115,11 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._undoTracker = new UndoTracker(this._boardComponent);
-    this._autoCleaner = new CandidateCleaner(this._boardComponent);
-    this._candidatePromoter = new CandidatePromoter(this._autoCleaner, this._boardComponent);
-    this._moveChecker = new MoveChecker(this._boardComponent);
-    this._hintProvider = new HintProvider(this._boardComponent);
+    this._undoTracker = new UndoTracker(this._board);
+    this._candidateCleaner = new CandidateCleaner(this._board);
+    this._candidatePromoter = new CandidatePromoter(this._candidateCleaner, this._board);
+    this._moveChecker = new MoveChecker(this._board);
+    this._hintProvider = new HintProvider(this._board);
 
     this.initializePlayTime();
 
@@ -127,7 +127,7 @@ export class GameComponent implements OnInit {
     const saveState = this.getGameSaveStateFromCookie();
 
     this.retrievePuzzle(saveState.info, () => {
-      this._boardComponent.loadGame(saveState);
+      this._board.loadGame(saveState);
       this._earlierPlayTimeInSeconds = saveState.playTimeInSeconds;
     });
   }
@@ -181,7 +181,7 @@ export class GameComponent implements OnInit {
   }
 
   private onPuzzleLoaderVisibilityChanged(isVisible: boolean) {
-    this._changePuzzleModalComponent.isLoaderVisible = isVisible;
+    this._changePuzzleModal.isLoaderVisible = isVisible;
   }
 
   private onPuzzleDownloadSucceeded(data: PuzzleData, downloadCompletedAsyncCallback?: () => void) {
@@ -202,8 +202,8 @@ export class GameComponent implements OnInit {
     this.playState = GameCompletionState.Playing;
 
     this._undoTracker.reset();
-    this._boardComponent.reset();
-    this._hintExplanationBoxComponent.hide();
+    this._board.reset();
+    this._hintExplanationBox.hide();
 
     this._earlierPlayTimeInSeconds = 0;
     TimeMe.resetRecordedPageTime(GameComponent._timeMePageName);
@@ -218,7 +218,7 @@ export class GameComponent implements OnInit {
     if (this.puzzle) {
       const isPlaying = this.playState === GameCompletionState.Playing;
       const playTimeInSeconds = isPlaying ? this.getPlayTimeInSeconds() : 0;
-      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._boardComponent, !isPlaying);
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._board, !isPlaying);
       Cookies.set('save', gameStateText, {
         expires: 30
       });
@@ -226,7 +226,7 @@ export class GameComponent implements OnInit {
       Logger.write(LogCategory.Cookies, 'Save cookie updated.');
 
       if (this.inDebugMode) {
-        this._debugConsoleComponent.updateSaveGameText(gameStateText);
+        this._debugConsole.updateSaveGameText(gameStateText);
       }
     }
   }
@@ -243,27 +243,15 @@ export class GameComponent implements OnInit {
 
   private verifyIsBoardSolved() {
     if (this.puzzle) {
-      const isBoardCompleted = !this._boardComponent.hasIncompleteCells();
-      if (isBoardCompleted) {
-        const boardAnswerDigits = this._boardComponent.getAnswerDigits();
-        if (boardAnswerDigits.length > 0) {
-          if (this.puzzle.answerDigits === boardAnswerDigits) {
-            this.playState = GameCompletionState.Won;
-            this._boardComponent.canSelect = false;
+      this.playState = this._board.verifyIsBoardSolved(this.puzzle.answerDigits);
+      if (this.playState === GameCompletionState.Won) {
+        this._board.canSelect = false;
 
-            const finishTimeInSeconds = this.getPlayTimeInSeconds();
-            this._winModalComponent.setFinishTime(finishTimeInSeconds);
-            $('#winModal').modal('show');
-          } else {
-            this.playState = GameCompletionState.Lost;
-          }
-
-          return;
-        }
+        const finishTimeInSeconds = this.getPlayTimeInSeconds();
+        this._winModal.setFinishTime(finishTimeInSeconds);
+        $('#winModal').modal('show');
       }
     }
-
-    this.playState = GameCompletionState.Playing;
   }
 
   private rebindAutoResizeElements() {
@@ -288,16 +276,16 @@ export class GameComponent implements OnInit {
 
   onNewGameClicked() {
     const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
-    this._changePuzzleModalComponent.selectRandomGame(puzzleInfo);
+    this._changePuzzleModal.selectRandomGame(puzzleInfo);
   }
 
   onChangePuzzleClicked() {
     const puzzleInfo = this.puzzle ? this.puzzle.info : this.getGameSaveStateFromCookie().info;
-    this._changePuzzleModalComponent.setDefaults(puzzleInfo);
+    this._changePuzzleModal.setDefaults(puzzleInfo);
   }
 
   onSettingsClicked() {
-    this._settingsModalComponent.setDefaults(this.settings);
+    this._settingsModal.setDefaults(this.settings);
   }
 
   onMenuBarIsOpenChanged(isOpened: boolean) {
@@ -331,7 +319,7 @@ export class GameComponent implements OnInit {
 
   onDigitClicked(data: { digit: number; isCandidate: boolean }) {
     this.captureCellChanges(() => {
-      const cell = this._boardComponent.getSelectedCell();
+      const cell = this._board.getSelectedCell();
       if (cell) {
         if (data.isCandidate) {
           if (cell.containsCandidate(data.digit)) {
@@ -347,9 +335,9 @@ export class GameComponent implements OnInit {
               cell.setUserValue(data.digit);
 
               if (this.settings.autoCleanCandidates) {
-                const coordinate = this._boardComponent.getCoordinate(cell);
+                const coordinate = this._board.getCoordinate(cell);
                 if (coordinate) {
-                  this._autoCleaner.reduceCandidates(data.digit, coordinate);
+                  this._candidateCleaner.reduceCandidates(data.digit, coordinate);
                 }
               }
             }
@@ -366,7 +354,7 @@ export class GameComponent implements OnInit {
   }
 
   private verifyMoveAllowed(cell: DigitCellComponent, digit: number, isCandidate: boolean): boolean {
-    const coordinate = this._boardComponent.getCoordinate(cell);
+    const coordinate = this._board.getCoordinate(cell);
     if (coordinate) {
       const moveCheckResult = this.settings.notifyOnWrongMoves
         ? this._moveChecker.checkIsMoveAllowed(digit, coordinate)
@@ -395,14 +383,14 @@ export class GameComponent implements OnInit {
     setTimeout(() => this.rebindAutoResizeElements());
 
     for (const offendingCoordinate of result.offendingCells) {
-      const offendingCell = this._boardComponent.getCell(offendingCoordinate);
+      const offendingCell = this._board.getCell(offendingCoordinate);
       if (offendingCell) {
         offendingCell.flash(() => this.completeErrorForMove(cell, snapshot));
       }
     }
 
     for (const offendingOperator of result.offendingOperators) {
-      const operatorComponent = this._boardComponent.getOperatorComponent(coordinate, offendingOperator);
+      const operatorComponent = this._board.getOperatorComponent(coordinate, offendingOperator);
       if (operatorComponent) {
         operatorComponent.flash(() => this.completeErrorForMove(cell, snapshot));
       }
@@ -416,7 +404,7 @@ export class GameComponent implements OnInit {
   }
 
   onClearClicked() {
-    const cell = this._boardComponent.getSelectedCell();
+    const cell = this._board.getSelectedCell();
     if (cell && !cell.isEmpty) {
       this.captureCellChanges(() => {
         cell.clear();
@@ -426,14 +414,14 @@ export class GameComponent implements OnInit {
 
   onHintCellClicked() {
     this.captureCellChanges(() => {
-      const cell = this._boardComponent.getSelectedCell();
+      const cell = this._board.getSelectedCell();
       if (cell) {
-        const coordinate = this._boardComponent.getCoordinate(cell);
+        const coordinate = this._board.getCoordinate(cell);
         if (coordinate) {
           this.trySolveStep(() => this._hintProvider.runAtCoordinate(coordinate));
         }
       } else {
-        this._hintExplanationBoxComponent.hide();
+        this._hintExplanationBox.hide();
       }
     });
   }
@@ -441,16 +429,16 @@ export class GameComponent implements OnInit {
   private trySolveStep(step: () => void) {
     try {
       step();
-      this._hintExplanationBoxComponent.show(this._hintProvider.explanationText);
+      this._hintExplanationBox.show(this._hintProvider.explanationText);
     } catch (error) {
-      this._hintExplanationBoxComponent.show('Unsolvable board.');
+      this._hintExplanationBox.show('Unsolvable board.');
       throw error;
     }
   }
 
   onUndoClicked() {
     if (this._undoTracker.undo()) {
-      this._boardComponent.clearSelection();
+      this._board.clearSelection();
       this.afterBoardChanged();
     }
   }
@@ -473,12 +461,12 @@ export class GameComponent implements OnInit {
       if (saveState) {
         if (JSON.stringify(saveState.info) === JSON.stringify(this.puzzle.info)) {
           this.restart(false);
-          this._boardComponent.loadGame(saveState);
+          this._board.loadGame(saveState);
           this.afterBoardChanged();
         } else {
           this.puzzle = undefined;
           this.retrievePuzzle(saveState.info, () => {
-            this._boardComponent.loadGame(saveState);
+            this._board.loadGame(saveState);
           });
         }
       }
@@ -487,7 +475,7 @@ export class GameComponent implements OnInit {
 
   onDumpBoardClicked() {
     const converter = new BoardTextConverter();
-    const text = converter.boardToText(this._boardComponent);
+    const text = converter.boardToText(this._board);
     console.log(text);
   }
 

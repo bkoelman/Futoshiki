@@ -110,7 +110,7 @@ export class BoardComponent implements Board {
     return undefined;
   }
 
-  calculateOperatorIndex(coordinate: Coordinate, direction: MoveDirection) {
+  private calculateOperatorIndex(coordinate: Coordinate, direction: MoveDirection) {
     const cellIndex = coordinate.toIndex();
     const cellRowIndex = Math.floor(cellIndex / this.size);
     const cellColumnIndex = cellIndex % this.size;
@@ -128,16 +128,21 @@ export class BoardComponent implements Board {
     }
   }
 
-  hasIncompleteCells() {
-    return this._cells.some(cell => cell.value === undefined);
+  verifyIsBoardSolved(answerDigits: string): GameCompletionState {
+    const isBoardCompleted = this._cells.length > 0 && !this._cells.some(cell => cell.value === undefined);
+    if (isBoardCompleted) {
+      const puzzleDigits = this.getPuzzleDigits();
+      return puzzleDigits === answerDigits ? GameCompletionState.Won : GameCompletionState.Lost;
+    }
+    return GameCompletionState.Playing;
   }
 
-  getAnswerDigits() {
-    let answerDigits = '';
+  private getPuzzleDigits() {
+    let puzzleDigits = '';
     this._cells.forEach(cell => {
-      answerDigits += cell.value || '.';
+      puzzleDigits += cell.value || '.';
     });
-    return answerDigits;
+    return puzzleDigits;
   }
 
   reset() {

@@ -30,11 +30,11 @@ export class DebugConsoleComponent {
     this.dumpBoardClicked.emit();
   }
 
-  textGotFocus() {
+  onTextGotFocus() {
     this.isTypingTextChanged.emit(true);
   }
 
-  textLostFocus() {
+  onTextLostFocus() {
     this.isTypingTextChanged.emit(false);
   }
 }

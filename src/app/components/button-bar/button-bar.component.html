@@ -2,7 +2,7 @@
   <div class="row mt-3">
     <div class="col-12">
       <div class="bar-button-group">
-        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, false)" class="box-container rounded-button"
+        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked(number + 1, false)" class="box-container rounded-button"
           [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.green]="isEnabled"
           [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
@@ -30,7 +30,7 @@
     <div class="col-1 p-0"></div>
     <div class="col-10">
       <div class="bar-button-group mt-1">
-        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked($event, true)" class="box-container rounded-button"
+        <div *ngFor="let number of this.boardSize | repeat" (click)="onDigitButtonClicked(number + 1, true)" class="box-container rounded-button"
           [class.clickable]="isEnabled" [class.non-clickable]="!isEnabled" [class.inactive]="!isEnabled" [class.blue]="isEnabled"
           [ngClass]="'round-button-' + boardSize">
           <div class="container-content">
