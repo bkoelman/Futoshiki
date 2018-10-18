@@ -30,6 +30,7 @@ import { AboutModalComponent } from '../about-modal/about-modal.component';
 import { WinModalComponent } from '../win-modal/win-modal.component';
 import { Logger } from 'src/app/logger';
 import { LogCategory } from 'src/app/models/log-category.enum';
+import { environment } from 'src/environments/environment';
 
 declare var $: any;
 declare var TimeMe: any;
@@ -123,7 +124,7 @@ export class GameComponent implements OnInit {
 
     this.initializePlayTime();
 
-    this.inDebugMode = location.search.indexOf('debug') > -1;
+    this.inDebugMode = !environment.production && location.search.indexOf('debug') > -1;
     const saveState = this.getGameSaveStateFromCookie();
 
     this.retrievePuzzle(saveState.info, () => {
