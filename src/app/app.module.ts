@@ -23,6 +23,7 @@ import { SettingsModalComponent } from './components/settings-modal/settings-mod
 import { WinModalComponent } from './components/win-modal/win-modal.component';
 import { HintExplanationBoxComponent } from './components/hint-explanation-box/hint-explanation-box.component';
 import { RulerCellComponent } from './components/ruler-cell/ruler-cell.component';
+import { AboutModalComponent } from './components/about-modal/about-modal.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { RulerCellComponent } from './components/ruler-cell/ruler-cell.component
     SettingsModalComponent,
     WinModalComponent,
     HintExplanationBoxComponent,
-    RulerCellComponent
+    RulerCellComponent,
+    AboutModalComponent
   ],
   imports: [BrowserModule, HttpClientModule, FormsModule],
   providers: [HttpRequestController, HttpCacheService, PuzzleDataService, { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }],

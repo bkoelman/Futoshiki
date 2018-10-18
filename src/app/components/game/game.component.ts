@@ -26,6 +26,7 @@ import { CandidatePromoter } from 'src/app/candidate-promoter';
 import { HintProvider } from 'src/app/hint-provider';
 import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
 import { BoardTextConverter } from 'src/app/board-text-converter';
+import { AboutModalComponent } from '../about-modal/about-modal.component';
 
 declare var $: any;
 
@@ -40,6 +41,8 @@ export class GameComponent implements OnInit {
   private _changePuzzleModalComponent!: ChangePuzzleModalComponent;
   @ViewChild(SettingsModalComponent)
   private _settingsModalComponent!: SettingsModalComponent;
+  @ViewChild(AboutModalComponent)
+  private _aboutModalComponent!: AboutModalComponent;
   @ViewChild(DebugConsoleComponent)
   private _debugConsoleComponent!: DebugConsoleComponent;
   @ViewChild(HintExplanationBoxComponent)
@@ -73,7 +76,7 @@ export class GameComponent implements OnInit {
   }
 
   private get isModalOpen() {
-    return this._changePuzzleModalComponent.isModalVisible || this._settingsModalComponent.isModalVisible;
+    return this._changePuzzleModalComponent.isModalVisible || this._settingsModalComponent.isModalVisible || this._aboutModalComponent.isModalVisible;
   }
 
   get canUndo() {
