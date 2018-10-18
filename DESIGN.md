@@ -64,7 +64,7 @@
 - [x] display elapsed time on solve
 - [x] add menu option to show game rules and strategies
 - [x] add `About` menu option that shows build timestamp
-- [ ] cleanup README.md
+- [x] cleanup README.md
 - [x] consider to use "prettier" code-formatter
 - [ ] optimize performance
   - [ ] try table layout instead of divs for board
