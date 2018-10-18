@@ -62,12 +62,14 @@ export class MenuBarComponent implements OnInit {
     $('button.navbar-toggler').click();
   }
 
-  onMenuItemClicked(event: EventEmitter<{}>, condition: boolean) {
+  onMenuItemClicked(event: EventEmitter<{}> | undefined, condition: boolean) {
     if (condition) {
       this.doClickOnHamburgerIcon();
       this.onIsOpenChanged();
 
-      event.emit();
+      if (event) {
+        event.emit();
+      }
     }
 
     return false;
