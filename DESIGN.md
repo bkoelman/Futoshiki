@@ -55,6 +55,7 @@
   - [x] `?` button: Same as `Hint` button, but apply only for selected cell
 - [ ] code refactorings and cleanup
   - [ ] validate inputs in class members
+  - [ ] reorder members in components
   - [x] split parsing and rendering of downloaded puzzle in BoardComponent
   - [x] extract undo tracking into separate class
   - [ ] review components and extract non-UI logic into separate classes

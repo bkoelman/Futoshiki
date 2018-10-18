@@ -28,6 +28,8 @@ import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explan
 import { BoardTextConverter } from 'src/app/board-text-converter';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
 import { WinModalComponent } from '../win-modal/win-modal.component';
+import { Logger } from 'src/app/logger';
+import { LogCategory } from 'src/app/models/log-category.enum';
 
 declare var $: any;
 declare var TimeMe: any;
@@ -130,7 +132,7 @@ export class GameComponent implements OnInit {
   private getGameSaveStateFromCookie(): GameSaveState {
     const saveText = Cookies.get('save');
     if (saveText) {
-      console.log('Save cookie detected.');
+      Logger.write(LogCategory.Cookies, 'Save cookie detected.');
 
       const saveState = this._saveGameAdapter.parseText(saveText);
       if (saveState) {
@@ -152,7 +154,7 @@ export class GameComponent implements OnInit {
   private getSettingsFromCookie(): GameSettings {
     const settingsText = Cookies.get('settings');
     if (settingsText) {
-      console.log('Settings cookie detected.');
+      Logger.write(LogCategory.Cookies, 'Settings cookie detected.');
 
       const settings = this._settingsAdapter.parseText(settingsText);
       if (settings) {
@@ -440,7 +442,7 @@ export class GameComponent implements OnInit {
         expires: 30
       });
 
-      console.log('Save cookie updated.');
+      Logger.write(LogCategory.Cookies, 'Save cookie updated.');
 
       if (this.inDebugMode) {
         this._debugConsoleComponent.updateSaveGameText(gameStateText);
@@ -454,7 +456,7 @@ export class GameComponent implements OnInit {
       expires: 30
     });
 
-    console.log('Settings cookie updated.');
+    Logger.write(LogCategory.Cookies, 'Settings cookie updated.');
   }
 
   loadGame(gameStateText: string) {

@@ -4,6 +4,8 @@ import { CellSnapshot } from './models/cell-snapshot';
 import { ObjectFacilities } from './object-facilities';
 import { Coordinate } from './models/coordinate';
 import { BoardComponent } from './components/board/board.component';
+import { Logger } from './logger';
+import { LogCategory } from './models/log-category.enum';
 
 export class UndoTracker {
   private _isCapturingCellChanges = false;
@@ -41,7 +43,7 @@ export class UndoTracker {
     try {
       this.captureCellChanges(action);
     } catch (error) {
-      console.log('Auto-rollback after error: ' + error.message);
+      Logger.write(LogCategory.Capture, 'Auto-rollback after error: ' + error.message);
       this.rollbackCellChanges();
       return false;
     }

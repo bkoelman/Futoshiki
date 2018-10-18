@@ -6,6 +6,8 @@ import { PuzzleDifficulty } from '../models/puzzle-difficulty.enum';
 import { PuzzleInfo } from '../models/puzzle-info';
 import { PuzzleData } from '../models/puzzle-data';
 import { PuzzleTextParser } from '../puzzle-text-parser';
+import { Logger } from '../logger';
+import { LogCategory } from '../models/log-category.enum';
 
 @Injectable()
 export class PuzzleDataService {
@@ -13,7 +15,7 @@ export class PuzzleDataService {
 
   getPuzzle(request: PuzzleInfo): Observable<PuzzleData> {
     const requestUrl = this.formatPuzzleUrl(request);
-    console.log('Loading puzzle from URL: ' + requestUrl);
+    Logger.write(LogCategory.Download, 'Loading puzzle from URL: ' + requestUrl);
 
     return this._httpClient.get(requestUrl, { responseType: 'text' }).pipe(
       map(responseText => {

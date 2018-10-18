@@ -3,6 +3,8 @@ import { HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angula
 import { Observable, of } from 'rxjs';
 import { HttpCacheService } from './http-cache.service';
 import { tap } from 'rxjs/operators';
+import { Logger } from '../logger';
+import { LogCategory } from '../models/log-category.enum';
 
 @Injectable()
 export class CacheInterceptor implements HttpInterceptor {
@@ -15,14 +17,14 @@ export class CacheInterceptor implements HttpInterceptor {
 
     const response = this.cacheService.get(req.url);
     if (response) {
-      console.log('Returning response from cache.');
+      Logger.write(LogCategory.Caching, 'Returning response from cache.');
       return of(response);
     }
 
     return next.handle(req).pipe(
       tap(event => {
         if (event instanceof HttpResponse) {
-          console.log('Response added to cache.');
+          Logger.write(LogCategory.Caching, 'Response added to cache.');
           this.cacheService.put(req.url, event);
         }
       })

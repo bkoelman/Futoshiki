@@ -3,8 +3,8 @@ import { Board } from '../models/board';
 import { SetFacilities } from '../set-facilities';
 import { BoardSizeBasedCache } from '../board-size-based-cache';
 import { NamedSequence } from '../models/named-sequence';
-
-const EnableVerboseLog = false;
+import { Logger } from '../logger';
+import { LogCategory } from '../models/log-category.enum';
 
 export abstract class SolverStrategy {
   private readonly _allCellValuesCache = new BoardSizeBasedCache(this.board, () => SetFacilities.createNumberSet(this.board.size));
@@ -73,9 +73,7 @@ export abstract class SolverStrategy {
   }
 
   protected reportVerbose(message: string) {
-    if (EnableVerboseLog) {
-      console.log(`[${this.name}] ${message}`);
-    }
+    Logger.write(LogCategory.Solvers, `[${this.name}] ${message}`);
   }
 
   protected getSequencesForCoordinate(coordinate: Coordinate, skipSelf: boolean) {
