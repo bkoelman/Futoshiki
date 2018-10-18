@@ -117,6 +117,7 @@ export class GameComponent implements OnInit {
         boardSize: 4,
         id: 1
       },
+      playTimeInSeconds: 0,
       cellSnapshotMap: undefined
     };
   }
@@ -394,7 +395,8 @@ export class GameComponent implements OnInit {
 
   private storeGameSaveStateInCookie() {
     if (this.puzzle) {
-      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, this._boardComponent, this.playState !== GameCompletionState.Playing);
+      const isPlaying = this.playState === GameCompletionState.Playing;
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, 0, this._boardComponent, !isPlaying);
       Cookies.set('save', gameStateText, {
         expires: 30
       });

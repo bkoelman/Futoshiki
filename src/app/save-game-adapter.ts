@@ -9,7 +9,7 @@ export class SaveGameAdapter {
   private static readonly emptyCellText = '0000';
   private static readonly _allCellValuesCached = [9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-  toText(info: PuzzleInfo, board: BoardComponent, forceEmptyBoard: boolean): string {
+  toText(info: PuzzleInfo, playTimeInSeconds: number, board: BoardComponent, forceEmptyBoard: boolean): string {
     let cells = '';
     let seenValues = false;
 
@@ -29,6 +29,10 @@ export class SaveGameAdapter {
     }
 
     let result = `D${info.difficulty}${SaveGameAdapter._separator}S${info.boardSize}${SaveGameAdapter._separator}I${info.id}`;
+
+    if (playTimeInSeconds > 0) {
+      result += `${SaveGameAdapter._separator}T` + String('00000000' + playTimeInSeconds).slice(-8);
+    }
 
     if (seenValues) {
       result += `${SaveGameAdapter._separator}B` + cells;
@@ -62,6 +66,7 @@ export class SaveGameAdapter {
     let difficulty;
     let boardSize;
     let puzzleId;
+    let playTimeInSeconds;
     let cellSnapshotMap: { [index: number]: CellContentSnapshot } | undefined;
 
     for (const setting of text.split(SaveGameAdapter._separator)) {
@@ -74,7 +79,10 @@ export class SaveGameAdapter {
             boardSize = this.parseIntegerInRange(setting.substring(1), 4, 9);
             break;
           case 'I':
-            puzzleId = this.parseIntegerInRange(setting.substring(1), 1, 9999);
+            puzzleId = this.parseIntegerInRange(setting.substring(1), 1, 99999999);
+            break;
+          case 'T':
+            playTimeInSeconds = this.parseIntegerInRange(setting.substring(1), 1, 99999999);
             break;
           case 'B':
             cellSnapshotMap = this.parseSnapshotMap(setting);
@@ -93,6 +101,7 @@ export class SaveGameAdapter {
         boardSize: boardSize,
         id: puzzleId
       },
+      playTimeInSeconds: playTimeInSeconds || 0,
       cellSnapshotMap: cellSnapshotMap
     };
   }
