@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { ObjectFacilities } from 'src/app/object-facilities';
 
 @Component({
   selector: 'app-win-modal',
@@ -15,31 +16,22 @@ export class WinModalComponent {
   changePuzzleClicked = new EventEmitter();
 
   setFinishTime(seconds: number) {
-    let text = this.addTextComponent('', seconds / (24 * 60 * 60), 'day');
-    text = this.addTextComponent(text, (seconds / (60 * 60)) % 60, 'hour');
-    text = this.addTextComponent(text, (seconds / 60) % 60, 'minute');
-    text = this.addTextComponent(text, seconds % 60, 'second', true);
+    const textComponents = [
+      this.formatTimeComponent(seconds / (24 * 60 * 60), 'day'),
+      this.formatTimeComponent((seconds / (60 * 60)) % 60, 'hour'),
+      this.formatTimeComponent((seconds / 60) % 60, 'minute'),
+      this.formatTimeComponent(seconds % 60, 'second')
+    ];
 
-    this.finishTime = text;
+    this.finishTime = ObjectFacilities.formatArray(textComponents.filter(text => text.length > 0));
   }
 
-  private addTextComponent(target: string, value: number, name: string, isLast = false): string {
-    let result = target;
-
-    if (target.length > 0) {
-      if (isLast) {
-        result += ' and ';
-      } else {
-        result += ', ';
-      }
-    }
-
+  private formatTimeComponent(value: number, name: string): string {
     if (value >= 1.0) {
       const isPlural = value >= 2;
-      result += Math.floor(value) + ' ' + name + (isPlural ? 's' : '');
+      return Math.floor(value) + ' ' + name + (isPlural ? 's' : '');
     }
-
-    return result;
+    return '';
   }
 
   onNewGameClicked() {

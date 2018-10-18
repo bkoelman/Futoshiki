@@ -76,4 +76,16 @@ export class ObjectFacilities {
       action();
     }
   }
+
+  static formatArray<T>(array: T[]) {
+    if (array.length === 1) {
+      return array[0];
+    } else if (array.length === 2) {
+      return array.join(' and ');
+    } else if (array.length > 2) {
+      return array.slice(0, -1).join(', ') + ' and ' + array.slice(-1);
+    } else {
+      return '';
+    }
+  }
 }
