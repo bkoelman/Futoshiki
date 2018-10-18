@@ -28,6 +28,7 @@
     "jquery": "^3.3.1",
     "js-cookie": "^2.2.0",
     "rxjs": "^6.3.3",
+    "timeme.js": "^2.0.3",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

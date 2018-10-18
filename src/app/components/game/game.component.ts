@@ -27,14 +27,18 @@ import { HintProvider } from 'src/app/hint-provider';
 import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
 import { BoardTextConverter } from 'src/app/board-text-converter';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
+import { WinModalComponent } from '../win-modal/win-modal.component';
 
 declare var $: any;
+declare var TimeMe: any;
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html'
 })
 export class GameComponent implements OnInit {
+  private static readonly _timeMePageName = 'Futoshiki';
+
   @ViewChild(BoardComponent)
   private _boardComponent!: BoardComponent;
   @ViewChild(ChangePuzzleModalComponent)
@@ -47,6 +51,8 @@ export class GameComponent implements OnInit {
   private _debugConsoleComponent!: DebugConsoleComponent;
   @ViewChild(HintExplanationBoxComponent)
   private _hintExplanationBoxComponent!: HintExplanationBoxComponent;
+  @ViewChild(WinModalComponent)
+  private _winModalComponent!: WinModalComponent;
 
   private _undoTracker!: UndoTracker;
   private _autoCleaner!: CandidateCleaner;
@@ -57,6 +63,7 @@ export class GameComponent implements OnInit {
   private _settingsAdapter = new SettingsAdapter();
   private _isAnimating = false;
   private _isMenuOpen = false;
+  private _earlierPlayTimeInSeconds = 0;
 
   GameCompletionStateAlias = GameCompletionState;
 
@@ -94,10 +101,30 @@ export class GameComponent implements OnInit {
     this._moveChecker = new MoveChecker(this._boardComponent);
     this._hintProvider = new HintProvider(this._boardComponent);
 
-    this.inDebugMode = location.search.indexOf('debug') > -1;
+    this.initializePlayTime();
 
+    this.inDebugMode = location.search.indexOf('debug') > -1;
     const saveState = this.getGameSaveStateFromCookie();
-    this.retrievePuzzle(saveState.info, () => this._boardComponent.loadGame(saveState));
+
+    this.retrievePuzzle(saveState.info, () => {
+      this._boardComponent.loadGame(saveState);
+      this._earlierPlayTimeInSeconds = saveState.playTimeInSeconds;
+    });
+  }
+
+  private initializePlayTime() {
+    TimeMe.initialize({
+      idleTimeoutInSeconds: 5 * 60
+    });
+
+    TimeMe.callWhenUserLeaves(() => {
+      TimeMe.stopTimer(GameComponent._timeMePageName);
+      this.storeGameSaveStateInCookie();
+    });
+
+    TimeMe.callWhenUserReturns(function() {
+      TimeMe.startTimer(GameComponent._timeMePageName);
+    });
   }
 
   private getGameSaveStateFromCookie(): GameSaveState {
@@ -191,6 +218,10 @@ export class GameComponent implements OnInit {
     this._undoTracker.reset();
     this._boardComponent.reset();
     this._hintExplanationBoxComponent.hide();
+
+    this._earlierPlayTimeInSeconds = 0;
+    TimeMe.resetRecordedPageTime(GameComponent._timeMePageName);
+    TimeMe.startTimer(GameComponent._timeMePageName);
 
     if (updateGameSaveState) {
       this.storeGameSaveStateInCookie();
@@ -328,6 +359,9 @@ export class GameComponent implements OnInit {
           if (this.puzzle.answerDigits === boardAnswerDigits) {
             this.playState = GameCompletionState.Won;
             this._boardComponent.canSelect = false;
+
+            const finishTimeInSeconds = this.getPlayTimeInSeconds();
+            this._winModalComponent.setFinishTime(finishTimeInSeconds);
             $('#winModal').modal('show');
           } else {
             this.playState = GameCompletionState.Lost;
@@ -339,6 +373,10 @@ export class GameComponent implements OnInit {
     }
 
     this.playState = GameCompletionState.Playing;
+  }
+
+  private getPlayTimeInSeconds() {
+    return this._earlierPlayTimeInSeconds + TimeMe.getTimeOnPageInSeconds(GameComponent._timeMePageName);
   }
 
   onPromoteClicked() {
@@ -396,7 +434,8 @@ export class GameComponent implements OnInit {
   private storeGameSaveStateInCookie() {
     if (this.puzzle) {
       const isPlaying = this.playState === GameCompletionState.Playing;
-      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, 0, this._boardComponent, !isPlaying);
+      const playTimeInSeconds = isPlaying ? this.getPlayTimeInSeconds() : 0;
+      const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._boardComponent, !isPlaying);
       Cookies.set('save', gameStateText, {
         expires: 30
       });

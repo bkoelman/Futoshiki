@@ -4,7 +4,11 @@
 module.exports = function(config) {
   config.set({
     basePath: '',
-    files: ['../node_modules/jquery/dist/jquery.min.js', '../node_modules/bootstrap/dist/js/bootstrap.min.js', 'jquery.fittext.js'],
+    files: [
+      '../node_modules/jquery/dist/jquery.min.js',
+      '../node_modules/bootstrap/dist/js/bootstrap.min.js',
+      '../node_modules/timeme.js/timeme.min.js'
+    ],
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),

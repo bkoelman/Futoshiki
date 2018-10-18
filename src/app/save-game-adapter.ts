@@ -30,8 +30,9 @@ export class SaveGameAdapter {
 
     let result = `D${info.difficulty}${SaveGameAdapter._separator}S${info.boardSize}${SaveGameAdapter._separator}I${info.id}`;
 
-    if (playTimeInSeconds > 0) {
-      result += `${SaveGameAdapter._separator}T` + String('00000000' + playTimeInSeconds).slice(-8);
+    const playTimeInWholeSeconds = Math.floor(playTimeInSeconds);
+    if (playTimeInWholeSeconds > 0) {
+      result += `${SaveGameAdapter._separator}T` + String('00000000' + playTimeInWholeSeconds).slice(-8);
     }
 
     if (seenValues) {

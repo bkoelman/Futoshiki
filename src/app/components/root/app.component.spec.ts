@@ -20,6 +20,7 @@ import { SettingsModalComponent } from '../settings-modal/settings-modal.compone
 import { WinModalComponent } from '../win-modal/win-modal.component';
 import { HintExplanationBoxComponent } from '../hint-explanation-box/hint-explanation-box.component';
 import { RulerCellComponent } from '../ruler-cell/ruler-cell.component';
+import { AboutModalComponent } from '../about-modal/about-modal.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -41,7 +42,8 @@ describe('AppComponent', () => {
         SettingsModalComponent,
         WinModalComponent,
         HintExplanationBoxComponent,
-        RulerCellComponent
+        RulerCellComponent,
+        AboutModalComponent
       ],
       providers: [HttpRequestController, PuzzleDataService]
     }).compileComponents();

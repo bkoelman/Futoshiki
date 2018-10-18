@@ -28,7 +28,7 @@
               { "glob": "game-rules.html", "input": "", "output": "/" }
             ],
             "styles": ["src/styles.css", "src/sass/styles.scss", "node_modules/animate.css/animate.min.css"],
-            "scripts": ["src/jquery.animatecss.js", "src/jquery.fitbuttons.js"]
+            "scripts": ["src/jquery.animatecss.js", "src/jquery.fitbuttons.js", "node_modules/timeme.js/timeme.min.js"]
           },
           "configurations": {
             "production": {

@@ -60,7 +60,7 @@
   - [ ] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
   - [x] replace number arrays with read-only sets
-- [ ] option to track elapsed time
+- [x] display elapsed time on solve
 - [x] add menu option to show game rules and strategies
 - [x] add `About` menu option that shows build timestamp
 - [ ] cleanup README.md
