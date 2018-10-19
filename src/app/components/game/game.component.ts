@@ -62,7 +62,7 @@ export class GameComponent implements OnInit {
   private _hintProvider!: HintProvider;
   private _saveGameAdapter = new SaveGameAdapter();
   private _settingsAdapter = new SettingsAdapter();
-  private _playTimeTracker: PlayTimeTracker;
+  private _playTimeTracker!: PlayTimeTracker;
   private _isAnimating = false;
   private _isMenuOpen = false;
 
@@ -93,7 +93,6 @@ export class GameComponent implements OnInit {
 
   constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
     this.settings = this.getSettingsFromCookie();
-    this._playTimeTracker = new PlayTimeTracker(() => this.storeGameSaveStateInCookie());
   }
 
   private getSettingsFromCookie(): GameSettings {
@@ -120,6 +119,7 @@ export class GameComponent implements OnInit {
     this._candidatePromoter = new CandidatePromoter(this._candidateCleaner, this._board);
     this._moveChecker = new MoveChecker(this._board);
     this._hintProvider = new HintProvider(this._board);
+    this._playTimeTracker = new PlayTimeTracker(() => this.storeGameSaveStateInCookie());
 
     this.inDebugMode = !environment.production && location.search.indexOf('debug') > -1;
     const saveState = this.getGameSaveStateFromCookie();
