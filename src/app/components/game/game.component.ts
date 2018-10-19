@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import * as Cookies from 'js-cookie';
 import { BoardComponent } from '../board/board.component';
 import { PuzzleDataService } from '../../services/puzzle-data.service';
@@ -91,7 +91,7 @@ export class GameComponent implements OnInit {
     return this._undoTracker.canUndo();
   }
 
-  constructor(private puzzleDownloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService) {
+  constructor(private _downloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService, private _zone: NgZone) {
     this.settings = this.getSettingsFromCookie();
   }
 
@@ -119,7 +119,7 @@ export class GameComponent implements OnInit {
     this._candidatePromoter = new CandidatePromoter(this._candidateCleaner, this._board);
     this._moveChecker = new MoveChecker(this._board);
     this._hintProvider = new HintProvider(this._board);
-    this._playTimeTracker = new PlayTimeTracker(() => this.storeGameSaveStateInCookie());
+    this._playTimeTracker = new PlayTimeTracker(() => this.storeGameSaveStateInCookie(), this._zone);
 
     this.inDebugMode = !environment.production && location.search.indexOf('debug') > -1;
     const saveState = this.getGameSaveStateFromCookie();
@@ -154,7 +154,7 @@ export class GameComponent implements OnInit {
 
   private retrievePuzzle(request: PuzzleInfo, downloadCompletedAsyncCallback?: () => void) {
     this.hasRetrieveError = false;
-    this.puzzleDownloadController.startRequest(
+    this._downloadController.startRequest(
       request,
       () => this._dataService.getPuzzle(request),
       isVisible => this.onPuzzleLoaderVisibilityChanged(isVisible),

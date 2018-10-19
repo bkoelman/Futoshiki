@@ -1,5 +1,6 @@
 import { LogCategory } from './models/log-category.enum';
 import { Logger } from './logger';
+import { NgZone } from '@angular/core';
 
 declare var TimeMe: any;
 
@@ -8,18 +9,25 @@ export class PlayTimeTracker {
 
   private _earlierPlayTimeInSeconds = 0;
 
-  constructor(userLeavesCallback: Function) {
-    TimeMe.initialize({
-      idleTimeoutInSeconds: 5 * 60
+  constructor(userLeavesCallback: Function, zone: NgZone) {
+    zone.runOutsideAngular(() => {
+      // Starts continuous polling, which prevents the Angular zone from stabilizing, 
+      // which in turn prevents protractor from completion of e2e tests.
+      TimeMe.initialize({
+        idleTimeoutInSeconds: 5 * 60
+      });
     });
 
     TimeMe.callWhenUserLeaves(() => {
       Logger.write(LogCategory.PlayTime, 'User has left the browser.');
       TimeMe.stopTimer(PlayTimeTracker._timeMePageName);
-      userLeavesCallback();
+
+      zone.run(() => {
+        userLeavesCallback();
+      });
     });
 
-    TimeMe.callWhenUserReturns(function() {
+    TimeMe.callWhenUserReturns(() => {
       Logger.write(LogCategory.PlayTime, 'User has returned to the browser.');
       TimeMe.startTimer(PlayTimeTracker._timeMePageName);
     });
