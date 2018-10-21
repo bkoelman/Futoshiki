@@ -91,7 +91,11 @@ export class GameComponent implements OnInit {
     return this._undoTracker.canUndo();
   }
 
-  constructor(private _downloadController: HttpRequestController<PuzzleInfo, PuzzleData>, private _dataService: PuzzleDataService, private _zone: NgZone) {
+  constructor(
+    private _downloadController: HttpRequestController<PuzzleInfo, PuzzleData>,
+    private _dataService: PuzzleDataService,
+    private _zone: NgZone
+  ) {
     this.settings = this.getSettingsFromCookie();
   }
 

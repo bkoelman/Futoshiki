@@ -11,7 +11,7 @@ export class PlayTimeTracker {
 
   constructor(userLeavesCallback: Function, zone: NgZone) {
     zone.runOutsideAngular(() => {
-      // Starts continuous polling, which prevents the Angular zone from stabilizing, 
+      // Starts continuous polling, which prevents the Angular zone from stabilizing,
       // which in turn prevents protractor from completion of e2e tests.
       TimeMe.initialize({
         idleTimeoutInSeconds: 5 * 60

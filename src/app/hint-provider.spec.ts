@@ -947,7 +947,9 @@ describe('HintProvider', () => {
       const hasChanges = provider.runAtBoard();
 
       expect(hasChanges).toBeTruthy();
-      expect(provider.explanationText).toBe(`Naked triple (3,4,5) in cells (C2,D2,F2) eliminated '3', '4' and '5' from 3 other cells in that column.`);
+      expect(provider.explanationText).toBe(
+        `Naked triple (3,4,5) in cells (C2,D2,F2) eliminated '3', '4' and '5' from 3 other cells in that column.`
+      );
       expectBoard(
         board,
         `
@@ -1409,7 +1411,9 @@ describe('HintProvider', () => {
       const hasChanges = provider.runAtBoard();
 
       expect(hasChanges).toBeTruthy();
-      expect(provider.explanationText).toBe(`Naked quad (3,4,5,6) in cells (C1,C4,C5,C6) eliminated '3', '4', '5' and '6' from 5 other cells in that row.`);
+      expect(provider.explanationText).toBe(
+        `Naked quad (3,4,5,6) in cells (C1,C4,C5,C6) eliminated '3', '4', '5' and '6' from 5 other cells in that row.`
+      );
       expectBoard(
         board,
         `
@@ -1507,7 +1511,9 @@ describe('HintProvider', () => {
       const hasChanges = provider.runAtBoard();
 
       expect(hasChanges).toBeTruthy();
-      expect(provider.explanationText).toBe(`Naked quad (1,2,3,4) in cells (B3,D3,F3,G3) eliminated '1', '2', '3' and '4' from 3 other cells in that column.`);
+      expect(provider.explanationText).toBe(
+        `Naked quad (1,2,3,4) in cells (B3,D3,F3,G3) eliminated '1', '2', '3' and '4' from 3 other cells in that column.`
+      );
       expectBoard(
         board,
         `

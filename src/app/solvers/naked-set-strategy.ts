@@ -99,11 +99,11 @@ class NakedSetInfo {
     readonly digitsToRemove: ReadonlySet<number>,
     readonly sequenceName: string,
     readonly singleCoordinate: Coordinate | undefined
-  ) { }
+  ) {}
 
   getMessage(changedCellCount: number, setArity: string): string {
     const digitsInNakedSet = SetFacilities.formatSet(this.digitsToRemove);
-    const digitsEliminated = ObjectFacilities.formatArray([...this.digitsToRemove].map(digit => '\'' + digit + '\''));
+    const digitsEliminated = ObjectFacilities.formatArray([...this.digitsToRemove].map(digit => "'" + digit + "'"));
     const target = this.singleCoordinate === undefined ? `${changedCellCount} other cells in that ${this.sequenceName}` : `${this.singleCoordinate}`;
     return `Naked ${setArity} (${digitsInNakedSet}) in cells (${this.cellsInNakedSet}) eliminated ${digitsEliminated} from ${target}.`;
   }
