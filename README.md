@@ -28,7 +28,7 @@ Please install the next prerequisites if you do not have them on your system alr
 * [Node.js (LTS version)](https://nodejs.org/en/)
 * [Angular](https://angular.io/guide/quickstart)
     ```
-    npm install -g @angular/cli
+    npm install -g @angular/cli@6
     ```
 * [angular-cli-ghpages](https://alligator.io/angular/deploying-angular-app-github-pages/)
     ```
