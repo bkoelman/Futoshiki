@@ -19,6 +19,7 @@ Feel welcome to report bugs, feature requests and/or remarks in the [Issue track
 
 ## Building the code
 Please install the next prerequisites if you do not have them on your system already:
+* [Git](https://git-scm.com/)
 * [Visual Studio Code](https://code.visualstudio.com/) with extensions:
   * Debugger for Chrome
   * ESLint
