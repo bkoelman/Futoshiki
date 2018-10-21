@@ -25,14 +25,12 @@ Please install the next prerequisites if you do not have them on your system alr
 - [Git](https://git-scm.com/)
 - [Visual Studio Code](https://code.visualstudio.com/) with extensions:
   - Debugger for Chrome
-  - ESLint
   - TSLint
-  - CSS Formatter
   - Prettier
 - [Node.js (LTS version)](https://nodejs.org/en/)
 - [Angular](https://angular.io/guide/quickstart)
   ```
-  npm install -g @angular/cli@6
+  npm install -g @angular/cli@6.2.6
   ```
 - [angular-cli-ghpages](https://alligator.io/angular/deploying-angular-app-github-pages/)
   ```
