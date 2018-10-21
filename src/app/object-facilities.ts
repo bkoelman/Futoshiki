@@ -77,13 +77,13 @@ export class ObjectFacilities {
     }
   }
 
-  static formatArray<T>(array: T[]) {
+  static formatArray<T>(array: T[]): string {
     if (array.length === 1) {
-      return array[0];
+      return array.join('');
     } else if (array.length === 2) {
       return array.join(' and ');
     } else if (array.length > 2) {
-      return array.slice(0, -1).join(', ') + ' and ' + array.slice(-1);
+      return array.slice(0, -1).join(', ') + ' and ' + array.slice(-1).join('');
     } else {
       return '';
     }

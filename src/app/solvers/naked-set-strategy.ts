@@ -2,6 +2,7 @@ import { SolverStrategy } from './solver-strategy';
 import { Coordinate } from '../models/coordinate';
 import { SetFacilities } from '../set-facilities';
 import { NamedSequence } from '../models/named-sequence';
+import { ObjectFacilities } from '../object-facilities';
 
 export abstract class NakedSetStrategy extends SolverStrategy {
   abstract readonly powerSets: ReadonlySet<ReadonlySet<number>>[];
@@ -98,11 +99,12 @@ class NakedSetInfo {
     readonly digitsToRemove: ReadonlySet<number>,
     readonly sequenceName: string,
     readonly singleCoordinate: Coordinate | undefined
-  ) {}
+  ) { }
 
   getMessage(changedCellCount: number, setArity: string): string {
-    const digitsNotInSet = SetFacilities.formatSet(this.digitsToRemove);
+    const digitsInNakedSet = SetFacilities.formatSet(this.digitsToRemove);
+    const digitsEliminated = ObjectFacilities.formatArray([...this.digitsToRemove].map(digit => '\'' + digit + '\''));
     const target = this.singleCoordinate === undefined ? `${changedCellCount} other cells in that ${this.sequenceName}` : `${this.singleCoordinate}`;
-    return `Naked ${setArity} (${digitsNotInSet}) in cells (${this.cellsInNakedSet}) eliminated ${digitsNotInSet} from ${target}.`;
+    return `Naked ${setArity} (${digitsInNakedSet}) in cells (${this.cellsInNakedSet}) eliminated ${digitsEliminated} from ${target}.`;
   }
 }
