@@ -9,11 +9,15 @@ export class SingleCoordinateStep {
     this.to = to;
   }
 
-  reverse(): SingleCoordinateStep {
-    return new SingleCoordinateStep(this.to, this.from);
+  static areEqual(left: SingleCoordinateStep, right: SingleCoordinateStep): boolean {
+    return left.isEqualTo(right);
   }
 
   isEqualTo(other: SingleCoordinateStep): boolean {
     return other && this.from.isEqualTo(other.from) && this.to.isEqualTo(other.to);
+  }
+
+  reverse(): SingleCoordinateStep {
+    return new SingleCoordinateStep(this.to, this.from);
   }
 }

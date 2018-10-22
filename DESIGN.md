@@ -71,6 +71,7 @@
   - [ ] replace storage of cell/candidate values with bitmask
 - [ ] have some automated (unit) tests (using real puzzles)
 - [ ] additional solver strategies (http://www.sudokuwiki.org)
+  - [x] X-Wing
 
 # Links for inspiration
 

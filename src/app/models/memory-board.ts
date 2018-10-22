@@ -60,9 +60,7 @@ export class MemoryBoard implements Board {
 
   setOperator(coordinate: Coordinate, direction: MoveDirection, operatorValue: ComparisonOperator) {
     const step = new SingleCoordinateStep(coordinate, coordinate.moveOne(direction));
-
-    const comparison = (self: SingleCoordinateStep, other: SingleCoordinateStep) => self.isEqualTo(other);
-    ObjectFacilities.removeArrayElement(this._lessThanOperators, step, comparison);
+    ObjectFacilities.removeArrayElement(this._lessThanOperators, step, SingleCoordinateStep.areEqual);
 
     if (operatorValue !== ComparisonOperator.None) {
       this._lessThanOperators.push(operatorValue === ComparisonOperator.GreaterThan ? step.reverse() : step);

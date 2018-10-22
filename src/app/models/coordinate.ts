@@ -48,6 +48,8 @@ export class Coordinate {
   static iterateBoard(boardSize: number): Coordinate[] {
     assertBoardSizeIsValid(boardSize);
 
+    // TODO: Optimize by using .fromIndex()
+
     const coordinates: Coordinate[] = [];
 
     for (let rowNumber = 0; rowNumber < boardSize; rowNumber++) {
@@ -58,6 +60,10 @@ export class Coordinate {
     }
 
     return coordinates;
+  }
+
+  static areEqual(left: Coordinate, right: Coordinate): boolean {
+    return left.isEqualTo(right);
   }
 
   isEqualTo(other: Coordinate): boolean {
