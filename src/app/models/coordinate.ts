@@ -48,15 +48,11 @@ export class Coordinate {
   static iterateBoard(boardSize: number): Coordinate[] {
     assertBoardSizeIsValid(boardSize);
 
-    // TODO: Optimize by using .fromIndex()
-
     const coordinates: Coordinate[] = [];
 
-    for (let rowNumber = 0; rowNumber < boardSize; rowNumber++) {
-      for (let columnNumber = 0; columnNumber < boardSize; columnNumber++) {
-        const nextCoordinate = Coordinate.fromRowColumnNumbers(rowNumber, columnNumber, boardSize);
-        coordinates.push(nextCoordinate);
-      }
+    for (let index = 0; index < boardSize * boardSize; index++) {
+      const nextCoordinate = this.fromIndex(index, boardSize);
+      coordinates.push(nextCoordinate);
     }
 
     return coordinates;
