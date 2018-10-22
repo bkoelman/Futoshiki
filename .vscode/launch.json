@@ -7,9 +7,18 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome against localhost",
+      "name": "Launch Chrome with ng serve",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Chrome with ng e2e",
+      "program": "${workspaceRoot}/node_modules/protractor/bin/protractor",
+      "stopOnEntry": false,
+      "protocol": "inspector",
+      "args": ["${workspaceRoot}/e2e/protractor.conf.js"]
     }
   ]
 }

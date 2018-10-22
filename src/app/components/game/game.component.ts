@@ -65,13 +65,14 @@ export class GameComponent implements OnInit {
   private _playTimeTracker!: PlayTimeTracker;
   private _isAnimating = false;
   private _isMenuOpen = false;
+  private _areCookiesEnabled: boolean;
 
   GameCompletionStateAlias = GameCompletionState;
 
   puzzle: PuzzleData | undefined;
   hasRetrieveError = false;
   playState = GameCompletionState.Playing;
-  inDebugMode = false;
+  inDebugMode: boolean;
   isTypingText = false;
   settings: GameSettings;
 
@@ -96,17 +97,22 @@ export class GameComponent implements OnInit {
     private _dataService: PuzzleDataService,
     private _zone: NgZone
   ) {
+    this.inDebugMode = !environment.production && location.search.indexOf('debug') > -1;
+    this._areCookiesEnabled = location.search.indexOf('noCookies') <= -1;
+
     this.settings = this.getSettingsFromCookie();
   }
 
   private getSettingsFromCookie(): GameSettings {
-    const settingsText = Cookies.get('settings');
-    if (settingsText) {
-      Logger.write(LogCategory.Cookies, 'Settings cookie detected.');
+    if (this._areCookiesEnabled) {
+      const settingsText = Cookies.get('settings');
+      if (settingsText) {
+        Logger.write(LogCategory.Cookies, 'Settings cookie detected.');
 
-      const settings = this._settingsAdapter.parseText(settingsText);
-      if (settings) {
-        return settings;
+        const settings = this._settingsAdapter.parseText(settingsText);
+        if (settings) {
+          return settings;
+        }
       }
     }
 
@@ -125,7 +131,6 @@ export class GameComponent implements OnInit {
     this._hintProvider = new HintProvider(this._board);
     this._playTimeTracker = new PlayTimeTracker(() => this.storeGameSaveStateInCookie(), this._zone);
 
-    this.inDebugMode = !environment.production && location.search.indexOf('debug') > -1;
     const saveState = this.getGameSaveStateFromCookie();
 
     this.retrievePuzzle(saveState.info, () => {
@@ -135,13 +140,15 @@ export class GameComponent implements OnInit {
   }
 
   private getGameSaveStateFromCookie(): GameSaveState {
-    const saveText = Cookies.get('save');
-    if (saveText) {
-      Logger.write(LogCategory.Cookies, 'Save cookie detected.');
+    if (this._areCookiesEnabled) {
+      const saveText = Cookies.get('save');
+      if (saveText) {
+        Logger.write(LogCategory.Cookies, 'Save cookie detected.');
 
-      const saveState = this._saveGameAdapter.parseText(saveText);
-      if (saveState) {
-        return saveState;
+        const saveState = this._saveGameAdapter.parseText(saveText);
+        if (saveState) {
+          return saveState;
+        }
       }
     }
 
@@ -199,7 +206,7 @@ export class GameComponent implements OnInit {
   }
 
   private storeGameSaveStateInCookie() {
-    if (this.puzzle) {
+    if (this._areCookiesEnabled && this.puzzle) {
       const isPlaying = this.playState === GameCompletionState.Playing;
       const playTimeInSeconds = isPlaying ? this._playTimeTracker.getPlayTimeInSeconds() : 0;
       const gameStateText = this._saveGameAdapter.toText(this.puzzle.info, playTimeInSeconds, this._board, !isPlaying);
@@ -283,12 +290,14 @@ export class GameComponent implements OnInit {
   }
 
   private storeSettingsInCookie() {
-    const gameStateText = this._settingsAdapter.toText(this.settings);
-    Cookies.set('settings', gameStateText, {
-      expires: 30
-    });
+    if (this._areCookiesEnabled) {
+      const gameStateText = this._settingsAdapter.toText(this.settings);
+      Cookies.set('settings', gameStateText, {
+        expires: 30
+      });
 
-    Logger.write(LogCategory.Cookies, 'Settings cookie updated.');
+      Logger.write(LogCategory.Cookies, 'Settings cookie updated.');
+    }
   }
 
   onBoardContentChanged(event: CellSnapshot) {

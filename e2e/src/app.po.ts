@@ -1,11 +1,10 @@
-import { browser, by, element } from 'protractor';
+import { browser } from 'protractor';
+import { GameSection } from './sections/game.section';
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
-  }
+  game = new GameSection();
 
-  getMenuBarBrandText() {
-    return element(by.css('.navbar-brand')).getText();
+  navigateTo() {
+    return browser.get('/?noCookies=1');
   }
 }
