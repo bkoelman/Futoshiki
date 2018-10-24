@@ -32,6 +32,7 @@ export abstract class NakedSetStrategy extends SolverStrategy {
 
   private runAtSequence(sequence: NamedSequence, digitSet: ReadonlySet<number>, singleCoordinate: Coordinate | undefined): boolean {
     const cellsInNakedSet = this.getCellsInNakedSet(sequence.coordinates, digitSet);
+
     if (cellsInNakedSet.length === digitSet.size) {
       const cellsNotInNakedSet = sequence.coordinates.filter(coordinate => !cellsInNakedSet.some(cell => cell.isEqualTo(coordinate)));
       const nakedSetInfo = new NakedSetInfo(cellsInNakedSet, cellsNotInNakedSet, digitSet, sequence.name, singleCoordinate);
