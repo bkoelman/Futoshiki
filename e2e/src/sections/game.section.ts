@@ -2,6 +2,7 @@ import { MenuBarSection } from './menu-bar.section';
 import { AboutModalSection } from './about-modal.section';
 import { ButtonBarSection } from './button-bar.section';
 import { BoardSection } from './board.section';
+import { browser, protractor } from 'protractor';
 
 export class GameSection {
   menuBar = new MenuBarSection();
@@ -14,6 +15,11 @@ export class GameSection {
     await this.buttonBar.clickDigit(digit);
   }
 
+  async typeCellValue(digit: number, coordinate: string) {
+    await this.board.selectCell(coordinate);
+    await this.pressKeys(digit.toString());
+  }
+
   async expectCellValue(coordinate: string, digit: number) {
     const value = await this.board.getCellValue(coordinate);
     expect(value).toBe(digit);
@@ -23,6 +29,13 @@ export class GameSection {
     await this.board.selectCell(coordinate);
     for (const digit of digits) {
       await this.buttonBar.clickCandidateDigit(digit);
+    }
+  }
+
+  async typeCellCandidates(digits: number[], coordinate: string) {
+    await this.board.selectCell(coordinate);
+    for (const digit of digits) {
+      await this.pressKeys(protractor.Key.chord(protractor.Key.ALT, digit.toString()));
     }
   }
 
@@ -43,8 +56,28 @@ export class GameSection {
     await this.buttonBar.clickClear();
   }
 
+  async typeClearCell(coordinate: string) {
+    await this.board.selectCell(coordinate);
+    await this.pressKeys(protractor.Key.DELETE);
+  }
+
   async expectEmptyCell(coordinate: string) {
     const isEmpty = await this.board.isEmptyCell(coordinate);
     expect(isEmpty).toBeTruthy();
+  }
+
+  async undo() {
+    await this.buttonBar.clickUndo();
+  }
+
+  async typeUndo() {
+    await this.pressKeys(protractor.Key.chord(protractor.Key.CONTROL, 'z'));
+  }
+
+  private async pressKeys(keys: string) {
+    return await browser
+      .actions()
+      .sendKeys(keys)
+      .perform();
   }
 }

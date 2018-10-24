@@ -14,7 +14,7 @@ describe('Futoshiki', () => {
   });
 
   describe('Basic gameplay', () => {
-    it('should enable digit entry on the board', async () => {
+    it('should enter digits on the board via mouse', async () => {
       await game.setCellValue(1, 'B2');
       await game.expectCellValue('B2', 1);
 
@@ -24,7 +24,21 @@ describe('Futoshiki', () => {
       await game.clearCell('C1');
       await game.expectEmptyCell('C1');
 
-      await game.buttonBar.clickUndo();
+      await game.undo();
+      await game.expectCellCandidates('C1', [2, 3]);
+    });
+
+    it('should enter digits on the board via keyboard', async () => {
+      await game.typeCellValue(1, 'B2');
+      await game.expectCellValue('B2', 1);
+
+      await game.typeCellCandidates([1, 3, 2, 1], 'C1');
+      await game.expectCellCandidates('C1', [2, 3]);
+
+      await game.typeClearCell('C1');
+      await game.expectEmptyCell('C1');
+
+      await game.typeUndo();
       await game.expectCellCandidates('C1', [2, 3]);
     });
 
