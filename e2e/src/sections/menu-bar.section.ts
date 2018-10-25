@@ -36,15 +36,21 @@ export class MenuBarSection {
     await hamburgerButton.click();
   }
 
-  async selectAbout() {
-    const aboutLink = this._root.element(by.cssContainingText('.nav-link', 'About'));
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(aboutLink), WaitTimeout);
-    await aboutLink.click();
+  async selectRestart() {
+    const restartLink = this._root.element(by.cssContainingText('.nav-link', 'Restart'));
+    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(restartLink), WaitTimeout);
+    await restartLink.click();
   }
 
   async selectChangePuzzle() {
     const changePuzzleLink = this._root.element(by.cssContainingText('.nav-link', 'Change puzzle'));
     await browser.wait(protractor.ExpectedConditions.elementToBeClickable(changePuzzleLink), WaitTimeout);
     await changePuzzleLink.click();
+  }
+
+  async selectAbout() {
+    const aboutLink = this._root.element(by.cssContainingText('.nav-link', 'About'));
+    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(aboutLink), WaitTimeout);
+    await aboutLink.click();
   }
 }

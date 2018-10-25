@@ -73,6 +73,16 @@ describe('Futoshiki', () => {
       await game.aboutModal.waitForHidden();
     });
 
+    it('should restart puzzle', async () => {
+      await game.setCellValue('D4', 3);
+      await game.expectCellValue('D4', 3);
+
+      await game.menuBar.toggle();
+      await game.menuBar.selectRestart();
+
+      await game.expectEmptyCell('D4');
+    });
+
     it('should change puzzle', async () => {
       await game.menuBar.toggle();
       await game.menuBar.selectChangePuzzle();
