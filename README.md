@@ -2,7 +2,7 @@
 
 ## About
 
-Futoshiki is a puzzle game, similar to Sudoku. The objective is to fill cells with digits while honouring inequality constraints. For details, select "Games rules" from the in-game menu.
+Futoshiki is a puzzle game, similar to Sudoku. The objective is to fill cells with digits while honouring inequality constraints. For details, select "Games rules" from the in-game menu. See [DESIGN.md](https://github.com/bkoelman/Futoshiki/blob/master/DESIGN.md) for a list of features.
 
 <a href="https://bkoelman.github.io/Futoshiki/">
 <kbd>
