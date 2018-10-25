@@ -69,9 +69,10 @@
 - [ ] optimize performance
   - [ ] try table layout instead of divs for board
   - [ ] replace storage of cell/candidate values with bitmask
-- [ ] have some automated (unit) tests (using real puzzles)
+- [x] have some automated (unit) tests (using real puzzles)
 - [ ] add hitcounter/tracker
 - [ ] try hosting in Electron shell
+- [ ] look into cibuild
 - [ ] additional solver strategies (http://www.sudokuwiki.org)
   - [x] X-Wing
 
