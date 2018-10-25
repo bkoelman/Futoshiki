@@ -2,8 +2,9 @@ import { browser, protractor } from 'protractor';
 import { MenuBarSection } from './menu-bar.section';
 import { BoardSection } from './board.section';
 import { ButtonBarSection } from './button-bar.section';
-import { AboutModalSection } from './about-modal.section';
 import { ChangePuzzleModalSection } from './change-puzzle-modal.section';
+import { SettingsModalSection } from './settings-modal.section';
+import { AboutModalSection } from './about-modal.section';
 import { WinModalSection } from './win-modal.section';
 import { HintExplanationBoxSection } from './hint-explanation-box.section';
 
@@ -11,8 +12,9 @@ export class GameSection {
   menuBar = new MenuBarSection();
   board = new BoardSection();
   buttonBar = new ButtonBarSection();
-  aboutModal = new AboutModalSection();
   changePuzzleModal = new ChangePuzzleModalSection();
+  settingsModal = new SettingsModalSection();
+  aboutModal = new AboutModalSection();
   winModal = new WinModalSection();
   hintExplanationBox = new HintExplanationBoxSection();
 

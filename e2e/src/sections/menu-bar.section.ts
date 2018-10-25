@@ -46,6 +46,11 @@ export class MenuBarSection {
     await ElementFacilities.clickOnElement(changePuzzleLink);
   }
 
+  async selectSettings() {
+    const settingsLink = this._root.element(by.cssContainingText('.nav-link', 'Settings'));
+    await ElementFacilities.clickOnElement(settingsLink);
+  }
+
   async selectAbout() {
     const aboutLink = this._root.element(by.cssContainingText('.nav-link', 'About'));
     await ElementFacilities.clickOnElement(aboutLink);

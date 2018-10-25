@@ -244,7 +244,25 @@ describe('Futoshiki', () => {
       expect(game.board.getCellValue('A1')).toBe(3);
     });
 
-    // TODO: Open settings, check all, reopen and verify all checked
+    it('should display and remember settings', async () => {
+      await game.menuBar.toggle();
+      await game.menuBar.selectSettings();
+
+      await game.settingsModal.waitForVisible();
+      await game.settingsModal.clickAutoCleanCandidates();
+      await game.settingsModal.clickNotifyOnWrongMoves();
+      await game.settingsModal.clickShowHintExplanations();
+      await game.settingsModal.clickOk();
+      await game.settingsModal.waitForHidden();
+
+      await game.menuBar.toggle();
+      await game.menuBar.selectSettings();
+
+      await game.settingsModal.waitForVisible();
+      expect(await game.settingsModal.isAutoCleanCandidatesChecked()).toBeFalsy();
+      expect(await game.settingsModal.isNotifyOnWrongMovesChecked()).toBeTruthy();
+      expect(await game.settingsModal.isShowHintExplanationsChecked()).toBeTruthy();
+    });
 
     it('should display about dialog', async () => {
       await game.menuBar.toggle();
