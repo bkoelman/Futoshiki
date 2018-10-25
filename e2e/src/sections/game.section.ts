@@ -4,6 +4,7 @@ import { BoardSection } from './board.section';
 import { ButtonBarSection } from './button-bar.section';
 import { AboutModalSection } from './about-modal.section';
 import { ChangePuzzleModalSection } from './change-puzzle-modal.section';
+import { WinModalSection } from './win-modal.section';
 
 export class GameSection {
   menuBar = new MenuBarSection();
@@ -11,6 +12,7 @@ export class GameSection {
   buttonBar = new ButtonBarSection();
   aboutModal = new AboutModalSection();
   changePuzzleModal = new ChangePuzzleModalSection();
+  winModal = new WinModalSection();
 
   async setCellValue(coordinate: string, digit: number) {
     await this.board.selectCell(coordinate);

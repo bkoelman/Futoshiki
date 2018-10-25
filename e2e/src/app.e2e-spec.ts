@@ -55,6 +55,15 @@ describe('Futoshiki', () => {
       expect(game.board.getCellValue('C3')).toBe(2);
       expect(game.board.getCellValue('D4')).toBe(1);
     });
+
+    it('should use hints to solve the board', async () => {
+      for (let index = 0; index < 25; index++) {
+        await game.buttonBar.clickHintBoard();
+      }
+
+      await game.winModal.waitForVisible();
+      await game.winModal.clickNewGame();
+    });
   });
 
   describe('Puzzle management', () => {

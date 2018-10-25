@@ -29,6 +29,11 @@ export class ButtonBarSection {
     await this.clickOnButton(promoteButton);
   }
 
+  async clickHintBoard() {
+    const hintButton = this._root.element(by.buttonText('Hint'));
+    await this.clickOnButton(hintButton);
+  }
+
   private async clickOnButton(button: ElementFinder) {
     await browser.wait(protractor.ExpectedConditions.elementToBeClickable(button), WaitTimeout);
     await button.click();
