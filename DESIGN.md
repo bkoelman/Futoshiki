@@ -70,7 +70,7 @@
   - [ ] try table layout instead of divs for board
   - [ ] replace storage of cell/candidate values with bitmask
 - [x] have some automated (unit) tests (using real puzzles)
-- [ ] add hitcounter/tracker
+- [x] add hitcounter/tracker
 - [ ] try hosting in Electron shell
 - [ ] look into cibuild
 - [ ] additional solver strategies (http://www.sudokuwiki.org)

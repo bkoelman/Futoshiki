@@ -25,6 +25,8 @@ export class MenuBarComponent implements OnInit {
   @Output()
   isOpenChanged = new EventEmitter<boolean>();
 
+  trackerImageUrl = '';
+
   get isMenuOpened(): boolean {
     const isClosed = $('.navbar-toggler').hasClass('collapsed');
     return !isClosed;
@@ -48,6 +50,10 @@ export class MenuBarComponent implements OnInit {
         }
       });
     });
+
+    setTimeout(() => {
+      this.trackerImageUrl = '//counter.websiteout.net/compte.php?S=' + encodeURI(window.location.hostname) + '&C=35&D=0&N=0&M=1';
+    }, 10000);
   }
 
   private isClickOutsideMenuComponent(clickTarget: JQuery<EventTarget>): boolean {

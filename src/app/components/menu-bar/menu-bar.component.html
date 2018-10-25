@@ -1,5 +1,10 @@
 <nav class="navbar fixed-top navbar-dark bg-dark">
   <span class="navbar-brand mb-0 h1">Futoshiki</span>
+
+  <ng-container *ngIf="trackerImageUrl">
+    <img [src]="trackerImageUrl" alt="" class="d-none" />
+  </ng-container>
+
   <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarContent">
     <span class="navbar-toggler-icon"></span>
   </button>
