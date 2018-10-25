@@ -13,6 +13,11 @@ export class BoardSection {
     return Math.sqrt(count);
   }
 
+  async isRulerVisible(): Promise<boolean> {
+    const count = await this._root.$$('app-ruler-cell').count();
+    return count > 0;
+  }
+
   async selectCell(coordinate: string) {
     const cell = await this.getCell(coordinate);
     await ElementFacilities.clickOnElement(cell);

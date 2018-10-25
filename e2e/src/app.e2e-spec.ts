@@ -180,7 +180,7 @@ describe('Futoshiki', () => {
         settings: showExplanationsOn
       });
 
-      // TODO: Verify ruler is visible
+      expect(await game.board.isRulerVisible()).toBeTruthy();
 
       await game.buttonBar.clickHintBoard();
       expect(await game.hintExplanationBox.isVisible()).toBeTruthy();
@@ -204,7 +204,7 @@ describe('Futoshiki', () => {
         settings: showExplanationsOff
       });
 
-      // TODO: Verify ruler is hidden
+      expect(await game.board.isRulerVisible()).toBeFalsy();
 
       await game.buttonBar.clickHintBoard();
       expect(await game.hintExplanationBox.isVisible()).toBeFalsy();
