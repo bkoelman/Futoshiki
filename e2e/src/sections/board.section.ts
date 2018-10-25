@@ -7,9 +7,13 @@ export class BoardSection {
   private _root = $('app-board');
   private _cells = this._root.$$('app-digit-cell');
 
+  async getSize(): Promise<number> {
+    const count = await this._cells.count();
+    return Math.sqrt(count);
+  }
+
   async selectCell(coordinate: string) {
-    const index = await this.coordinateToIndex(coordinate);
-    const cell = this.getCell(index);
+    const cell = await this.getCell(coordinate);
 
     await browser.wait(protractor.ExpectedConditions.elementToBeClickable(cell), WaitTimeout);
     await cell.click();
@@ -22,8 +26,7 @@ export class BoardSection {
   }
 
   async getCellValue(coordinate: string): Promise<number | undefined> {
-    const index = await this.coordinateToIndex(coordinate);
-    const cell = this.getCell(index);
+    const cell = await this.getCell(coordinate);
 
     const textElement = cell.$('.text-success, .text-dark');
     if (await textElement.isPresent()) {
@@ -35,8 +38,7 @@ export class BoardSection {
   }
 
   async getCellCandidates(coordinate: string): Promise<number[]> {
-    const index = await this.coordinateToIndex(coordinate);
-    const cell = this.getCell(index);
+    const cell = await this.getCell(coordinate);
 
     const digits: number[] = [];
     await cell.$$('.text-primary').each(async selector => {
@@ -50,6 +52,38 @@ export class BoardSection {
     });
 
     return digits;
+  }
+
+  async hasErrorInCell(coordinate: string): Promise<boolean> {
+    const cell = await this.getCell(coordinate);
+
+    const errorElement = cell.$('.flash');
+    if (await errorElement.isPresent()) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async hasErrorInOperator(coordinate: string, direction: 'left' | 'right' | 'up' | 'down'): Promise<boolean> {
+    const operator = await this.getOperator(coordinate, direction);
+
+    const errorElement = operator.$('.flash');
+    if (await errorElement.isPresent()) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async waitForErrorCompleted() {
+    const selector = this._root.$('.flash');
+    await browser.wait(protractor.ExpectedConditions.stalenessOf(selector), WaitTimeout);
+  }
+
+  private async getCell(coordinate: string) {
+    const index = await this.coordinateToIndex(coordinate);
+    return this._root.$$('app-digit-cell > .box-container').get(index);
   }
 
   private async coordinateToIndex(text: string): Promise<number> {
@@ -68,12 +102,34 @@ export class BoardSection {
     throw new Error(`Invalid coordinate '${text}' on ${size}x${size} board.`);
   }
 
-  async getSize(): Promise<number> {
-    const count = await this._cells.count();
-    return Math.sqrt(count);
+  private async getOperator(coordinate: string, direction: 'left' | 'right' | 'up' | 'down') {
+    const index = await this.getIndexForOperator(coordinate, direction);
+    return this._root.$$('app-operator-cell > .box-container').get(index);
   }
 
-  private getCell(index: number) {
-    return this._root.$$('app-digit-cell > .box-container').get(index);
+  private async getIndexForOperator(coordinate: string, direction: 'left' | 'right' | 'up' | 'down'): Promise<number> {
+    const size = await this.getSize();
+
+    const cellIndex = await this.coordinateToIndex(coordinate);
+    const cellRowIndex = Math.floor(cellIndex / size);
+    const cellColumnIndex = cellIndex % size;
+    const operatorRowSize = 2 * size - 1;
+
+    switch (direction) {
+      case 'left':
+        return cellRowIndex * operatorRowSize + cellColumnIndex - 1;
+      case 'right':
+        return cellRowIndex * operatorRowSize + cellColumnIndex;
+      case 'up':
+        return (cellRowIndex - 1) * operatorRowSize + size - 1 + cellColumnIndex;
+      case 'down':
+        return cellRowIndex * operatorRowSize + size - 1 + cellColumnIndex;
+    }
+
+    this.assertUnreachable(direction);
+  }
+
+  private assertUnreachable(value: never): never {
+    throw new Error('Unreachable code detected');
   }
 }

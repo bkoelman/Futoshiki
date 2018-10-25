@@ -3,14 +3,13 @@ import { GameSection } from './sections/game.section';
 import { browser } from 'protractor';
 
 describe('Futoshiki', () => {
+  let page: AppPage;
   let game: GameSection;
 
   beforeEach(async () => {
-    await browser.manage().deleteAllCookies();
-
-    const page = new AppPage();
-    await page.navigateTo();
+    page = new AppPage();
     game = page.game;
+    await page.navigateTo();
   });
 
   describe('Basic gameplay', () => {
@@ -73,6 +72,101 @@ describe('Futoshiki', () => {
 
       await game.typeHintForCell('D3');
       await game.expectCellCandidates('D3', [1, 2]);
+    });
+  });
+
+  describe('Settings', () => {
+    it('should auto-cleanup candidates', async () => {
+      const saveState = 'D2-S5-I7654-T00000029-Bff05ff04ff030005ff02ff04ff0300030003ff05ff01ff0500060006ff04ff02ff01ff050000ff03ff03ff02ff04ff05ff01';
+      const autoCleanupOn = 'ACC1-NWM0-SHE0';
+      const autoCleanupOff = 'ACC0-NWM0-SHE0';
+
+      await page.loadCookieState({
+        save: saveState,
+        settings: autoCleanupOn
+      });
+
+      await game.setCellValue('B4', 2);
+      await game.expectCellCandidates('B3', [1]);
+      await game.expectCellCandidates('C4', [3]);
+
+      await page.navigateTo();
+      await page.loadCookieState({
+        save: saveState,
+        settings: autoCleanupOff
+      });
+
+      await game.setCellValue('B4', 2);
+      await game.expectCellCandidates('B3', [1, 2]);
+      await game.expectCellCandidates('C4', [2, 3]);
+    });
+
+    it('should notify on invalid move', async () => {
+      const saveState = 'D2-S5-I7654-T00000022-Bff05ff04ff030000ff02ff04ff0300000000ff05ff01ff0500000000ff04ff02ff01ff050000ff03ff03ff02ff04ff05ff01';
+      const notifyWrongMovesOn = 'ACC0-NWM1-SHE0';
+      const notifyWrongMovesOff = 'ACC0-NWM0-SHE0';
+
+      await page.loadCookieState({
+        save: saveState,
+        settings: notifyWrongMovesOn
+      });
+
+      await game.setCellValue('B4', 5);
+
+      expect(await game.board.hasErrorInCell('B5')).toBeTruthy();
+      expect(await game.board.hasErrorInCell('E4')).toBeTruthy();
+      expect(await game.board.hasErrorInOperator('B4', 'right')).toBeTruthy();
+
+      await game.board.waitForErrorCompleted();
+      await game.expectEmptyCell('B4');
+
+      await page.navigateTo();
+      await page.loadCookieState({
+        save: saveState,
+        settings: notifyWrongMovesOff
+      });
+
+      await game.setCellValue('B4', 5);
+
+      expect(await game.board.hasErrorInCell('B5')).toBeFalsy();
+      expect(await game.board.hasErrorInCell('E4')).toBeFalsy();
+      expect(await game.board.hasErrorInOperator('B4', 'right')).toBeFalsy();
+
+      await game.expectCellValue('B4', 5);
+    });
+
+    it('should notify on invalid candidate move', async () => {
+      const saveState = 'D2-S5-I7654-T00000019-Bff05ff04ff030000ff02ff04ff0300000000ff05ff01ff0500000000ff04ff02ff01ff050000ff03ff03ff02ff04ff05ff01';
+      const notifyWrongMovesOn = 'ACC0-NWM1-SHE0';
+      const notifyWrongMovesOff = 'ACC0-NWM0-SHE0';
+
+      await page.loadCookieState({
+        save: saveState,
+        settings: notifyWrongMovesOn
+      });
+
+      await game.setCellValue('C4', 5);
+
+      expect(await game.board.hasErrorInCell('C2')).toBeTruthy();
+      expect(await game.board.hasErrorInCell('E4')).toBeTruthy();
+      expect(await game.board.hasErrorInOperator('D4', 'up')).toBeTruthy();
+
+      await game.board.waitForErrorCompleted();
+      await game.expectEmptyCell('C4');
+
+      await page.navigateTo();
+      await page.loadCookieState({
+        save: saveState,
+        settings: notifyWrongMovesOff
+      });
+
+      await game.setCellValue('C4', 5);
+
+      expect(await game.board.hasErrorInCell('C2')).toBeFalsy();
+      expect(await game.board.hasErrorInCell('E4')).toBeFalsy();
+      expect(await game.board.hasErrorInOperator('D4', 'up')).toBeFalsy();
+
+      await game.expectCellValue('C4', 5);
     });
   });
 
