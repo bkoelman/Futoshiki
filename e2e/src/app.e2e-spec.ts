@@ -73,7 +73,17 @@ describe('Futoshiki', () => {
       await game.expectCellCandidates('D3', [1, 2]);
     });
 
-    // TODO: Lose the game
+    it('should lose the game', async () => {
+      await page.loadCookieState({
+        save: 'D1-S4-I7246-T00000016-B0000ff04ff01ff030004ff01ff02ff04ff01ff03ff04ff02ff04ff02ff030000'
+      });
+
+      expect(await game.hasLost()).toBeFalsy();
+
+      await game.setCellValue('B1', 4);
+
+      expect(await game.hasLost()).toBeTruthy();
+    });
   });
 
   describe('Settings', () => {

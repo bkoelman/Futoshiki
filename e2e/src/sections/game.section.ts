@@ -98,4 +98,8 @@ export class GameSection {
       .sendKeys(keys)
       .perform();
   }
+
+  async hasLost(): Promise<boolean> {
+    return await this.board.hasRedCells();
+  }
 }

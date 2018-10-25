@@ -136,4 +136,9 @@ export class BoardSection {
   private assertUnreachable(value: never): never {
     throw new Error('Unreachable code detected');
   }
+
+  async hasRedCells(): Promise<boolean> {
+    const redCellCount = await this._cells.$$('.square-lost').count();
+    return redCellCount > 0;
+  }
 }
