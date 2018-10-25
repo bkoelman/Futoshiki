@@ -70,6 +70,16 @@ export class GameSection {
     expect(isEmpty).toBeTruthy();
   }
 
+  async provideHintForCell(coordinate: string) {
+    await this.board.selectCell(coordinate);
+    await this.buttonBar.clickHintCell();
+  }
+
+  async typeHintForCell(coordinate: string) {
+    await this.board.selectCell(coordinate);
+    await this.pressKeys('?');
+  }
+
   async undo() {
     await this.buttonBar.clickUndo();
   }

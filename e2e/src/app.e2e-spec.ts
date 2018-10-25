@@ -64,6 +64,16 @@ describe('Futoshiki', () => {
       await game.winModal.waitForVisible();
       await game.winModal.clickNewGame();
     });
+
+    it('should provide hints for cells', async () => {
+      await game.buttonBar.clickHintBoard();
+
+      await game.provideHintForCell('D4');
+      await game.expectCellCandidates('D4', [2, 3]);
+
+      await game.typeHintForCell('D3');
+      await game.expectCellCandidates('D3', [1, 2]);
+    });
   });
 
   describe('Puzzle management', () => {

@@ -19,6 +19,11 @@ export class ButtonBarSection {
     await this.clickOnButton(clearButton);
   }
 
+  async clickHintCell() {
+    const hintButton = this._root.element(by.cssContainingText('.blue', '?'));
+    await this.clickOnButton(hintButton);
+  }
+
   async clickUndo() {
     const undoButton = this._root.element(by.buttonText('Undo'));
     await this.clickOnButton(undoButton);
