@@ -4,8 +4,8 @@
   (settingsClicked)="onSettingsClicked()" (isOpenChanged)="onMenuBarIsOpenChanged($event)"></app-menu-bar>
 
 <div class="container game-container">
-  <app-change-puzzle (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle>
-  <app-settings (settingsChanged)="onSettingsChanged($event)"></app-settings>
+  <app-change-puzzle-modal (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle-modal>
+  <app-settings-modal (settingsChanged)="onSettingsChanged($event)"></app-settings-modal>
   <app-win-modal (newGameClicked)="onNewGameClicked()" (restartClicked)="onRestartClicked()" (changePuzzleClicked)="onChangePuzzleClicked()"></app-win-modal>
   <app-about-modal></app-about-modal>
 

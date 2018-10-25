@@ -4,7 +4,7 @@ import { GameSettings } from '../../models/game-settings';
 declare var $: any;
 
 @Component({
-  selector: 'app-settings',
+  selector: 'app-settings-modal',
   templateUrl: './settings-modal.component.html'
 })
 export class SettingsModalComponent implements AfterViewChecked {

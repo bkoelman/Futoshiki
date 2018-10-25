@@ -6,7 +6,7 @@ import { ObjectFacilities } from '../../object-facilities';
 declare var $: any;
 
 @Component({
-  selector: 'app-change-puzzle',
+  selector: 'app-change-puzzle-modal',
   templateUrl: './change-puzzle-modal.component.html'
 })
 export class ChangePuzzleModalComponent implements AfterViewChecked {
