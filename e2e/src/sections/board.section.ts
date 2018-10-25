@@ -25,13 +25,13 @@ export class BoardSection {
     const index = await this.coordinateToIndex(coordinate);
     const cell = this.getCell(index);
 
-    const textElement = cell.$('.text-success');
+    const textElement = cell.$('.text-success, .text-dark');
     if (await textElement.isPresent()) {
       const text = await textElement.getText();
       return parseInt(text, 10);
-    } else {
-      return undefined;
     }
+
+    return undefined;
   }
 
   async getCellCandidates(coordinate: string): Promise<number[]> {
@@ -53,7 +53,7 @@ export class BoardSection {
   }
 
   private async coordinateToIndex(text: string): Promise<number> {
-    const size = await this.getBoardSize();
+    const size = await this.getSize();
 
     if (text.length === 2) {
       const rowNumber = text.charCodeAt(0) - BoardSection.charCodeA;
@@ -68,7 +68,7 @@ export class BoardSection {
     throw new Error(`Invalid coordinate '${text}' on ${size}x${size} board.`);
   }
 
-  private async getBoardSize(): Promise<number> {
+  async getSize(): Promise<number> {
     const count = await this._cells.count();
     return Math.sqrt(count);
   }

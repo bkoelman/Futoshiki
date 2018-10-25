@@ -5,7 +5,7 @@
   <div #flashable *ngIf="!isEmpty" class="container-content fast">
     <div class="container-content-table">
       <div *ngIf="value !== undefined" class="container-content-table-cell auto-resize-text">
-        <span *ngIf="isFixed">{{value}}</span>
+        <span *ngIf="isFixed" class="text-dark">{{value}}</span>
         <span *ngIf="!isFixed" [class.text-success]="errorDigit === undefined" [class.text-danger]="errorDigit !== undefined">{{value}}</span>
       </div>
       <div *ngIf="hasCandidates">

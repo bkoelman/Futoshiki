@@ -41,4 +41,10 @@ export class MenuBarSection {
     await browser.wait(protractor.ExpectedConditions.elementToBeClickable(aboutLink), WaitTimeout);
     await aboutLink.click();
   }
+
+  async selectChangePuzzle() {
+    const changePuzzleLink = this._root.element(by.cssContainingText('.nav-link', 'Change puzzle'));
+    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(changePuzzleLink), WaitTimeout);
+    await changePuzzleLink.click();
+  }
 }

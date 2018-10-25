@@ -1,38 +1,40 @@
-import { MenuBarSection } from './menu-bar.section';
-import { AboutModalSection } from './about-modal.section';
-import { ButtonBarSection } from './button-bar.section';
-import { BoardSection } from './board.section';
 import { browser, protractor } from 'protractor';
+import { MenuBarSection } from './menu-bar.section';
+import { BoardSection } from './board.section';
+import { ButtonBarSection } from './button-bar.section';
+import { AboutModalSection } from './about-modal.section';
+import { ChangePuzzleModalSection } from './change-puzzle-modal.section';
 
 export class GameSection {
   menuBar = new MenuBarSection();
-  aboutModal = new AboutModalSection();
-  buttonBar = new ButtonBarSection();
   board = new BoardSection();
+  buttonBar = new ButtonBarSection();
+  aboutModal = new AboutModalSection();
+  changePuzzleModal = new ChangePuzzleModalSection();
 
-  async setCellValue(digit: number, coordinate: string) {
+  async setCellValue(coordinate: string, digit: number) {
     await this.board.selectCell(coordinate);
     await this.buttonBar.clickDigit(digit);
   }
 
-  async typeCellValue(digit: number, coordinate: string) {
+  async typeCellValue(coordinate: string, digit: number) {
     await this.board.selectCell(coordinate);
     await this.pressKeys(digit.toString());
   }
 
-  async expectCellValue(coordinate: string, digit: number) {
+  async expectCellValue(coordinate: string, digit: number | undefined) {
     const value = await this.board.getCellValue(coordinate);
     expect(value).toBe(digit);
   }
 
-  async setCellCandidates(digits: number[], coordinate: string) {
+  async setCellCandidates(coordinate: string, digits: number[]) {
     await this.board.selectCell(coordinate);
     for (const digit of digits) {
       await this.buttonBar.clickCandidateDigit(digit);
     }
   }
 
-  async typeCellCandidates(digits: number[], coordinate: string) {
+  async typeCellCandidates(coordinate: string, digits: number[]) {
     await this.board.selectCell(coordinate);
     for (const digit of digits) {
       await this.pressKeys(protractor.Key.chord(protractor.Key.ALT, digit.toString()));

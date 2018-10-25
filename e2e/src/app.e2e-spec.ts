@@ -15,10 +15,10 @@ describe('Futoshiki', () => {
 
   describe('Basic gameplay', () => {
     it('should enter digits on the board via mouse', async () => {
-      await game.setCellValue(1, 'B2');
+      await game.setCellValue('B2', 1);
       await game.expectCellValue('B2', 1);
 
-      await game.setCellCandidates([1, 3, 2, 1], 'C1');
+      await game.setCellCandidates('C1', [1, 3, 2, 1]);
       await game.expectCellCandidates('C1', [2, 3]);
 
       await game.clearCell('C1');
@@ -29,10 +29,10 @@ describe('Futoshiki', () => {
     });
 
     it('should enter digits on the board via keyboard', async () => {
-      await game.typeCellValue(1, 'B2');
+      await game.typeCellValue('B2', 1);
       await game.expectCellValue('B2', 1);
 
-      await game.typeCellCandidates([1, 3, 2, 1], 'C1');
+      await game.typeCellCandidates('C1', [1, 3, 2, 1]);
       await game.expectCellCandidates('C1', [2, 3]);
 
       await game.typeClearCell('C1');
@@ -43,10 +43,10 @@ describe('Futoshiki', () => {
     });
 
     it('should promote single-digit candidates on the board', async () => {
-      await game.setCellCandidates([4], 'A1');
-      await game.setCellCandidates([3], 'B2');
-      await game.setCellCandidates([2], 'C3');
-      await game.setCellCandidates([1], 'D4');
+      await game.setCellCandidates('A1', [4]);
+      await game.setCellCandidates('B2', [3]);
+      await game.setCellCandidates('C3', [2]);
+      await game.setCellCandidates('D4', [1]);
 
       await game.buttonBar.clickPromote();
 
@@ -71,6 +71,22 @@ describe('Futoshiki', () => {
       await game.aboutModal.waitForVisible();
       await game.aboutModal.close();
       await game.aboutModal.waitForHidden();
+    });
+
+    it('should change puzzle', async () => {
+      await game.menuBar.toggle();
+      await game.menuBar.selectChangePuzzle();
+
+      await game.changePuzzleModal.waitForVisible();
+      await game.changePuzzleModal.selectDifficulty('Extreme');
+      await game.changePuzzleModal.selectSize(9);
+      await game.changePuzzleModal.selectId(23);
+      await game.changePuzzleModal.clickNext();
+      await game.changePuzzleModal.clickOk();
+      await game.changePuzzleModal.waitForHidden();
+
+      expect(game.board.getSize()).toBe(9);
+      expect(game.board.getCellValue('A1')).toBe(3);
     });
   });
 });
