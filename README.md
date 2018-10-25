@@ -40,6 +40,7 @@ Please install the next prerequisites if you do not have them on your system alr
 After fetching the repo for the first time, run `npm install` to download all package dependencies.
 Next, to build and debug the application in Chrome, run `npm start` and press F5 (or navigate manually to `http://localhost:4200/`).
 The app will automatically reload if you change any of the source files.
+Optionally add `?debug` to the URL for access to debugging tools like import/export of boards and dumping boards to the console in text format (for usage in unit tests).
 
 Run `npm run deploy` to create a production build and deploy it to GitHub Pages.
 

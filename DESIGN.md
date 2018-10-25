@@ -53,8 +53,8 @@
   - [x] write scanner to find matching puzzles
     - [x] create unit tests for strategies
   - [x] `?` button: Same as `Hint` button, but apply only for selected cell
-- [ ] code refactorings and cleanup
-  - [ ] validate inputs in class members
+- [x] code refactorings and cleanup
+  - [x] validate inputs in class members
   - [x] reorder members in components
   - [x] split parsing and rendering of downloaded puzzle in BoardComponent
   - [x] extract undo tracking into separate class
