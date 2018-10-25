@@ -45,6 +45,8 @@
     - [x] Naked Pairs/Triples
     - [x] Hidden Pairs/Triples
     - [x] Naked Quads
+    - [x] Hidden Quads
+    - [x] X-Wing
   - [x] add setting to display hint explanations
     - [x] update settings modal and store in cookie
     - [x] add closable textblock to contain explanations
@@ -61,7 +63,7 @@
   - [x] review components and extract non-UI logic into separate classes
   - [x] switch to TypeScript strict mode
   - [x] replace number arrays with read-only sets
-- [x] display elapsed time on solve
+- [x] display elapsed time on solve (track in cookie)
 - [x] add menu option to show game rules and strategies
 - [x] add `About` menu option that shows build timestamp
 - [x] cleanup README.md
@@ -72,11 +74,9 @@
 - [x] have some automated (unit) tests (using real puzzles)
 - [x] add hitcounter/tracker
 - [ ] try hosting in Electron shell
-- [ ] look into cibuild
-- [ ] additional solver strategies (http://www.sudokuwiki.org)
-  - [x] X-Wing
+- [ ] look into cibuild (https://github.com/angular/angular-cli/wiki/stories-continuous-integration)
 
-# Links for inspiration
+# Sudoku links for gameplay inspiration
 
 https://sudoku.game/
 http://www.sudoku.com/
