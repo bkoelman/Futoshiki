@@ -112,6 +112,8 @@ export class GameComponent implements OnInit {
         const settings = this._settingsAdapter.parseText(settingsText);
         if (settings) {
           return settings;
+        } else {
+          Logger.write(LogCategory.Cookies, 'Discarding invalid settings cookie.');
         }
       }
     }
@@ -148,6 +150,8 @@ export class GameComponent implements OnInit {
         const saveState = this._saveGameAdapter.parseText(saveText);
         if (saveState) {
           return saveState;
+        } else {
+          Logger.write(LogCategory.Cookies, 'Discarding invalid save cookie.');
         }
       }
     }
