@@ -12,7 +12,7 @@
 
           var buttons = $this.find(buttonSelector);
           buttons.css('font-size', fontSizeInRem + 'rem');
-          buttons.css('padding', `0.375rem ${paddingLeftRightInRem}rem`);
+          buttons.css('padding', '0.375rem ' + paddingLeftRightInRem + 'rem');
         }
       };
 

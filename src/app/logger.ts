@@ -8,7 +8,7 @@ if (!environment.production) {
 
 export class Logger {
   static write(category: LogCategory, message: string) {
-    if (activeLogCategories.includes(category)) {
+    if (activeLogCategories.indexOf(category) > -1) {
       console.log(message);
     }
   }
