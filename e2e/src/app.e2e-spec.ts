@@ -72,6 +72,8 @@ describe('Futoshiki', () => {
       await game.typeHintForCell('D3');
       await game.expectCellCandidates('D3', [1, 2]);
     });
+
+    // TODO: Lose the game
   });
 
   describe('Settings', () => {
@@ -178,6 +180,8 @@ describe('Futoshiki', () => {
         settings: showExplanationsOn
       });
 
+      // TODO: Verify ruler is visible
+
       await game.buttonBar.clickHintBoard();
       expect(await game.hintExplanationBox.isVisible()).toBeTruthy();
       expect(await game.hintExplanationBox.getText()).toContain(
@@ -200,6 +204,8 @@ describe('Futoshiki', () => {
         settings: showExplanationsOff
       });
 
+      // TODO: Verify ruler is hidden
+
       await game.buttonBar.clickHintBoard();
       expect(await game.hintExplanationBox.isVisible()).toBeFalsy();
     });
@@ -210,15 +216,6 @@ describe('Futoshiki', () => {
       expect(game.menuBar.getBrandText()).toEqual('Futoshiki');
       await game.menuBar.toggle();
       await game.menuBar.toggle();
-    });
-
-    it('should display about dialog', async () => {
-      await game.menuBar.toggle();
-      await game.menuBar.selectAbout();
-
-      await game.aboutModal.waitForVisible();
-      await game.aboutModal.close();
-      await game.aboutModal.waitForHidden();
     });
 
     it('should restart puzzle', async () => {
@@ -245,6 +242,17 @@ describe('Futoshiki', () => {
 
       expect(game.board.getSize()).toBe(9);
       expect(game.board.getCellValue('A1')).toBe(3);
+    });
+
+    // TODO: Open settings, check all, reopen and verify all checked
+
+    it('should display about dialog', async () => {
+      await game.menuBar.toggle();
+      await game.menuBar.selectAbout();
+
+      await game.aboutModal.waitForVisible();
+      await game.aboutModal.close();
+      await game.aboutModal.waitForHidden();
     });
   });
 });
