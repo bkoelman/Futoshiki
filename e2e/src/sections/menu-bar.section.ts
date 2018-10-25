@@ -1,5 +1,6 @@
 import { $, browser, by, protractor } from 'protractor';
 import { WaitTimeout } from '../timeout';
+import { ElementFacilities } from '../element-facilities';
 
 export class MenuBarSection {
   private _root = $('app-menu-bar');
@@ -32,25 +33,21 @@ export class MenuBarSection {
 
   private async clickHamburgerButton() {
     const hamburgerButton = this._root.$('.navbar-toggler');
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(hamburgerButton), WaitTimeout);
-    await hamburgerButton.click();
+    await ElementFacilities.clickOnElement(hamburgerButton);
   }
 
   async selectRestart() {
     const restartLink = this._root.element(by.cssContainingText('.nav-link', 'Restart'));
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(restartLink), WaitTimeout);
-    await restartLink.click();
+    await ElementFacilities.clickOnElement(restartLink);
   }
 
   async selectChangePuzzle() {
     const changePuzzleLink = this._root.element(by.cssContainingText('.nav-link', 'Change puzzle'));
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(changePuzzleLink), WaitTimeout);
-    await changePuzzleLink.click();
+    await ElementFacilities.clickOnElement(changePuzzleLink);
   }
 
   async selectAbout() {
     const aboutLink = this._root.element(by.cssContainingText('.nav-link', 'About'));
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(aboutLink), WaitTimeout);
-    await aboutLink.click();
+    await ElementFacilities.clickOnElement(aboutLink);
   }
 }

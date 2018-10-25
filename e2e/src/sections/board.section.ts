@@ -1,5 +1,6 @@
 import { $, browser, protractor } from 'protractor';
 import { WaitTimeout } from '../timeout';
+import { ElementFacilities } from '../element-facilities';
 
 export class BoardSection {
   static readonly charCodeA = 'A'.charCodeAt(0);
@@ -14,9 +15,7 @@ export class BoardSection {
 
   async selectCell(coordinate: string) {
     const cell = await this.getCell(coordinate);
-
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(cell), WaitTimeout);
-    await cell.click();
+    await ElementFacilities.clickOnElement(cell);
   }
 
   async isEmptyCell(coordinate: string): Promise<boolean> {

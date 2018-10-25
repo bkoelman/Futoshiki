@@ -1,6 +1,5 @@
 import { AppPage } from './app.po';
 import { GameSection } from './sections/game.section';
-import { browser } from 'protractor';
 
 describe('Futoshiki', () => {
   let page: AppPage;
@@ -55,7 +54,7 @@ describe('Futoshiki', () => {
       expect(game.board.getCellValue('D4')).toBe(1);
     });
 
-    it('should use hints to solve the board', async () => {
+    it('should apply hints to solve the board', async () => {
       for (let index = 0; index < 25; index++) {
         await game.buttonBar.clickHintBoard();
       }
@@ -64,7 +63,7 @@ describe('Futoshiki', () => {
       await game.winModal.clickNewGame();
     });
 
-    it('should provide hints for cells', async () => {
+    it('should apply hints on cells', async () => {
       await game.buttonBar.clickHintBoard();
 
       await game.provideHintForCell('D4');
@@ -167,6 +166,42 @@ describe('Futoshiki', () => {
       expect(await game.board.hasErrorInOperator('D4', 'up')).toBeFalsy();
 
       await game.expectCellValue('C4', 5);
+    });
+
+    it('should show hint explanation', async () => {
+      const saveState = 'D1-S5-I1-T00000038-B001f001f001d001f001f001f001f001d001f001f001d001d0000001d001d001f001f001d001f001f0000001f001d001f001f';
+      const showExplanationsOn = 'ACC0-NWM0-SHE1';
+      const showExplanationsOff = 'ACC0-NWM0-SHE0';
+
+      await page.loadCookieState({
+        save: saveState,
+        settings: showExplanationsOn
+      });
+
+      await game.buttonBar.clickHintBoard();
+      expect(await game.hintExplanationBox.isVisible()).toBeTruthy();
+      expect(await game.hintExplanationBox.getText()).toContain(
+        "Naked single (4) in cell E1 eliminated '4' from 8 other cells in related row and column."
+      );
+
+      await game.hintExplanationBox.close();
+      expect(await game.hintExplanationBox.isVisible()).toBeFalsy();
+
+      await game.provideHintForCell('C5');
+      expect(await game.hintExplanationBox.isVisible()).toBeTruthy();
+      expect(await game.hintExplanationBox.getText()).toContain('Operators around C5 reduced candidates.');
+
+      await game.hintExplanationBox.close();
+      expect(await game.hintExplanationBox.isVisible()).toBeFalsy();
+
+      await page.navigateTo();
+      await page.loadCookieState({
+        save: saveState,
+        settings: showExplanationsOff
+      });
+
+      await game.buttonBar.clickHintBoard();
+      expect(await game.hintExplanationBox.isVisible()).toBeFalsy();
     });
   });
 

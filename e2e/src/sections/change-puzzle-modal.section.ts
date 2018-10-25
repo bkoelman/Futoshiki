@@ -1,19 +1,23 @@
 import { BootstrapModal } from '../bootstrap-modal';
 import { $, browser, protractor, by } from 'protractor';
+import { ElementFacilities } from '../element-facilities';
 
 export class ChangePuzzleModalSection extends BootstrapModal {
   protected readonly root = $('app-change-puzzle-modal');
 
   async selectDifficulty(value: string) {
-    await this.root.$('#difficulty' + value).click();
+    const difficultyRadioButton = this.root.$('#difficulty' + value);
+    await ElementFacilities.clickOnElement(difficultyRadioButton);
   }
 
   async selectSize(size: number) {
-    await this.root.$('#size' + size.toString()).click();
+    const sizeRadioButton = this.root.$('#size' + size.toString());
+    await ElementFacilities.clickOnElement(sizeRadioButton);
   }
 
   async selectId(id: number) {
-    await this.root.$('input[name=puzzleId]').click();
+    const idTextBox = this.root.$('input[name=puzzleId]');
+    await ElementFacilities.clickOnElement(idTextBox);
 
     await this.pressKeys(protractor.Key.BACK_SPACE);
     await this.pressKeys(id.toString());
@@ -28,11 +32,11 @@ export class ChangePuzzleModalSection extends BootstrapModal {
 
   async clickNext() {
     const nextButton = this.root.element(by.cssContainingText('.btn', '>'));
-    await nextButton.click();
+    await ElementFacilities.clickOnElement(nextButton);
   }
 
   async clickOk() {
     const okButton = this.root.element(by.cssContainingText('.btn', 'Ok'));
-    await okButton.click();
+    await ElementFacilities.clickOnElement(okButton);
   }
 }

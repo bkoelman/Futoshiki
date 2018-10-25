@@ -1,46 +1,41 @@
-import { $, browser, by, protractor, ElementFinder } from 'protractor';
-import { WaitTimeout } from '../timeout';
+import { $, by } from 'protractor';
+import { ElementFacilities } from '../element-facilities';
 
 export class ButtonBarSection {
   private _root = $('app-button-bar');
 
   async clickDigit(digit: number) {
     const digitButton = this._root.element(by.cssContainingText('.green', digit.toString()));
-    await this.clickOnButton(digitButton);
+    await ElementFacilities.clickOnElement(digitButton);
   }
 
   async clickCandidateDigit(digit: number) {
     const candidateButton = this._root.element(by.cssContainingText('.blue', digit.toString()));
-    await this.clickOnButton(candidateButton);
+    await ElementFacilities.clickOnElement(candidateButton);
   }
 
   async clickClear() {
     const clearButton = this._root.element(by.cssContainingText('.gray', '×'));
-    await this.clickOnButton(clearButton);
+    await ElementFacilities.clickOnElement(clearButton);
   }
 
   async clickHintCell() {
     const hintButton = this._root.element(by.cssContainingText('.blue', '?'));
-    await this.clickOnButton(hintButton);
+    await ElementFacilities.clickOnElement(hintButton);
   }
 
   async clickUndo() {
     const undoButton = this._root.element(by.buttonText('Undo'));
-    await this.clickOnButton(undoButton);
+    await ElementFacilities.clickOnElement(undoButton);
   }
 
   async clickPromote() {
     const promoteButton = this._root.element(by.buttonText('Promote'));
-    await this.clickOnButton(promoteButton);
+    await ElementFacilities.clickOnElement(promoteButton);
   }
 
   async clickHintBoard() {
     const hintButton = this._root.element(by.buttonText('Hint'));
-    await this.clickOnButton(hintButton);
-  }
-
-  private async clickOnButton(button: ElementFinder) {
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(button), WaitTimeout);
-    await button.click();
+    await ElementFacilities.clickOnElement(hintButton);
   }
 }

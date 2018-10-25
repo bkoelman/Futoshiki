@@ -1,5 +1,6 @@
 import { $, ElementFinder, protractor, browser } from 'protractor';
 import { WaitTimeout } from './timeout';
+import { ElementFacilities } from './element-facilities';
 
 export abstract class BootstrapModal {
   private static readonly _bootstrapFadeDurationInMilliseconds = 250;
@@ -17,7 +18,6 @@ export abstract class BootstrapModal {
 
   async close() {
     const closeButton = this.root.$('button.close');
-    await browser.wait(protractor.ExpectedConditions.elementToBeClickable(closeButton), WaitTimeout);
-    await closeButton.click();
+    await ElementFacilities.clickOnElement(closeButton);
   }
 }
