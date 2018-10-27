@@ -68,13 +68,8 @@
 - [x] add `About` menu option that shows build timestamp
 - [x] cleanup README.md
 - [x] consider to use "prettier" code-formatter
-- [ ] optimize performance
-  - [ ] try table layout instead of divs for board
-  - [ ] replace storage of cell/candidate values with bitmask
 - [x] have some automated (unit) tests (using real puzzles)
 - [x] add hitcounter/tracker
-- [ ] try hosting in Electron shell
-- [ ] look into cibuild (https://github.com/angular/angular-cli/wiki/stories-continuous-integration)
 
 # Sudoku links for gameplay inspiration
 
