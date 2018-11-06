@@ -1,5 +1,5 @@
 body {
-  padding-top: 75px;
+  padding-top: 50px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -11,8 +11,15 @@ body {
 }
 
 .game-container {
-  width: calc(100vw - 40px) !important;
-  max-width: calc(100vh - 40px - 75px - (0.3 * 100vh) - 75px) !important;
+  width: calc(100vw - 20px) !important;
+}
+
+.game-container-no-hints {
+  max-width: calc(100vh - 20px - 50px - (0.3 * 100vh)) !important;
+}
+
+.game-container-with-hints {
+  max-width: calc(100vh - 20px - 50px - (0.3 * 100vh) - 40px) !important;
 }
 
 .box-container {

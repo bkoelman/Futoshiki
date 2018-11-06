@@ -3,7 +3,8 @@
   (changePuzzleClicked)="onChangePuzzleClicked()" [settingsEnabled]="canAcceptInput || hasRetrieveError"
   (settingsClicked)="onSettingsClicked()" (isOpenChanged)="onMenuBarIsOpenChanged($event)"></app-menu-bar>
 
-<div class="container game-container">
+<div class="container game-container" [class.game-container-no-hints]="!settings.showHintExplanations"
+  [class.game-container-with-hints]="settings.showHintExplanations">
   <app-change-puzzle-modal (puzzleChanged)="onPuzzleChanged($event)"></app-change-puzzle-modal>
   <app-settings-modal (settingsChanged)="onSettingsChanged($event)"></app-settings-modal>
   <app-win-modal (newGameClicked)="onNewGameClicked()" (restartClicked)="onRestartClicked()" (changePuzzleClicked)="onChangePuzzleClicked()"></app-win-modal>
@@ -28,8 +29,10 @@
     (clearClicked)="onClearClicked()" (hintCellClicked)="onHintCellClicked()" (undoClicked)="onUndoClicked()"
     (promoteClicked)="onPromoteClicked()" (hintBoardClicked)="onHintBoardClicked()"></app-button-bar>
 
-  <app-hint-explanation-box [isEnabled]="puzzle !== undefined && settings.showHintExplanations"></app-hint-explanation-box>
-
   <app-debug-console [isVisible]="inDebugMode && puzzle !== undefined" [isEnabled]="canAcceptInput" (loadClicked)="onLoadClicked($event)"
     (dumpBoardClicked)="onDumpBoardClicked()" (isTypingTextChanged)="onDebugIsTypingTextChanged($event)"></app-debug-console>
+</div>
+
+<div class="fixed-bottom">
+  <app-hint-explanation-box [isEnabled]="puzzle !== undefined && settings.showHintExplanations"></app-hint-explanation-box>
 </div>

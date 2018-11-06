@@ -291,6 +291,7 @@ export class GameComponent implements OnInit {
   onSettingsChanged(settings: GameSettings) {
     this.settings = settings;
     this.storeSettingsInCookie();
+    setTimeout(() => this.rebindAutoResizeElements());
   }
 
   private storeSettingsInCookie() {
