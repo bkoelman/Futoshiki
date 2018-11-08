@@ -1,5 +1,5 @@
 <div *ngIf="isEnabled">
-  <div *ngIf="!isDismissed && explanationText.length > 0" class="alert alert-warning alert-dismissible fade show mb-0 d-print-none"
+  <div *ngIf="!isDismissed && explanationText.length > 0" class="alert alert-warning alert-dismissible fade show text-center mb-0 d-print-none"
     role="alert">
     {{explanationText}}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="onCloseClick()">
